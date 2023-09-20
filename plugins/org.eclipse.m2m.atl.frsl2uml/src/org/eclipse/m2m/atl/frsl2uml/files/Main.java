@@ -28,7 +28,7 @@ public class Main implements IViewActionDelegate {
 		inputAtl[0] = file.getLocationURI().toString();
 		inputAtl[1] = "http://www.eclipse.org/ocl/2015/Library.oclas";
 		inputAtl[2] = "pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml";
-		String outUmlFile = file.getName().substring(0, file.getName().length() - file.getFileExtension().length()) + ".uml";
+		String outUmlFile = file.getName().substring(0, file.getName().length() - file.getFileExtension().length()) + "uml";
 		inputAtl[3] = "platform:/resource/" + file.getProject().getName() + "/uml-gen/" + outUmlFile; 
 				
 		Frsl2Sm.main(inputAtl);

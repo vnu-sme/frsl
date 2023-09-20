@@ -161,7 +161,7 @@ public class SaveFrslASHandler extends SaveASHandler
 //							Resource sourceModel, targetModel;
 //							soureModel.input();//frslcs.xmi
 //							ATLTrafo(sourceModel, targetModel);
-//							targetModel.output();//frslas.xmi ===> statechart / activity diagram / filmstrip model / gui / ifml model
+//							targetModel.output();//frslas.xmi ===> statechart / activity diagram / filmstrip model / gui / uisl model
 						
 									
 //							ResourceSet frslResourceSet = pivotResource.getResourceSet();							

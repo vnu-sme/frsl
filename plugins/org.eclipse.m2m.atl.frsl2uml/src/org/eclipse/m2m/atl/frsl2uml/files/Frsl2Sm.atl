@@ -127,14 +127,14 @@ rule UC2Class {
 		)
 	using {
 		u: Frsl!Usecase = s.getUCFromClass();
-		lastStep: Frsl!Step = u.firstStep.getAllMainStep()->last();
+		lastStep: Frsl!Step = u.firstStep.getAllMainStep()->last();		
 	}
 	to 
 		t: Uml!Class (
 			name <- s.name,
 			ownedBehavior <- stateMachine,
-			ownedAttribute <- s.ownedProperties -> select(e | e.ownedExpression.oclIsUndefined() = true)
-		),
+			ownedAttribute <- s.ownedProperties --> select(e | e.ownedExpression.oclIsUndefined() = true)
+		),		
 		stateMachine: Uml!StateMachine (
 			name <- s.name + 'SM',
 			region <- region
@@ -517,33 +517,37 @@ lazy rule Snapshot2Transition {
 rule Property2Property {
 	from
 		s: Frsl!Property (
-			s.oclIsTypeOf(Frsl!Property) and s.ownedExpression.oclIsUndefined() = true
+			s.oclIsTypeOf(Frsl!Property) --and s.ownedExpression.oclIsUndefined() = true
 		)
-	using {
-		flag: Boolean = if (s.type.oclIsKindOf(Frsl!CollectionType)) then true else false endif;	
-	}
+--	using {
+--		flag: Boolean = if (s.type.oclIsKindOf(Frsl!CollectionType)) then true else false endif;	
+--	}
 	to
 		t: Uml!Property (
-			name <- s.name,
-			type <- if flag then
-						s.type.ownedBindings->first().ownedSubstitutions->first().actual
+			name <- s.name,				
+			type <- if( s.type.oclIsKindOf(Frsl!CollectionType) ) then
+						if( s.type.ownedBindings->first().ownedSubstitutions->first().actual.name = 'OclAny') then
+							--TODO: FIX ME! It needs to embed OCL expressions 
+							Uml!PrimitiveType.allInstancesFrom('TYPES')->any(p | p.name = 'String')
+						else							
+							s.type.ownedBindings->first().ownedSubstitutions->first().actual
+						endif
 					else if s.type.oclIsKindOf(Frsl!PrimitiveType) then
 						thisModule.umlType(s.type)
 					else
 						s.type
-					endif
-					endif,
+					endif endif,
 			upperValue <- u
 		),
 		u: Uml!LiteralUnlimitedNatural (
-			value <- if flag then -1 else 1 endif	
+			value <- if( s.type.oclIsKindOf(Frsl!CollectionType) ) then -1 else 1 endif	
 		)
 }
 
 rule Class2Class {
 	from
 		s: Frsl!Class (
-			s.oclIsTypeOf(Frsl!Class) and s.eContainer() = Frsl!Package.allInstances()->asSequence().at(1)
+			s.oclIsTypeOf(Frsl!Class) and s.eContainer() = Frsl!Package.allInstances()->asSequence()->at(1)
 		)
 	to 
 		t: Uml!Class (
