@@ -14,8 +14,8 @@
 - Install [Eclipse DSL Tools (Version: 2023-06)](https://www.eclipse.org/downloads/packages/release/2023-06/r/eclipse-ide-java-and-dsl-developers).
 - Install [Eclipse plugin Sirius 7.2.1 (By Update Sites)](https://download.eclipse.org/sirius/updates/releases/7.2.1/).
 - Install UML2
-- Install [Acceleo (By Update Sites)] (https://download.eclipse.org/acceleo/updates/releases/3.7/R201911060712)
-- Install [ATL (Update Sites)] ( https://download.eclipse.org/mmt/atl/updates/releases/4.8.0)
+- Install [Acceleo (By Update Sites)](https://download.eclipse.org/acceleo/updates/releases/3.7/R201911060712)
+- Install [ATL (By Update Sites)](https://download.eclipse.org/mmt/atl/updates/releases/4.8.0)
 - Clone this repo.
 - Open repo: 
   - *File -> Open Project From File System -> Specify to folder 'plugins' -> Deselect the 'plugins' checkbox -> finish*.
