@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.eclipse.sme.frsl.ui.tests
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.sme.frsl.ui.tests
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: org.eclipse.sme.frsl.ui.tests; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.sme.frsl.ui,
+ org.eclipse.xtext.testing,
+ org.eclipse.xtext.xbase.testing,
+ org.eclipse.xtext.xbase.junit,
+ org.eclipse.core.runtime,
+ org.eclipse.xtext.ui.testing,
+ org.eclipse.ui.workbench;resolution:=optional, 
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: org.eclipse.sme.frsl.ui.tests;x-internal=true

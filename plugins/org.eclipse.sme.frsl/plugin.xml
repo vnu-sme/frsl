@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type id="org.eclipse.sme.FRSL" name="%FRSLName" 
+			base-type="org.eclipse.core.runtime.text"
+			file-extensions="frsl"
+        	default-charset="UTF-8">
+        	<describer class="org.eclipse.ocl.pivot.resource.NotXMLContentHandlerImpl$Describer"/>
+    	</content-type>
+  	</extension>
+
+  	<extension point="org.eclipse.ocl.pivot.as_resource_factory">
+    	<factory class="org.eclipse.sme.frsl.utilities.FRSLASResourceFactory"
+     		extension="frsl" contentType="org.eclipse.ocl.oclas.frsl"/>
+  	</extension>
+   
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated FRSLCS -->
+      <package
+            uri="http://www.xtext.org/sme/FRSLCS"
+            class="org.eclipse.sme.frslcs.FrslCSPackage"
+            genModel="model/FRSLCS.genmodel"/>
+   </extension>
+
+</plugin>
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.eclipse.sme.frslas2uml.ui.popupMenus.contribution.IFile"
+            nameFilter="*.frslas"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="org.eclipse.frslas2uml.module.menu"
+               label="Frslas2Uml" path="frslas">
+            	<groupMarker name="frslas"/> 
+         </menu>
+         <action
+               class="org.eclipse.m2m.atl.frsl2uml.files.Main"
+               id="org.eclipse.m2m.atl.frslas2uml.files.Main"
+               label="Generate UML Class Diagram and State Machine"
+               menubarPath="org.eclipse.frslas2uml.module.menu/atl">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

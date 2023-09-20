@@ -1,0 +1,2136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE frsl:FrslModel [
+<!ENTITY _0 "http://www.eclipse.org/ocl/2015/Library.oclas">
+]>
+<frsl:FrslModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:frsl="http://www.xtext.org/sme/FRSL"
+    xmlns:pivot="http://www.eclipse.org/ocl/2015/Pivot" xsi:schemaLocation="http://www.xtext.org/sme/FRSL java://org.eclipse.sme.frsl.FrslPackage http://www.eclipse.org/ocl/2015/Pivot java://org.eclipse.ocl.pivot.PivotPackage"
+    xmi:id="AAAAA" name="pos.frsl" externalURI="platform:/resource/org.eclipse.atl.frsl2uml.examples/pos.frsl" xmiidVersion="1">
+  <ownedPackages xmi:id="OP83I" name="pos" URI="platform:/resource/org.eclipse.atl.frsl2uml.examples/pos.frsl" nsPrefix="pfx">
+    <ownedClasses xmi:id="pEgUF" name="Date" superClasses="#QKOMI">
+      <ownedProperties xmi:id="Oq4nr" name="value" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="ZFYLt" name="Customer" superClasses="#QKOMI">
+      <ownedProperties xmi:id="YMLlb" name="name" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="Ujvlb" name="sale" type="#GfYYa" opposite="#wsmQk"/>
+      <ownedProperties xmi:id="+achc" name="IsFor" type="#kF17E" isImplicit="true" opposite="#IsLdj"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="+,pfJ" name="Cashier" superClasses="#QKOMI">
+      <ownedProperties xmi:id="ps+GL" name="name" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="B9Jxh" name="register" type="#eAD6f" opposite="#BsKAP"/>
+      <ownedProperties xmi:id="UDEmw" name="WorksOn" type="#WH6Lm" isImplicit="true" opposite="#nyiCO"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="CHNWF" name="Sale" superClasses="#QKOMI">
+      <ownedProperties xmi:id="thPIA" name="id" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="As9TA" name="date" type="#pEgUF"/>
+      <ownedProperties xmi:id="Wa8tG" name="total" type="pivot:PrimitiveType &_0;#Nr4QF"/>
+      <ownedProperties xmi:id="VPcHt" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedProperties xmi:id="lGlLm" name="salesLineItem" type="#vfIwV" opposite="#1YbTV"/>
+      <ownedProperties xmi:id="botYx" name="ContainedIn" type="#1aS3p" isImplicit="true" opposite="#GZQU7"/>
+      <ownedProperties xmi:id="1nR,W" name="register" type="#eAD6f" opposite="#FCgIu"/>
+      <ownedProperties xmi:id="AXzsX" name="CapturedOn" type="#SMQz7" isImplicit="true" opposite="#XdozJ"/>
+      <ownedProperties xmi:id="zQ+qG" name="store" type="#cYa+J" opposite="#LaZx1"/>
+      <ownedProperties xmi:id=",JqWv" name="LogsCompleted" type="#5FdA1" isImplicit="true" opposite="#a0zig"/>
+      <ownedProperties xmi:id="wsmQk" name="customer" type="#ZFYLt" opposite="#Ujvlb"/>
+      <ownedProperties xmi:id="ixz0F" name="IsFor" type="#kF17E" isImplicit="true" opposite="#xtPi,"/>
+      <ownedProperties xmi:id="Y1RPR" name="payment" type="#Bdmh5" opposite="#cc+Ia"/>
+      <ownedProperties xmi:id="mGQpP" name="PaidBy" type="#IYO3u" isImplicit="true" opposite="#luLKp"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="eAD6f" name="Register" superClasses="#QKOMI">
+      <ownedProperties xmi:id="fkzd0" name="store" type="#cYa+J" opposite="#nTAbM"/>
+      <ownedProperties xmi:id="mAZIP" name="Houses" type="#Yi1c2" isImplicit="true" opposite="#RrsN3"/>
+      <ownedProperties xmi:id="FCgIu" name="sale" type="#CHNWF" opposite="#1nR,W"/>
+      <ownedProperties xmi:id="w84Ck" name="CapturedOn" type="#SMQz7" isImplicit="true" opposite="#zWPdg"/>
+      <ownedProperties xmi:id="BsKAP" name="cashier" type="#+,pfJ" opposite="#B9Jxh"/>
+      <ownedProperties xmi:id="UumEM" name="WorksOn" type="#WH6Lm" isImplicit="true" opposite="#HCf0D"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="cYa+J" name="Store" superClasses="#QKOMI">
+      <ownedProperties xmi:id="4I3Jx" name="address" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="PD1w1" name="name" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="xoSwB" name="authService" type="#8odoZ" opposite="#BYibH"/>
+      <ownedProperties xmi:id="UnXaT" name="ProvidedWith" type="#eEkNB" isImplicit="true" opposite="#tkwfN"/>
+      <ownedProperties xmi:id="XFVw1" name="item" type="#yiX5Y" opposite="#PP+o1"/>
+      <ownedProperties xmi:id="oyXl3" name="Stocks" type="#SzzgU" isImplicit="true" opposite="#xClBR"/>
+      <ownedProperties xmi:id="iUVwn" name="prdtCtlg" type="#lmfni" opposite="#Ki,eD"/>
+      <ownedProperties xmi:id=",lI76" name="UsedBy" type="#ROrx9" isImplicit="true" opposite="#sYINj"/>
+      <ownedProperties xmi:id="nTAbM" name="register" type="#,XVOW" opposite="#fkzd0"/>
+      <ownedProperties xmi:id="e3Kjk" name="Houses" type="#Yi1c2" isImplicit="true" opposite="#PUZ5m"/>
+      <ownedProperties xmi:id="LaZx1" name="sale" type="#GfYYa" opposite="#zQ+qG"/>
+      <ownedProperties xmi:id="nmhHR" name="LogsCompleted" type="#5FdA1" isImplicit="true" opposite="#0WH4m"/>
+      <ownedProperties xmi:id="mDXQt" name="accountsReceivable" type="#cAiZZ" opposite="#ht34Y"/>
+      <ownedProperties xmi:id="64Ngj" name="Logs" type="#UiCWZ" isImplicit="true" opposite="#7Pny6"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="OyIVF" name="Item" superClasses="#QKOMI">
+      <ownedProperties xmi:id="JgPGv" name="id" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="PP+o1" name="store" type="#cYa+J" opposite="#XFVw1"/>
+      <ownedProperties xmi:id="wCCrE" name="Stocks" type="#SzzgU" isImplicit="true" opposite="#jLNrK"/>
+      <ownedProperties xmi:id="BFlJV" name="salesLineItem" type="#OOj3a" opposite="#BEXSV"/>
+      <ownedProperties xmi:id="z2h0Q" name="RecordsSaleOf" type="#dLDuN" isImplicit="true" opposite="#afuL+"/>
+      <ownedProperties xmi:id="B9O,b" name="prdDesc" type="#I0Ji2" opposite="#TyB8r"/>
+      <ownedProperties xmi:id="bt4SB" name="Describes" type="#FJ17n" isImplicit="true" opposite="#i7TeS"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="I0Ji2" name="ProductDescription" superClasses="#QKOMI">
+      <ownedProperties xmi:id="RAa7r" name="desc" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="JLlHy" name="price" type="pivot:PrimitiveType &_0;#Nr4QF"/>
+      <ownedProperties xmi:id="rEGwr" name="tax" type="pivot:PrimitiveType &_0;#Nr4QF"/>
+      <ownedProperties xmi:id="oaGwr" name="upc" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="TyB8r" name="item" type="#yiX5Y" opposite="#B9O,b"/>
+      <ownedProperties xmi:id="tKw02" name="Describes" type="#FJ17n" isImplicit="true" opposite="#ig8K,"/>
+      <ownedProperties xmi:id="TfAzR" name="salesLineItem" type="#yeIwV" opposite="#OYCK8"/>
+      <ownedProperties xmi:id="wtuA5" name="DescribedBy" type="#tYKGZ" isImplicit="true" opposite="#3FHQj"/>
+      <ownedProperties xmi:id="eBC8d" name="prdtCtlg" type="#lmfni" opposite="#strIv"/>
+      <ownedProperties xmi:id="U4pIt" name="Contains" type="#E+ueh" isImplicit="true" opposite="#NWBSP"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="lmfni" name="ProductCatalog" superClasses="#QKOMI">
+      <ownedProperties xmi:id="strIv" name="prdtDesc" type="#ZNz,z" opposite="#eBC8d"/>
+      <ownedProperties xmi:id="6H1U+" name="Contains" type="#E+ueh" isImplicit="true" opposite="#oi9RP"/>
+      <ownedProperties xmi:id="Ki,eD" name="store" type="#Qs1S2" opposite="#iUVwn"/>
+      <ownedProperties xmi:id="Pz12z" name="UsedBy" type="#ROrx9" isImplicit="true" opposite="#pww2O"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="OOj3a" name="SalesLineItem" superClasses="#QKOMI">
+      <ownedProperties xmi:id="5pFgI" name="quantity" type="pivot:PrimitiveType &_0;#tYtCd"/>
+      <ownedProperties xmi:id="BEXSV" name="item" type="#vjX5Y" opposite="#BFlJV"/>
+      <ownedProperties xmi:id="zdJ1," name="RecordsSaleOf" type="#dLDuN" isImplicit="true" opposite="#aMtCk"/>
+      <ownedProperties xmi:id="1YbTV" name="sale" type="#CHNWF" opposite="#lGlLm"/>
+      <ownedProperties xmi:id="L82PP" name="ContainedIn" type="#1aS3p" isImplicit="true" opposite="#SxKKh"/>
+      <ownedProperties xmi:id="OYCK8" name="productDesc" type="#I0Ji2" opposite="#TfAzR"/>
+      <ownedProperties xmi:id="DtLSb" name="DescribedBy" type="#tYKGZ" isImplicit="true" opposite="#qeaPi"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="Bdmh5" name="Payment" superClasses="#QKOMI">
+      <ownedProperties xmi:id="tcHqF" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF"/>
+      <ownedProperties xmi:id="cc+Ia" name="sale" type="#CHNWF" opposite="#Y1RPR"/>
+      <ownedProperties xmi:id="il1vf" name="PaidBy" type="#IYO3u" isImplicit="true" opposite="#k1yD6"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="OSSbP" name="CashPayment" superClasses="#Bdmh5">
+      <ownedProperties xmi:id="ZnZPV" name="amountTendered" type="pivot:PrimitiveType &_0;#Nr4QF"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="IIV8f" name="CreditPayment" superClasses="#Bdmh5">
+      <ownedProperties xmi:id="tZdie" name="authService" type="#okJz0" opposite="#m81,R"/>
+      <ownedProperties xmi:id="QuanU" name="Approves" type="#TmZLz" isImplicit="true" opposite="#bXVjU"/>
+      <ownedProperties xmi:id="ht34Y" name="store" type="#cYa+J" opposite="#mDXQt"/>
+      <ownedProperties xmi:id="9a,VY" name="Logs" type="#UiCWZ" isImplicit="true" opposite="#8WR8r"/>
+      <ownedProperties xmi:id="pgfrw" name="creditCard" type="#k8OWa" opposite="#y0ksS"/>
+      <ownedProperties xmi:id="orYWZ" name="CheckedBy" type="#r8jfY" isImplicit="true" opposite="#Tfx11"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="tUkY," name="GiftCertPayment" superClasses="#Bdmh5">
+      <ownedProperties xmi:id="Fyoaq" name="giftCert" type="#CeDgx" opposite="#YweXq"/>
+      <ownedProperties xmi:id="NEUCq" name="PaidWith" type="#fWrQe" isImplicit="true" opposite="#XU3IM"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="CeDgx" name="GiftCertificate" superClasses="#QKOMI">
+      <ownedProperties xmi:id="tccQZ" name="id" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="qpA,E" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF"/>
+      <ownedProperties xmi:id="YweXq" name="payment" type="#tUkY," opposite="#Fyoaq"/>
+      <ownedProperties xmi:id="QwY31" name="PaidWith" type="#fWrQe" isImplicit="true" opposite="#FK5nt"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="k8OWa" name="CreditCard" superClasses="#QKOMI">
+      <ownedProperties xmi:id="1Zv7D" name="number" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="ZSdzP" name="expireDate" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="y0ksS" name="payment" type="#cAiZZ" opposite="#pgfrw"/>
+      <ownedProperties xmi:id="J0,Jl" name="CheckedBy" type="#r8jfY" isImplicit="true" opposite="#2tFED"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="okJz0" name="AuthService" superClasses="#QKOMI">
+      <ownedProperties xmi:id="reqFB" name="name" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="Ukse8" name="address" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="BYibH" name="store" type="#Qs1S2" opposite="#xoSwB"/>
+      <ownedProperties xmi:id="E4USG" name="ProvidedWith" type="#eEkNB" isImplicit="true" opposite="#5QWJT"/>
+      <ownedProperties xmi:id="m81,R" name="payment" type="#cAiZZ" opposite="#tZdie"/>
+      <ownedProperties xmi:id="BOEvg" name="Approves" type="#TmZLz" isImplicit="true" opposite="#CfnoP"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="QKOMI" name="_DomainClass" superClasses="&_0;#zfDWR">
+      <ownedProperties xmi:id="94qns" name="isProblDom" type="pivot:PrimitiveType &_0;#XEMMs"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="i8Lb8" name="_Tracks" superClasses="&_0;#zfDWR">
+      <ownedProperties xmi:id="yDepu" name="problObj" type="#QKOMI"/>
+      <ownedProperties xmi:id="l8nJx" name="swObj" type="#QKOMI"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="ELnP1" name="ProvidedWith" superClasses="#QKOMI">
+      <ownedProperties xmi:id="tkwfN" name="store" type="#Qs1S2" opposite="#5QWJT"/>
+      <ownedProperties xmi:id="5QWJT" name="authService" type="#8odoZ"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="YWnaZ" name="Stocks" superClasses="#QKOMI">
+      <ownedProperties xmi:id="xClBR" name="store" type="#cYa+J" opposite="#jLNrK"/>
+      <ownedProperties xmi:id="jLNrK" name="item" type="#yiX5Y"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="bKHkl" name="RecordsSaleOf" superClasses="#QKOMI">
+      <ownedProperties xmi:id="aMtCk" name="salesLineItem" isRequired="false" type="#OOj3a" opposite="#afuL+"/>
+      <ownedProperties xmi:id="afuL+" name="item" type="#vjX5Y"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="zo0+0" name="ContainedIn" superClasses="#QKOMI">
+      <ownedProperties xmi:id="GZQU7" name="sale" type="#CHNWF" opposite="#SxKKh"/>
+      <ownedProperties xmi:id="SxKKh" name="salesLineItem" type="#vfIwV"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="DBeCW" name="Describes" superClasses="#QKOMI">
+      <ownedProperties xmi:id="ig8K," name="prdDesc" type="#I0Ji2" opposite="#i7TeS"/>
+      <ownedProperties xmi:id="i7TeS" name="item" type="#yiX5Y"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="rZJBB" name="DescribedBy" superClasses="#QKOMI">
+      <ownedProperties xmi:id="qeaPi" name="salesLineItem" type="#yeIwV" opposite="#3FHQj"/>
+      <ownedProperties xmi:id="3FHQj" name="productDesc" type="#I0Ji2"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="aeXOn" name="Contains" superClasses="#QKOMI">
+      <ownedProperties xmi:id="oi9RP" name="prdtCtlg" type="#lmfni" opposite="#NWBSP"/>
+      <ownedProperties xmi:id="NWBSP" name="prdtDesc" type="#ZNz,z"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="vJYwc" name="UsedBy" superClasses="#QKOMI">
+      <ownedProperties xmi:id="pww2O" name="prdtCtlg" type="#lmfni" opposite="#sYINj"/>
+      <ownedProperties xmi:id="sYINj" name="store" type="#Qs1S2"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="ObaYG" name="Houses" superClasses="#QKOMI">
+      <ownedProperties xmi:id="PUZ5m" name="store" type="#cYa+J" opposite="#RrsN3"/>
+      <ownedProperties xmi:id="RrsN3" name="register" type="#,XVOW"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="YX6Sb" name="CapturedOn" superClasses="#QKOMI">
+      <ownedProperties xmi:id="XdozJ" name="sale" isRequired="false" type="#CHNWF" opposite="#zWPdg"/>
+      <ownedProperties xmi:id="zWPdg" name="register" type="#eAD6f"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="XKx8y" name="LogsCompleted" superClasses="#QKOMI">
+      <ownedProperties xmi:id="0WH4m" name="store" isRequired="false" type="#cYa+J" opposite="#a0zig"/>
+      <ownedProperties xmi:id="a0zig" name="sale" type="#GfYYa"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="6x6aJ" name="IsFor" superClasses="#QKOMI">
+      <ownedProperties xmi:id="xtPi," name="sale" type="#GfYYa" opposite="#IsLdj"/>
+      <ownedProperties xmi:id="IsLdj" name="customer" type="#ZFYLt"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="8IoUD" name="WorksOn" superClasses="#QKOMI">
+      <ownedProperties xmi:id="nyiCO" name="cashier" type="#+,pfJ" opposite="#HCf0D"/>
+      <ownedProperties xmi:id="HCf0D" name="register" type="#eAD6f"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="BhWsP" name="Approves" superClasses="#QKOMI">
+      <ownedProperties xmi:id="CfnoP" name="authService" type="#okJz0" opposite="#bXVjU"/>
+      <ownedProperties xmi:id="bXVjU" name="payment" type="#cAiZZ"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="+GXPT" name="PaidBy" superClasses="#QKOMI">
+      <ownedProperties xmi:id="luLKp" name="sale" type="#CHNWF" opposite="#k1yD6"/>
+      <ownedProperties xmi:id="k1yD6" name="payment" type="#Bdmh5"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="qcdVF" name="Logs" superClasses="#QKOMI">
+      <ownedProperties xmi:id="7Pny6" name="store" type="#cYa+J" opposite="#8WR8r"/>
+      <ownedProperties xmi:id="8WR8r" name="accountsReceivable" type="#cAiZZ"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="tM0o," name="PaidWith" superClasses="#QKOMI">
+      <ownedProperties xmi:id="XU3IM" name="payment" isRequired="false" type="#tUkY," opposite="#FK5nt"/>
+      <ownedProperties xmi:id="FK5nt" name="giftCert" type="#CeDgx"/>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:AssociationClass" xmi:id="ZeUbU" name="CheckedBy" superClasses="#QKOMI">
+      <ownedProperties xmi:id="Tfx11" name="payment" type="#cAiZZ" opposite="#2tFED"/>
+      <ownedProperties xmi:id="2tFED" name="creditCard" type="#k8OWa"/>
+    </ownedClasses>
+  </ownedPackages>
+  <ownedPackages xmi:id="xajEA" name="usecase">
+    <ownedClasses xmi:id="vyAUp" name="ProcessSales" superClasses="&_0;#zfDWR">
+      <ownedOperations xmi:id="plH0k" name="opExtPoint1" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="sIO59" name="enter_ProcessSales" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="T+F8r" name="enter_ProcessSales_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_sale.isComplete = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_sale" type="#CHNWF" referredProperty="#xe2l2">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#b0xEE"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="b0xEE" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+        <ownedPreconditions xmi:id="U+F8r" name="enter_ProcessSales_pre2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_items->isEmpty() = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:OperationCallExp" name="isEmpty" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#ghkfR">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_items" type="#3hX5Y" referredProperty="#MlTQZ">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#kUwIE"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="kUwIE" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="mGpzL" name="exit_ProcessSales" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="v95gU" name="exit_ProcessSales_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.isComplete = true">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#Xv7Ah"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="true"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="Xv7Ah" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="w95gU" name="exit_ProcessSales_post2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.total.oclIsUndefined() = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:OperationCallExp" name="oclIsUndefined" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#aSwFn">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                  <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                    <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#gP6Eh"/>
+                  </ownedSource>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="gP6Eh" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="x95gU" name="exit_ProcessSales_post3">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_sale.isComplete = true">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_sale" type="#CHNWF" referredProperty="#xe2l2">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#pv4Ih"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="true"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="pv4Ih" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="gR++T" name="step1_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="Ddmao" name="step1_act_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_items->isEmpty() = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:OperationCallExp" name="isEmpty" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#ghkfR">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_items" type="#3hX5Y" referredProperty="#MlTQZ">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#LJOpu"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="LJOpu" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="hvfCU" name="step2_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="56dDf" name="step2_act_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_sale.total = 0">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_sale" type="#CHNWF" referredProperty="#xe2l2">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#xVQk+"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:IntegerLiteralExp" type="pivot:PrimitiveType &_0;#tYtCd" integerSymbol="0"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="xVQk+" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="66dDf" name="step2_act_post2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_sale.isComplete = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_sale" type="#CHNWF" referredProperty="#xe2l2">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#61Oo+"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="61Oo+" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="dmFGU" name="step3_sys" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="BZdgS" name="step3_sys_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.oclIsUndefined() = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:OperationCallExp" name="oclIsUndefined" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#aSwFn">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#5k,7m"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="5k,7m" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="CZdgS" name="step3_sys_post2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.total = 0">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#CF+,m"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:IntegerLiteralExp" type="pivot:PrimitiveType &_0;#tYtCd" integerSymbol="0"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="CF+,m" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="DZdgS" name="step3_sys_post3">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.date = curDate">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#SYOvl">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="date" type="#pEgUF" referredProperty="#As9TA">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#Ll8Dn"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="curDate" type="#pEgUF" referredProperty="#ZSbP0">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#Ll8Dn"/>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="Ll8Dn" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="jriJU" name="step4_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="18rP5" name="step4_act_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_salesLineItem.oclIsUndefined() = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:OperationCallExp" name="oclIsUndefined" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#aSwFn">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_salesLineItem" type="#OOj3a" referredProperty="#fbigo">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#NnU,c"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="NnU,c" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="28rP5" name="step4_act_post2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_salesLineItem.quantity = 1">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="quantity" type="pivot:PrimitiveType &_0;#tYtCd" referredProperty="#5pFgI">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_salesLineItem" type="#OOj3a" referredProperty="#fbigo">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#WHTDd"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:IntegerLiteralExp" type="pivot:PrimitiveType &_0;#tYtCd" integerSymbol="1"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="WHTDd" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPreconditions xmi:id="XMf4t" name="step4_act_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_items->includes(_item)">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="includes" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#JdFNc">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="_items" type="#3hX5Y" referredProperty="#MlTQZ">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#,yO,n"/>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="_item" type="#OyIVF" referredProperty="#9Jyk2">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#,yO,n"/>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id=",yO,n" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+        <ownedPreconditions xmi:id="YMf4t" name="step4_act_pre2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_item.id = itemId">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#7L5cn">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="id" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#JgPGv">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_item" type="#OyIVF" referredProperty="#9Jyk2">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#ITNDo"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="itemId" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#Zof5q">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#ITNDo"/>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="ITNDo" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+        <ownedPreconditions xmi:id="ZMf4t" name="step4_act_pre3">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_item.salesLineItem->isEmpty()">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="isEmpty" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#ghkfR">
+              <ownedSource xsi:type="pivot:OperationCallExp" name="oclAsSet" type="#3fIwV" isImplicit="true" referredOperation="&_0;#koUSM">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="salesLineItem" type="#OOj3a" referredProperty="#BFlJV">
+                  <ownedSource xsi:type="pivot:PropertyCallExp" name="_item" type="#OyIVF" referredProperty="#9Jyk2">
+                    <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#RzLHo"/>
+                  </ownedSource>
+                </ownedSource>
+              </ownedSource>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="RzLHo" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="fiINU" name="step5_sys" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="9arss" name="step5_sys_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="salesLineItem.oclIsUndefined() = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:OperationCallExp" name="oclIsUndefined" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#aSwFn">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="salesLineItem" type="#OOj3a" referredProperty="#eTFNX">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#V2DXF"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="V2DXF" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="+arss" name="step5_sys_post2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="salesLineItem.quantity = 1">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="quantity" type="pivot:PrimitiveType &_0;#tYtCd" referredProperty="#5pFgI">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="salesLineItem" type="#OOj3a" referredProperty="#eTFNX">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#eWCbF"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:IntegerLiteralExp" type="pivot:PrimitiveType &_0;#tYtCd" integerSymbol="1"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="eWCbF" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id=",arss" name="step5_sys_post3">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.total = sale@pre.total + prdDesc.price * prdDesc.tax">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#n2AfF"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:OperationCallExp" name="+" type="pivot:PrimitiveType &_0;#Nr4QF" referredOperation="&_0;#CJEtV">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                  <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" isPre="true" referredProperty="#S7KXx">
+                    <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#n2AfF"/>
+                  </ownedSource>
+                </ownedSource>
+                <ownedArguments xsi:type="pivot:OperationCallExp" name="*" type="pivot:PrimitiveType &_0;#Nr4QF" referredOperation="&_0;#BJEtV">
+                  <ownedSource xsi:type="pivot:PropertyCallExp" name="price" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#JLlHy">
+                    <ownedSource xsi:type="pivot:PropertyCallExp" name="prdDesc" type="#I0Ji2" referredProperty="#eLvCe">
+                      <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#n2AfF"/>
+                    </ownedSource>
+                  </ownedSource>
+                  <ownedArguments xsi:type="pivot:PropertyCallExp" name="tax" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#rEGwr">
+                    <ownedSource xsi:type="pivot:PropertyCallExp" name="prdDesc" type="#I0Ji2" referredProperty="#eLvCe">
+                      <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#n2AfF"/>
+                    </ownedSource>
+                  </ownedArguments>
+                </ownedArguments>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="n2AfF" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="wCqr5" name="step6_rejn_step4.a" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="Dgeaz" name="step6_rejn_step4.a_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_items->includes(_item)">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="includes" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#JdFNc">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="_items" type="#3hX5Y" referredProperty="#MlTQZ">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#Lkmjp"/>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="_item" type="#OyIVF" referredProperty="#9Jyk2">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#Lkmjp"/>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="Lkmjp" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+        <ownedPreconditions xmi:id="Egeaz" name="step6_rejn_step4.a_pre2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_item.salesLineItem.oclIsUndefined()">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="oclIsUndefined" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#aSwFn">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="salesLineItem" type="#OOj3a" referredProperty="#BFlJV">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_item" type="#OyIVF" referredProperty="#9Jyk2">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#UElnp"/>
+                </ownedSource>
+              </ownedSource>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="UElnp" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="heLUU" name="step7_sys" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="njoXU" name="step8_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="tAIot" name="step8_act_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_sale.total = sale.total">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_sale" type="#CHNWF" referredProperty="#xe2l2">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#FKd1Z"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#FKd1Z"/>
+                </ownedSource>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="FKd1Z" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="h6eYp" name="step10_sys" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="5k+lH" name="step10_sys_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.isComplete = true">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#xP2bi"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="true"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="xP2bi" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPreconditions xmi:id="fLIHa" name="step10_sys_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.isComplete = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#HrTE1"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="HrTE1" name="self" type="#vyAUp"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="n,7bp" name="step11_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="tINVu" name="step11_act_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_sale.isComplete = true">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_sale" type="#CHNWF" referredProperty="#xe2l2">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#FSLfY"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="true"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="FSLfY" name="self" type="#vyAUp"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="m4uu5" name="step9a_alt" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedProperties xmi:id="PAwye" name="_cashier" type="#+,pfJ"/>
+      <ownedProperties xmi:id="I,Zra" name="_customer" type="#ZFYLt"/>
+      <ownedProperties xmi:id="xe2l2" name="_sale" type="#CHNWF"/>
+      <ownedProperties xmi:id="gA9Ux" name="_pos" type="#eAD6f"/>
+      <ownedProperties xmi:id="MlTQZ" name="_items" type="#3hX5Y"/>
+      <ownedProperties xmi:id="sdes3" name="store" type="#cYa+J"/>
+      <ownedProperties xmi:id="fDKKx" name="pos" type="#eAD6f"/>
+      <ownedProperties xmi:id="Ol1OS" name="cashier" type="#+,pfJ"/>
+      <ownedProperties xmi:id="S7KXx" name="sale" type="#CHNWF"/>
+      <ownedProperties xmi:id="ZSbP0" name="curDate" type="#pEgUF"/>
+      <ownedProperties xmi:id="9Jyk2" name="_item" type="#OyIVF"/>
+      <ownedProperties xmi:id="Zof5q" name="itemId" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="fbigo" name="_salesLineItem" type="#OOj3a"/>
+      <ownedProperties xmi:id="emGWx" name="item" type="#OyIVF"/>
+      <ownedProperties xmi:id="eLvCe" name="prdDesc" type="#I0Ji2"/>
+      <ownedProperties xmi:id="eTFNX" name="salesLineItem" type="#OOj3a"/>
+      <ownedProperties xmi:id="RCyQC" name="payment" type="#Bdmh5"/>
+      <ownedProperties xmi:id="TnrWQ" name="_creditCard" type="#k8OWa"/>
+      <ownedProperties xmi:id="MPZuL" name="saleInfor2AccSys" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#zYada" body="Sequence{sale, payment}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#zYada" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="#CHNWF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#r,Zyq"/>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="#Bdmh5">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="payment" type="#Bdmh5" referredProperty="#RCyQC">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#r,Zyq"/>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="r,Zyq" name="self" type="#vyAUp"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="c5,Aa" name="saleInfor2InvSys" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#zYada" body="Sequence{sale, payment}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#zYada" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="#CHNWF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#77daa"/>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="#Bdmh5">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="payment" type="#Bdmh5" referredProperty="#RCyQC">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#77daa"/>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="77daa" name="self" type="#vyAUp"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="pG1TS" name="paymentInfor" type="pivot:PrimitiveType &_0;#Nr4QF">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#Nr4QF" body="sale.total">
+          <ownedBody xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+            <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+              <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#wSJE6"/>
+            </ownedSource>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="wSJE6" name="self" type="#vyAUp"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="8iqTw" name="itemInfor" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#je1Hu" body="Sequence{prdDesc.desc, prdDesc.price, prdDesc.upc}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#je1Hu" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#AlwVZ">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="desc" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#RAa7r">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="prdDesc" type="#I0Ji2" referredProperty="#eLvCe">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#bxNEJ"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#Nr4QF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="price" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#JLlHy">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="prdDesc" type="#I0Ji2" referredProperty="#eLvCe">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#bxNEJ"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#AlwVZ">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="upc" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#oaGwr">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="prdDesc" type="#I0Ji2" referredProperty="#eLvCe">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#bxNEJ"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="bxNEJ" name="self" type="#vyAUp"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="IQY6p" name="saleInfor" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#9PXRn" body="Sequence{sale.total}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#9PXRn" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#Nr4QF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#HI3s,"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="HI3s," name="self" type="#vyAUp"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="IQY6pA" name="saleInfor" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#je1Hu" body="Sequence{sale.id, sale.total}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#je1Hu" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#AlwVZ">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="id" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#thPIA">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#HI3s,A"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#Nr4QF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#S7KXx">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#HI3s,A"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="HI3s,A" name="self" type="#vyAUp"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="McgPP" name="cashierInfor" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#4nGDi" body="Sequence{cashier.name}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#4nGDi" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#AlwVZ">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="name" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#ps+GL">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="cashier" type="#+,pfJ" referredProperty="#Ol1OS">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#vyAUp" isImplicit="true" referredVariable="#r06oT"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="r06oT" name="self" type="#vyAUp"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="e9GJp" name="_giftCert" type="#CeDgx"/>
+      <ownedProperties xmi:id="75c,O" name="includedUC_HandleCreditPayment" type="#XASYi"/>
+      <ownedProperties xmi:id="BXZwZ" name="includedUC_HandleCashPayment" type="#dCE9a"/>
+    </ownedClasses>
+    <ownedClasses xmi:id="dCE9a" name="HandleCashPayment" superClasses="&_0;#zfDWR">
+      <ownedOperations xmi:id="iqtBn" name="enter_HandleCashPayment" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="xnRT5" name="enter_HandleCashPayment_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.isComplete = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#Is8Pt">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#ppNvw"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="ppNvw" name="self" type="#dCE9a"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="odcAT" name="exit_HandleCashPayment" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="1aswE" name="exit_HandleCashPayment_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="cashPayment.amountTendered >= sale.total">
+            <ownedBody xsi:type="pivot:OperationCallExp" name=">=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#6crvY">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amountTendered" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#ZnZPV">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="cashPayment" type="#OSSbP" referredProperty="#Uo+2T">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#N1Y7b"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#Is8Pt">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#N1Y7b"/>
+                </ownedSource>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="N1Y7b" name="self" type="#dCE9a"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="2aswE" name="exit_HandleCashPayment_post2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="cashPayment.amount = sale.total">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#tcHqF">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="cashPayment" type="#OSSbP" referredProperty="#Uo+2T">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#WVX,b"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#Is8Pt">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#WVX,b"/>
+                </ownedSource>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="WVX,b" name="self" type="#dCE9a"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="WCw3P" name="step1_act" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="XgR7P" name="step2_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="XIW13" name="step2_act_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_cashPayment.amountTendered = amountTendered">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amountTendered" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#ZnZPV">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_cashPayment" type="#OSSbP" referredProperty="#VhEyu">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#,O9If"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="amountTendered" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#sGIGP">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#,O9If"/>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id=",O9If" name="self" type="#dCE9a"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="TX3+P" name="step3_sys" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="ZcUCQ" name="step4_act" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="VT6FQ" name="step5_sys" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="bojeF" name="step5_sys_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="cashPayment.amountTendered = _cashPayment.amountTendered">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amountTendered" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#ZnZPV">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="cashPayment" type="#OSSbP" referredProperty="#Uo+2T">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#jvw7l"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="amountTendered" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#ZnZPV">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_cashPayment" type="#OSSbP" referredProperty="#VhEyu">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#jvw7l"/>
+                </ownedSource>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="jvw7l" name="self" type="#dCE9a"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedProperties xmi:id="nPoey" name="_sale" type="#CHNWF"/>
+      <ownedProperties xmi:id="Is8Pt" name="sale" type="#CHNWF"/>
+      <ownedProperties xmi:id="Uo+2T" name="cashPayment" type="#OSSbP"/>
+      <ownedProperties xmi:id="VhEyu" name="_cashPayment" type="#OSSbP"/>
+      <ownedProperties xmi:id="sGIGP" name="amountTendered" type="pivot:PrimitiveType &_0;#Nr4QF"/>
+      <ownedProperties xmi:id="5w+p+" name="balanceDue" type="pivot:PrimitiveType &_0;#Nr4QF">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#Nr4QF" body="_cashPayment.amountTendered - sale.total">
+          <ownedBody xsi:type="pivot:OperationCallExp" name="-" type="pivot:PrimitiveType &_0;#Nr4QF" referredOperation="&_0;#EJEtV">
+            <ownedSource xsi:type="pivot:PropertyCallExp" name="amountTendered" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#ZnZPV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="_cashPayment" type="#OSSbP" referredProperty="#VhEyu">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#APIsj"/>
+              </ownedSource>
+            </ownedSource>
+            <ownedArguments xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#Is8Pt">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#dCE9a" isImplicit="true" referredVariable="#APIsj"/>
+              </ownedSource>
+            </ownedArguments>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="APIsj" name="self" type="#dCE9a"/>
+        </ownedExpression>
+      </ownedProperties>
+    </ownedClasses>
+    <ownedClasses xmi:id="XASYi" name="HandleCreditPayment" superClasses="&_0;#zfDWR">
+      <ownedOperations xmi:id="uFdmK" name="enter_HandleCreditPayment" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="TyOUu" name="enter_HandleCreditPayment_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.isComplete = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#aSxdK">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#bIBQc"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="bIBQc" name="self" type="#XASYi"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="0SKjj" name="exit_HandleCreditPayment" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="ookFt" name="step1_act" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="kfKJt" name="step2_sys" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="7RQMM" name="step2_sys_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.isComplete = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#aSxdK">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#DlyYl"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="DlyYl" name="self" type="#XASYi"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="l9rMt" name="step3_sys" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="pTcyw" name="step3_sys_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="creditPayment.amount = sale.total">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#tcHqF">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="creditPayment" type="#IIV8f" referredProperty="#gkdY1">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#h05lj"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#aSxdK">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#h05lj"/>
+                </ownedSource>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="h05lj" name="self" type="#XASYi"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="mbNQt" name="step4_sys" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="n5uTt" name="step5_sys" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="t+LXt" name="step6_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="Z54tx" name="step6_act_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="creditPayment.amount = _creditPayment.amount">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#tcHqF">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="creditPayment" type="#IIV8f" referredProperty="#gkdY1">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#RITE4"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#tcHqF">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_creditPayment" type="#IIV8f" referredProperty="#hs6rG">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#RITE4"/>
+                </ownedSource>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="RITE4" name="self" type="#XASYi"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedProperties xmi:id="QWAyz" name="_customer" type="#ZFYLt"/>
+      <ownedProperties xmi:id="oXjbK" name="_pos" type="#eAD6f"/>
+      <ownedProperties xmi:id="51csP" name="_sale" type="#CHNWF"/>
+      <ownedProperties xmi:id="b+Rdp" name="_creditCard" type="#k8OWa"/>
+      <ownedProperties xmi:id="00EzQ" name="store" type="#cYa+J"/>
+      <ownedProperties xmi:id="nawQK" name="pos" type="#eAD6f"/>
+      <ownedProperties xmi:id="AhqcW" name="authService" type="#okJz0"/>
+      <ownedProperties xmi:id="aSxdK" name="sale" type="#CHNWF"/>
+      <ownedProperties xmi:id="8nslo" name="creditCard" type="#k8OWa"/>
+      <ownedProperties xmi:id="hs6rG" name="_creditPayment" type="#IIV8f"/>
+      <ownedProperties xmi:id="gkdY1" name="creditPayment" type="#IIV8f"/>
+      <ownedProperties xmi:id="RmIOK" name="pinNumber" type="pivot:PrimitiveType &_0;#tYtCd"/>
+      <ownedProperties xmi:id="KkQ30" name="creditPaymentInfor" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#zYada" body="Sequence{sale, creditPayment}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#zYada" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="#CHNWF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#aSxdK">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#Z8u6d"/>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="#IIV8f">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="creditPayment" type="#IIV8f" referredProperty="#gkdY1">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#Z8u6d"/>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="Z8u6d" name="self" type="#XASYi"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="knrlX" name="approvalInfo" type="pivot:PrimitiveType &_0;#AlwVZ">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#AlwVZ" body="'paymentApproval'">
+          <ownedBody xsi:type="pivot:StringLiteralExp" type="pivot:PrimitiveType &_0;#AlwVZ" stringSymbol="paymentApproval"/>
+          <ownedContext xsi:type="pivot:ParameterVariable" name="self" type="#XASYi"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="hUGau" name="paymentAuth" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#je1Hu" body="Sequence{authService, creditCard, pinNumber, sale.total}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#je1Hu" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="#okJz0">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="authService" type="#okJz0" referredProperty="#AhqcW">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#oPwnU"/>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="#k8OWa">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="creditCard" type="#k8OWa" referredProperty="#8nslo">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#oPwnU"/>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#tYtCd">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="pinNumber" type="pivot:PrimitiveType &_0;#tYtCd" referredProperty="#RmIOK">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#oPwnU"/>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#Nr4QF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="total" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#Wa8tG">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#aSxdK">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#XASYi" isImplicit="true" referredVariable="#oPwnU"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="oPwnU" name="self" type="#XASYi"/>
+        </ownedExpression>
+      </ownedProperties>
+    </ownedClasses>
+    <ownedClasses xmi:id="8UkVh" name="HandleGiftCertPayment" superClasses="&_0;#zfDWR">
+      <ownedOperations xmi:id="kjntf" name="enter_HandleGiftCertPayment" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="sJFWJ" name="enter_HandleGiftCertPayment_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="sale.isComplete = false">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#2dcxV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="isComplete" type="pivot:PrimitiveType &_0;#XEMMs" referredProperty="#VPcHt">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="sale" type="#CHNWF" referredProperty="#rkDLi">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#86kh7"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:BooleanLiteralExp" type="pivot:PrimitiveType &_0;#XEMMs" booleanSymbol="false"/>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="86kh7" name="self" type="#8UkVh"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="qKZQH" name="exit_HandleGiftCertPayment" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="Obzqn" name="exit_HandleGiftCertPayment_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="giftCertPayment.giftCert.amount = giftCertPayment.giftCert@pre.amount - giftCertPayment.amount">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#qpA,E">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" referredProperty="#Fyoaq">
+                  <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCertPayment" type="#tUkY," referredProperty="#WjGlX">
+                    <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#uYyJN"/>
+                  </ownedSource>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:OperationCallExp" name="-" type="pivot:PrimitiveType &_0;#Nr4QF" referredOperation="&_0;#EJEtV">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#qpA,E">
+                  <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" isPre="true" referredProperty="#Fyoaq">
+                    <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCertPayment" type="#tUkY," referredProperty="#WjGlX">
+                      <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#uYyJN"/>
+                    </ownedSource>
+                  </ownedSource>
+                </ownedSource>
+                <ownedArguments xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#tcHqF">
+                  <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCertPayment" type="#tUkY," referredProperty="#WjGlX">
+                    <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#uYyJN"/>
+                  </ownedSource>
+                </ownedArguments>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="uYyJN" name="self" type="#8UkVh"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="562yE" name="step1_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="4wSJU" name="step1_act_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="_giftCert.id = giftCertId">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#7L5cn">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="id" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#tccQZ">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="_giftCert" type="#CeDgx" referredProperty="#3m,8Z">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#obtDF"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="giftCertId" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#TSMuP">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#obtDF"/>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="obtDF" name="self" type="#8UkVh"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="1xc2E" name="step2_sys" type="pivot:PrimitiveType &_0;#XEMMs"/>
+      <ownedOperations xmi:id="7255E" name="step3_act" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPreconditions xmi:id="wl4Ht" name="step3_act_pre1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="giftPaymentAmount &lt;= giftCert.amount">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="&lt;=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#8brvY">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="giftPaymentAmount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#S+P4m">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#g3tnA"/>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#qpA,E">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" referredProperty="#YhsjU">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#g3tnA"/>
+                </ownedSource>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="g3tnA" name="self" type="#8UkVh"/>
+          </ownedSpecification>
+        </ownedPreconditions>
+      </ownedOperations>
+      <ownedOperations xmi:id="3tf9E" name="step4_sys" type="pivot:PrimitiveType &_0;#XEMMs">
+        <ownedPostconditions xmi:id="0tQVL" name="step4_sys_post1">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="giftCertPayment.amount = giftPaymentAmount">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#tcHqF">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCertPayment" type="#tUkY," referredProperty="#WjGlX">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#EABks"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:PropertyCallExp" name="giftPaymentAmount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#S+P4m">
+                <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#EABks"/>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="EABks" name="self" type="#8UkVh"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+        <ownedPostconditions xmi:id="1tQVL" name="step4_sys_post2">
+          <ownedSpecification xsi:type="pivot:ExpressionInOCL" type="pivot:PrimitiveType &_0;#XEMMs" body="giftCert.amount = giftCert@pre.amount - giftPaymentAmount">
+            <ownedBody xsi:type="pivot:OperationCallExp" name="=" type="pivot:PrimitiveType &_0;#XEMMs" referredOperation="&_0;#UJEtV">
+              <ownedSource xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#qpA,E">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" referredProperty="#YhsjU">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#Ng,ns"/>
+                </ownedSource>
+              </ownedSource>
+              <ownedArguments xsi:type="pivot:OperationCallExp" name="-" type="pivot:PrimitiveType &_0;#Nr4QF" referredOperation="&_0;#EJEtV">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#qpA,E">
+                  <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" isPre="true" referredProperty="#YhsjU">
+                    <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#Ng,ns"/>
+                  </ownedSource>
+                </ownedSource>
+                <ownedArguments xsi:type="pivot:PropertyCallExp" name="giftPaymentAmount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#S+P4m">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#Ng,ns"/>
+                </ownedArguments>
+              </ownedArguments>
+            </ownedBody>
+            <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="Ng,ns" name="self" type="#8UkVh"/>
+            <ownedResult xsi:type="pivot:ParameterVariable" name="result" type="pivot:PrimitiveType &_0;#XEMMs"/>
+          </ownedSpecification>
+        </ownedPostconditions>
+      </ownedOperations>
+      <ownedProperties xmi:id="KIvZn" name="_sale" type="#CHNWF"/>
+      <ownedProperties xmi:id="3m,8Z" name="_giftCert" type="#CeDgx"/>
+      <ownedProperties xmi:id="rkDLi" name="sale" type="#CHNWF"/>
+      <ownedProperties xmi:id="WjGlX" name="giftCertPayment" type="#tUkY,"/>
+      <ownedProperties xmi:id="TSMuP" name="giftCertId" type="pivot:PrimitiveType &_0;#AlwVZ"/>
+      <ownedProperties xmi:id="X6btM" name="_giftCertPayment" type="#tUkY,"/>
+      <ownedProperties xmi:id="YhsjU" name="giftCert" type="#CeDgx"/>
+      <ownedProperties xmi:id="hv4zk" name="_gifCertPayment" type="#tUkY,"/>
+      <ownedProperties xmi:id="S+P4m" name="giftPaymentAmount" type="pivot:PrimitiveType &_0;#Nr4QF"/>
+      <ownedProperties xmi:id="UNfYn" name="giftCertInfor" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#je1Hu" body="Sequence{giftCert.id, giftCert.amount}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#je1Hu" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#AlwVZ">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="id" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#tccQZ">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" referredProperty="#YhsjU">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#zuDQT"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#Nr4QF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#qpA,E">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" referredProperty="#YhsjU">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#zuDQT"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="zuDQT" name="self" type="#8UkVh"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="UNfYnA" name="giftCertInfor" type="#je1Hu">
+        <ownedExpression xsi:type="pivot:ExpressionInOCL" type="#je1Hu" body="Sequence{giftCert.id, giftCert.amount}">
+          <ownedBody xsi:type="pivot:CollectionLiteralExp" type="#je1Hu" kind="Sequence">
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#AlwVZ">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="id" type="pivot:PrimitiveType &_0;#AlwVZ" referredProperty="#tccQZ">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" referredProperty="#YhsjU">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#zuDQTA"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+            <ownedParts xsi:type="pivot:CollectionItem" type="pivot:PrimitiveType &_0;#Nr4QF">
+              <ownedItem xsi:type="pivot:PropertyCallExp" name="amount" type="pivot:PrimitiveType &_0;#Nr4QF" referredProperty="#qpA,E">
+                <ownedSource xsi:type="pivot:PropertyCallExp" name="giftCert" type="#CeDgx" referredProperty="#YhsjU">
+                  <ownedSource xsi:type="pivot:VariableExp" name="self" type="#8UkVh" isImplicit="true" referredVariable="#zuDQTA"/>
+                </ownedSource>
+              </ownedItem>
+            </ownedParts>
+          </ownedBody>
+          <ownedContext xsi:type="pivot:ParameterVariable" xmi:id="zuDQTA" name="self" type="#8UkVh"/>
+        </ownedExpression>
+      </ownedProperties>
+      <ownedProperties xmi:id="YShVo" name="extendUC_ProcessSales" type="#vyAUp"/>
+    </ownedClasses>
+  </ownedPackages>
+  <ownedPackages name="$$" URI="http://www.eclipse.org/ocl/2015/Orphanage" nsPrefix="orphanage">
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="GfYYa" name="Set" superClasses="#zzsVZ">
+      <ownedBindings>
+        <ownedSubstitutions actual="#CHNWF" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="kF17E" name="Bag" superClasses="#6gd9T">
+      <ownedBindings>
+        <ownedSubstitutions actual="#6x6aJ" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="WH6Lm" name="Bag" superClasses="#siiN1">
+      <ownedBindings>
+        <ownedSubstitutions actual="#8IoUD" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="vfIwV" name="Set" superClasses="#fzctU" lower="1">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OOj3a" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="1aS3p" name="Bag" superClasses="#L2644">
+      <ownedBindings>
+        <ownedSubstitutions actual="#zo0+0" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="SMQz7" name="Bag" superClasses="#on40K">
+      <ownedBindings>
+        <ownedSubstitutions actual="#YX6Sb" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="5FdA1" name="Bag" superClasses="#PhFCE">
+      <ownedBindings>
+        <ownedSubstitutions actual="#XKx8y" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="IYO3u" name="Bag" superClasses="#ez249">
+      <ownedBindings>
+        <ownedSubstitutions actual="#+GXPT" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="Yi1c2" name="Bag" superClasses="#u9deF">
+      <ownedBindings>
+        <ownedSubstitutions actual="#ObaYG" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="8odoZ" name="Set" superClasses="#p9xlY">
+      <ownedBindings>
+        <ownedSubstitutions actual="#okJz0" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="eEkNB" name="Bag" superClasses="#0fMPQ">
+      <ownedBindings>
+        <ownedSubstitutions actual="#ELnP1" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="yiX5Y" name="Set" superClasses="#f3r2X">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OyIVF" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="SzzgU" name="Bag" superClasses="#oOcij">
+      <ownedBindings>
+        <ownedSubstitutions actual="#YWnaZ" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="ROrx9" name="Bag" superClasses="#npTzM">
+      <ownedBindings>
+        <ownedSubstitutions actual="#vJYwc" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id=",XVOW" name="Set" superClasses="#vrpLV" lower="1">
+      <ownedBindings>
+        <ownedSubstitutions actual="#eAD6f" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="cAiZZ" name="Set" superClasses="#JV2WY">
+      <ownedBindings>
+        <ownedSubstitutions actual="#IIV8f" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="UiCWZ" name="Bag" superClasses="#q9qXo">
+      <ownedBindings>
+        <ownedSubstitutions actual="#qcdVF" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="dLDuN" name="Bag" superClasses="#zmrvc">
+      <ownedBindings>
+        <ownedSubstitutions actual="#bKHkl" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="FJ17n" name="Bag" superClasses="#bkd92">
+      <ownedBindings>
+        <ownedSubstitutions actual="#DBeCW" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="yeIwV" name="Set" superClasses="#fzctU">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OOj3a" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="tYKGZ" name="Bag" superClasses="#D0yHo">
+      <ownedBindings>
+        <ownedSubstitutions actual="#rZJBB" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="E+ueh" name="Bag" superClasses="#aZXgw">
+      <ownedBindings>
+        <ownedSubstitutions actual="#aeXOn" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="ZNz,z" name="Set" superClasses="#JhH9y" lower="1">
+      <ownedBindings>
+        <ownedSubstitutions actual="#I0Ji2" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="Qs1S2" name="Set" superClasses="#9AKQ1">
+      <ownedBindings>
+        <ownedSubstitutions actual="#cYa+J" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="vjX5Y" name="Set" superClasses="#f3r2X" lower="1">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OyIVF" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="TmZLz" name="Bag" superClasses="#pBCNC">
+      <ownedBindings>
+        <ownedSubstitutions actual="#BhWsP" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="r8jfY" name="Bag" superClasses="#BYMhn">
+      <ownedBindings>
+        <ownedSubstitutions actual="#ZeUbU" formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:BagType" xmi:id="fWrQe" name="Bag" superClasses="#1xTSt">
+      <ownedBindings>
+        <ownedSubstitutions actual="#tM0o," formal="&_0;#k2OA6"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="3hX5Y" name="Set" superClasses="#f3r2X" isNullFree="true">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OyIVF" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SetType" xmi:id="3fIwV" name="Set" superClasses="#fzctU" isNullFree="true" lower="1" upper="1">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OOj3a" formal="&_0;#ODsm5"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SequenceType" xmi:id="je1Hu" name="Sequence" superClasses="#Ir1Nf" isNullFree="true">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:AnyType &_0;#jbMkR" formal="&_0;#l1i6D"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SequenceType" xmi:id="zYada" name="Sequence" superClasses="#YlajL" isNullFree="true">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:Class &_0;#zfDWR" formal="&_0;#l1i6D"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SequenceType" xmi:id="9PXRn" name="Sequence" superClasses="#icXXY" isNullFree="true">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:PrimitiveType &_0;#Nr4QF" formal="&_0;#l1i6D"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:SequenceType" xmi:id="4nGDi" name="Sequence" superClasses="#d0GJT" isNullFree="true">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:PrimitiveType &_0;#AlwVZ" formal="&_0;#l1i6D"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="zzsVZ" name="UniqueCollection" superClasses="#C58Zp">
+      <ownedBindings>
+        <ownedSubstitutions actual="#CHNWF" formal="&_0;#jdfjE"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="6gd9T" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#6x6aJ" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="siiN1" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#8IoUD" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="fzctU" name="UniqueCollection" superClasses="#u4sxk">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OOj3a" formal="&_0;#jdfjE"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="L2644" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#zo0+0" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="on40K" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#YX6Sb" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="PhFCE" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#XKx8y" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="ez249" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#+GXPT" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="u9deF" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#ObaYG" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="p9xlY" name="UniqueCollection" superClasses="#4CCqo">
+      <ownedBindings>
+        <ownedSubstitutions actual="#okJz0" formal="&_0;#jdfjE"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="0fMPQ" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#ELnP1" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="f3r2X" name="UniqueCollection" superClasses="#u876n">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OyIVF" formal="&_0;#jdfjE"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="oOcij" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#YWnaZ" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="npTzM" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#vJYwc" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="vrpLV" name="UniqueCollection" superClasses="#+w5Pl">
+      <ownedBindings>
+        <ownedSubstitutions actual="#eAD6f" formal="&_0;#jdfjE"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="JV2WY" name="UniqueCollection" superClasses="#YaGbo">
+      <ownedBindings>
+        <ownedSubstitutions actual="#IIV8f" formal="&_0;#jdfjE"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="q9qXo" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#qcdVF" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="zmrvc" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#bKHkl" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="bkd92" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#DBeCW" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="D0yHo" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#rZJBB" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="aZXgw" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#aeXOn" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="JhH9y" name="UniqueCollection" superClasses="#YmXBD">
+      <ownedBindings>
+        <ownedSubstitutions actual="#I0Ji2" formal="&_0;#jdfjE"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="9AKQ1" name="UniqueCollection" superClasses="#MGaUF">
+      <ownedBindings>
+        <ownedSubstitutions actual="#cYa+J" formal="&_0;#jdfjE"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="pBCNC" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#BhWsP" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="BYMhn" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#ZeUbU" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="1xTSt" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#tM0o," formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="Ir1Nf" name="OrderedCollection" superClasses="#7aA3o">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:AnyType &_0;#jbMkR" formal="&_0;#feFHs"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="YlajL" name="OrderedCollection" superClasses="#LVlMV">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:Class &_0;#zfDWR" formal="&_0;#feFHs"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="icXXY" name="OrderedCollection" superClasses="#VMiAi">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:PrimitiveType &_0;#Nr4QF" formal="&_0;#feFHs"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="d0GJT" name="OrderedCollection" superClasses="#QkRyc">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:PrimitiveType &_0;#AlwVZ" formal="&_0;#feFHs"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="C58Zp" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#CHNWF" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="u4sxk" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OOj3a" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="4CCqo" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#okJz0" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="u876n" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#OyIVF" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="+w5Pl" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#eAD6f" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="YaGbo" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#IIV8f" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="YmXBD" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#I0Ji2" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="MGaUF" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="#cYa+J" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="7aA3o" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:AnyType &_0;#jbMkR" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="LVlMV" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:Class &_0;#zfDWR" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="VMiAi" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:PrimitiveType &_0;#Nr4QF" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+    <ownedClasses xsi:type="pivot:CollectionType" xmi:id="QkRyc" name="Collection" superClasses="&_0;#jbMkR">
+      <ownedBindings>
+        <ownedSubstitutions actual="pivot:PrimitiveType &_0;#AlwVZ" formal="&_0;#qs59R"/>
+      </ownedBindings>
+    </ownedClasses>
+  </ownedPackages>
+  <actor name="Cashier"/>
+  <actor name="Customer"/>
+  <actor name="InventorySystem"/>
+  <actor name="AccountingSystem"/>
+  <actor name="PaymentAuthServiceSystem"/>
+  <usecase name="ProcessSales" description="This use-case describes the process sale of Cashier" primaryActor="#//@actor.0" secondaryActor="#//@actor.2 #//@actor.3">
+    <precondition description="Cashier is identified and authenticated. Customer is ready to buy.">
+      <snapshot constraint="#T+F8r #U+F8r">
+        <object name="_cashier" type="#PAwye" isMatched="true"/>
+        <object name="_customer" type="#I,Zra" isMatched="true"/>
+        <object name="_sale" type="#xe2l2" isMatched="true"/>
+        <object name="_pos" type="#gA9Ux" isMatched="true"/>
+        <object name="_items" type="#MlTQZ" isMatched="true"/>
+        <object name="store" type="#sdes3" isMatched="true"/>
+        <object name="pos" type="#fDKKx" isMatched="true"/>
+        <object name="cashier" type="#Ol1OS" isMatched="true"/>
+        <link objVar="#//@usecase.0/@precondition/@snapshot/@object.2 #//@usecase.0/@precondition/@snapshot/@object.1" assoc="#6x6aJ"/>
+        <link objVar="#//@usecase.0/@precondition/@snapshot/@object.0 #//@usecase.0/@precondition/@snapshot/@object.3" assoc="#8IoUD"/>
+        <link objVar="#//@usecase.0/@precondition/@snapshot/@object.3 #//@usecase.0/@precondition/@snapshot/@object.6" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.0/@precondition/@snapshot/@object.0 #//@usecase.0/@precondition/@snapshot/@object.7" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.0/@precondition/@snapshot/@object.5 #//@usecase.0/@precondition/@snapshot/@object.6" assoc="#ObaYG"/>
+      </snapshot>
+    </precondition>
+    <postcondition description="Sale is saved. Tax is correctly calculated. Accounting and Inventory are updated. Commissions recorded. Receipts are generated.">
+      <snapshot constraint="#v95gU #w95gU #x95gU">
+        <object name="sale" type="#S7KXx" isMatched="true"/>
+        <object name="_sale" type="#xe2l2"/>
+        <object name="store" type="#sdes3"/>
+        <object name="pos" type="#fDKKx"/>
+        <object name="_cashier" type="#PAwye"/>
+        <object name="_customer" type="#I,Zra"/>
+        <object name="_pos" type="#gA9Ux"/>
+        <object name="_items" type="#MlTQZ"/>
+        <object name="cashier" type="#Ol1OS"/>
+        <link objVar="#//@usecase.0/@postcondition/@snapshot/@object.1 #//@usecase.0/@postcondition/@snapshot/@object.0" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.0/@postcondition/@snapshot/@object.2 #//@usecase.0/@postcondition/@snapshot/@object.0" assoc="#XKx8y"/>
+        <link objVar="#//@usecase.0/@postcondition/@snapshot/@object.0 #//@usecase.0/@postcondition/@snapshot/@object.3" assoc="#YX6Sb"
+            isNeg="true"/>
+        <link objVar="#//@usecase.0/@precondition/@snapshot/@object.2 #//@usecase.0/@precondition/@snapshot/@object.3" assoc="#YX6Sb"
+            isNeg="true"/>
+        <link objVar="#//@usecase.0/@postcondition/@snapshot/@object.1 #//@usecase.0/@postcondition/@snapshot/@object.5" assoc="#6x6aJ"/>
+        <link objVar="#//@usecase.0/@postcondition/@snapshot/@object.4 #//@usecase.0/@postcondition/@snapshot/@object.6" assoc="#8IoUD"/>
+        <link objVar="#//@usecase.0/@postcondition/@snapshot/@object.6 #//@usecase.0/@postcondition/@snapshot/@object.3" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.0/@postcondition/@snapshot/@object.4 #//@usecase.0/@postcondition/@snapshot/@object.8" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.0/@postcondition/@snapshot/@object.2 #//@usecase.0/@postcondition/@snapshot/@object.3" assoc="#ObaYG"/>
+      </snapshot>
+    </postcondition>
+    <firstStep xsi:type="frsl:ActStep" name="step01" description="1. Customer arrives at POS checkout with goods and/or services to purchase"
+        isActorStep="true">
+      <nextStep xsi:type="frsl:ActStep" name="step02" description="2. Cashier starts a new sale" isActorStep="true">
+        <nextStep xsi:type="frsl:ActStep" name="step03" description="3. The system creates a new sale and requires the cashier to enter items">
+          <nextStep xsi:type="frsl:ActStep" name="step04" description="4. Cashier enters item identifier" rejoinFrom="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep"
+              isActorStep="true">
+            <nextStep xsi:type="frsl:ActStep" name="step05" description="5. System records sale line item and presents item description, price, &#xA;&#x9;&#x9;&#x9;&#x9;   and running total with calculated tax. Price calculated from a set of price rules.">
+              <nextStep xsi:type="frsl:RejoinStep" description="(*) Cashier repeats steps 4-5 until indicates done." rejoinTo="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep">
+                <nextStep xsi:type="frsl:ActStep" name="step06" description="6. System presents total with taxes calculated">
+                  <nextStep xsi:type="frsl:ActStep" name="step07" description="7. Cashier tells Customer the total and asks for payment"
+                      isActorStep="true">
+                    <nextStep xsi:type="frsl:UCStep" name="step08" description="8. Customer wants to pay the sale by cash. The use case HandleCashPayment is involked."
+                        includedUC="#//@usecase.1">
+                      <nextStep xsi:type="frsl:ActStep" name="step09" description="9. System logs completed sale and sends sale and payment information to the external Accounting system (for accounting and commissions) and Inventory system (to update inventory)">
+                        <nextStep xsi:type="frsl:ActStep" name="step10" description="10. Customer leaves with receipt and goods (if any)"
+                            isActorStep="true">
+                          <preSnapshot>
+                            <object name="_pos" type="#gA9Ux"/>
+                            <object name="_sale" type="#xe2l2"/>
+                          </preSnapshot>
+                          <postSnapshot constraint="#tINVu">
+                            <object name="_pos" type="#gA9Ux"/>
+                            <object name="_sale" type="#xe2l2"/>
+                            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.0"
+                                assoc="#YX6Sb" isNeg="true"/>
+                          </postSnapshot>
+                        </nextStep>
+                        <preSnapshot constraint="#fLIHa">
+                          <object name="store" type="#sdes3"/>
+                          <object name="sale" type="#S7KXx"/>
+                          <object name="pos" type="#fDKKx"/>
+                          <object name="payment" type="#RCyQC" isMatched="true"/>
+                          <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.2"
+                              assoc="#YX6Sb"/>
+                          <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.3"
+                              assoc="#+GXPT"/>
+                          <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1"
+                              assoc="#XKx8y" isNeg="true"/>
+                        </preSnapshot>
+                        <postSnapshot constraint="#5k+lH">
+                          <object name="store" type="#sdes3"/>
+                          <object name="sale" type="#S7KXx"/>
+                          <object name="pos" type="#fDKKx"/>
+                          <object name="payment" type="#RCyQC"/>
+                          <object name="saleInfor2AccSys" type="#MPZuL"/>
+                          <object name="saleInfor2InvSys" type="#c5,Aa"/>
+                          <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.2"
+                              assoc="#YX6Sb" isNeg="true"/>
+                          <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1"
+                              assoc="#XKx8y"/>
+                          <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.1 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.3"
+                              assoc="#+GXPT"/>
+                        </postSnapshot>
+                        <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.3" objVars="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.4"/>
+                        <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.2" objVars="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.5"/>
+                      </nextStep>
+                      <altFlow description="Customer wants to pay the sale by credit payment.">
+                        <condition>
+                          <object name="_creditCard" type="#TnrWQ" isMatched="true"/>
+                        </condition>
+                        <altStep xsi:type="frsl:UCStep" name="step08a" includedUC="#//@usecase.2"/>
+                      </altFlow>
+                    </nextStep>
+                    <preSnapshot>
+                      <object name="_sale" type="#xe2l2"/>
+                      <object name="sale" type="#S7KXx"/>
+                    </preSnapshot>
+                    <postSnapshot constraint="#tAIot">
+                      <object name="_sale" type="#xe2l2"/>
+                      <object name="sale" type="#S7KXx"/>
+                    </postSnapshot>
+                  </nextStep>
+                  <preSnapshot>
+                    <object name="sale" type="#S7KXx"/>
+                  </preSnapshot>
+                  <postSnapshot>
+                    <object name="sale" type="#S7KXx"/>
+                    <object name="paymentInfor" type="#pG1TS"/>
+                  </postSnapshot>
+                  <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.1"/>
+                </nextStep>
+                <condition constraint="#Dgeaz #Egeaz">
+                  <object name="_items" type="#MlTQZ"/>
+                  <object name="_item" type="#9Jyk2" isMatched="true"/>
+                </condition>
+              </nextStep>
+              <preSnapshot>
+                <object name="_item" type="#9Jyk2"/>
+                <object name="_salesLineItem" type="#fbigo"/>
+                <object name="sale" type="#S7KXx"/>
+                <object name="item" type="#emGWx" isMatched="true"/>
+                <object name="prdDesc" type="#eLvCe" isMatched="true"/>
+                <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.4 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.3"
+                    assoc="#DBeCW"/>
+                <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.3"
+                    assoc="#i8Lb8"/>
+              </preSnapshot>
+              <postSnapshot constraint="#9arss #+arss #,arss">
+                <object name="salesLineItem" type="#eTFNX" isMatched="true"/>
+                <object name="sale" type="#S7KXx"/>
+                <object name="item" type="#emGWx"/>
+                <object name="prdDesc" type="#eLvCe"/>
+                <object name="_salesLineItem" type="#fbigo"/>
+                <object name="_item" type="#9Jyk2"/>
+                <object name="itemInfor" type="#8iqTw"/>
+                <object name="saleInfor" type="#IQY6p"/>
+                <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.1"
+                    assoc="#zo0+0"/>
+                <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.2"
+                    assoc="#bKHkl"/>
+                <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.3"
+                    assoc="#rZJBB"/>
+                <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.4 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0"
+                    assoc="#i8Lb8"/>
+                <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.3 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.2"
+                    assoc="#DBeCW"/>
+                <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.5 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.2"
+                    assoc="#i8Lb8"/>
+              </postSnapshot>
+              <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.6"/>
+              <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.7"/>
+            </nextStep>
+            <preSnapshot constraint="#XMf4t #YMf4t #ZMf4t">
+              <object name="_sale" type="#xe2l2"/>
+              <object name="_items" type="#MlTQZ"/>
+              <object name="_item" type="#9Jyk2" isMatched="true"/>
+              <object name="itemId" type="#Zof5q" isMatched="true"/>
+            </preSnapshot>
+            <postSnapshot constraint="#18rP5 #28rP5">
+              <object name="_salesLineItem" type="#fbigo" isMatched="true"/>
+              <object name="_sale" type="#xe2l2"/>
+              <object name="_item" type="#9Jyk2"/>
+              <object name="_items" type="#MlTQZ"/>
+              <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.1"
+                  assoc="#zo0+0"/>
+              <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.2"
+                  assoc="#bKHkl"/>
+            </postSnapshot>
+            <action xsi:type="frsl:ActorAction" type="inputAct" actor="#//@actor.0" objVars="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.3"/>
+          </nextStep>
+          <preSnapshot>
+            <object name="_sale" type="#xe2l2"/>
+            <object name="_pos" type="#gA9Ux"/>
+            <object name="_cashier" type="#PAwye"/>
+            <object name="pos" type="#fDKKx" isMatched="true"/>
+            <object name="cashier" type="#Ol1OS" isMatched="true"/>
+            <object name="curDate" type="#ZSbP0" isMatched="true"/>
+            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@preSnapshot/@object.4 #//@usecase.0/@firstStep/@nextStep/@nextStep/@preSnapshot/@object.3"
+                assoc="#8IoUD"/>
+            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@preSnapshot/@object.1 #//@usecase.0/@firstStep/@nextStep/@nextStep/@preSnapshot/@object.3"
+                assoc="#i8Lb8"/>
+            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@preSnapshot/@object.2 #//@usecase.0/@firstStep/@nextStep/@nextStep/@preSnapshot/@object.4"
+                assoc="#i8Lb8"/>
+          </preSnapshot>
+          <postSnapshot constraint="#BZdgS #CZdgS #DZdgS">
+            <object name="sale" type="#S7KXx" isMatched="true"/>
+            <object name="pos" type="#fDKKx"/>
+            <object name="_sale" type="#xe2l2"/>
+            <object name="_pos" type="#gA9Ux"/>
+            <object name="_cashier" type="#PAwye"/>
+            <object name="cashier" type="#Ol1OS"/>
+            <object name="curDate" type="#ZSbP0"/>
+            <object name="saleInfor" type="#IQY6pA"/>
+            <object name="cashierInfor" type="#McgPP"/>
+            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.0 #//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.1"
+                assoc="#YX6Sb"/>
+            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.2 #//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.0"
+                assoc="#i8Lb8"/>
+            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.5 #//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.1"
+                assoc="#8IoUD"/>
+            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.3 #//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.1"
+                assoc="#i8Lb8"/>
+            <link objVar="#//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.4 #//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.5"
+                assoc="#i8Lb8"/>
+          </postSnapshot>
+          <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.7"/>
+          <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.0/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.8"/>
+        </nextStep>
+        <preSnapshot>
+          <object name="_pos" type="#gA9Ux"/>
+          <object name="_cashier" type="#PAwye"/>
+          <object name="_sale" type="#xe2l2"/>
+          <link objVar="#//@usecase.0/@firstStep/@nextStep/@preSnapshot/@object.1 #//@usecase.0/@firstStep/@nextStep/@preSnapshot/@object.0"
+              assoc="#8IoUD"/>
+        </preSnapshot>
+        <postSnapshot constraint="#56dDf #66dDf">
+          <object name="_pos" type="#gA9Ux"/>
+          <object name="_cashier" type="#PAwye"/>
+          <object name="_sale" type="#xe2l2"/>
+          <link objVar="#//@usecase.0/@firstStep/@nextStep/@preSnapshot/@object.2 #//@usecase.0/@firstStep/@nextStep/@preSnapshot/@object.0"
+              assoc="#YX6Sb"/>
+          <link objVar="#//@usecase.0/@firstStep/@nextStep/@postSnapshot/@object.1 #//@usecase.0/@firstStep/@nextStep/@postSnapshot/@object.0"
+              assoc="#8IoUD"/>
+        </postSnapshot>
+      </nextStep>
+      <preSnapshot constraint="#Ddmao">
+        <object name="_pos" type="#gA9Ux"/>
+        <object name="_customer" type="#I,Zra"/>
+        <object name="_sale" type="#xe2l2"/>
+        <object name="_items" type="#MlTQZ"/>
+        <link objVar="#//@usecase.0/@firstStep/@preSnapshot/@object.2 #//@usecase.0/@firstStep/@preSnapshot/@object.1" assoc="#6x6aJ"/>
+      </preSnapshot>
+      <postSnapshot>
+        <object name="_pos" type="#gA9Ux"/>
+        <object name="_customer" type="#I,Zra"/>
+        <object name="_sale" type="#xe2l2"/>
+        <object name="_items" type="#MlTQZ"/>
+        <link objVar="#//@usecase.0/@firstStep/@postSnapshot/@object.2 #//@usecase.0/@firstStep/@postSnapshot/@object.1" assoc="#6x6aJ"/>
+      </postSnapshot>
+    </firstStep>
+    <extPoint name="PaidByGiftCert" description="This extension flow occurs when Customer wants to pay with gift certificate" location="#//@usecase.0/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep"
+        extend="#//@ucExtend.0">
+      <condition>
+        <object name="_giftCert" type="#e9GJp" isMatched="true"/>
+      </condition>
+    </extPoint>
+    <include addition="#//@usecase.2"/>
+    <include addition="#//@usecase.1"/>
+  </usecase>
+  <usecase name="HandleCashPayment" description="This use-case allows Customer to pay the sale by a cash payment." primaryActor="#//@actor.0">
+    <precondition description="Customer is ready to pay the sale by a cash payment.">
+      <snapshot constraint="#xnRT5">
+        <object name="_sale" type="#nPoey" isMatched="true"/>
+        <object name="sale" type="#Is8Pt" isMatched="true"/>
+        <link objVar="#//@usecase.1/@precondition/@snapshot/@object.0 #//@usecase.1/@precondition/@snapshot/@object.1" assoc="#i8Lb8"/>
+      </snapshot>
+    </precondition>
+    <postcondition description="The sale is paid by a cash payment.">
+      <snapshot constraint="#1aswE #2aswE">
+        <object name="cashPayment" type="#Uo+2T" isMatched="true"/>
+        <object name="sale" type="#Is8Pt"/>
+        <object name="_sale" type="#nPoey"/>
+        <link objVar="#//@usecase.1/@postcondition/@snapshot/@object.1 #//@usecase.1/@postcondition/@snapshot/@object.0" assoc="#+GXPT"/>
+        <link objVar="#//@usecase.1/@postcondition/@snapshot/@object.2 #//@usecase.1/@postcondition/@snapshot/@object.1" assoc="#i8Lb8"/>
+      </snapshot>
+    </postcondition>
+    <firstStep xsi:type="frsl:ActStep" name="step01" description="1. Customer wants to pay the sale by cash." isActorStep="true">
+      <nextStep xsi:type="frsl:ActStep" name="step02" description="2. Cashier enters the cash amount tendered." isActorStep="true">
+        <nextStep xsi:type="frsl:ActStep" name="step3" description="3. System presents the balance due, and releases the cash drawer.">
+          <nextStep xsi:type="frsl:ActStep" name="step4" description="4. Cashier deposits cash tendered and returns balance in cash to Customer."
+              isActorStep="true">
+            <nextStep xsi:type="frsl:ActStep" name="step5" description="5. System records the cash payment.">
+              <preSnapshot>
+                <object name="_cashPayment" type="#VhEyu"/>
+                <object name="sale" type="#Is8Pt"/>
+              </preSnapshot>
+              <postSnapshot constraint="#bojeF">
+                <object name="cashPayment" type="#Uo+2T" isMatched="true"/>
+                <object name="sale" type="#Is8Pt"/>
+                <object name="_cashPayment" type="#VhEyu"/>
+                <link objVar="#//@usecase.1/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.1 #//@usecase.1/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0"
+                    assoc="#+GXPT"/>
+              </postSnapshot>
+            </nextStep>
+            <preSnapshot>
+              <object name="_sale" type="#nPoey"/>
+              <object name="_cashPayment" type="#VhEyu"/>
+            </preSnapshot>
+            <postSnapshot>
+              <object name="_sale" type="#nPoey"/>
+              <object name="_cashPayment" type="#VhEyu"/>
+              <link objVar="#//@usecase.1/@firstStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.0 #//@usecase.1/@firstStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1"
+                  assoc="#+GXPT"/>
+            </postSnapshot>
+          </nextStep>
+          <preSnapshot>
+            <object name="_cashPayment" type="#VhEyu"/>
+            <object name="sale" type="#Is8Pt"/>
+          </preSnapshot>
+          <postSnapshot>
+            <object name="_cashPayment" type="#VhEyu"/>
+            <object name="sale" type="#Is8Pt"/>
+            <object name="balanceDue" type="#5w+p+"/>
+          </postSnapshot>
+          <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.1/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.2"/>
+        </nextStep>
+        <preSnapshot>
+          <object name="_cashPayment" type="#VhEyu"/>
+          <object name="amountTendered" type="#sGIGP" isMatched="true"/>
+        </preSnapshot>
+        <postSnapshot constraint="#XIW13">
+          <object name="_cashPayment" type="#VhEyu"/>
+        </postSnapshot>
+        <action xsi:type="frsl:ActorAction" type="inputAct" actor="#//@actor.0" objVars="#//@usecase.1/@firstStep/@nextStep/@preSnapshot/@object.1"/>
+      </nextStep>
+      <preSnapshot/>
+      <postSnapshot>
+        <object name="_cashPayment" type="#VhEyu" isMatched="true"/>
+      </postSnapshot>
+    </firstStep>
+  </usecase>
+  <usecase name="HandleCreditPayment" description="This use-case is involked as Customer wants to pay by a credit payment." primaryActor="#//@actor.1"
+      secondaryActor="#//@actor.4">
+    <precondition description="Customer is ready to pay the sale by a credit payment.">
+      <snapshot constraint="#TyOUu">
+        <object name="_customer" type="#QWAyz" isMatched="true"/>
+        <object name="_pos" type="#oXjbK" isMatched="true"/>
+        <object name="_sale" type="#51csP" isMatched="true"/>
+        <object name="_creditCard" type="#b+Rdp" isMatched="true"/>
+        <object name="store" type="#00EzQ" isMatched="true"/>
+        <object name="pos" type="#nawQK" isMatched="true"/>
+        <object name="authService" type="#AhqcW" isMatched="true"/>
+        <object name="sale" type="#aSxdK" isMatched="true"/>
+        <object name="creditCard" type="#8nslo" isMatched="true"/>
+        <link objVar="#//@usecase.2/@precondition/@snapshot/@object.4 #//@usecase.2/@precondition/@snapshot/@object.6" assoc="#ELnP1"/>
+        <link objVar="#//@usecase.2/@precondition/@snapshot/@object.4 #//@usecase.2/@precondition/@snapshot/@object.5" assoc="#ObaYG"/>
+        <link objVar="#//@usecase.2/@precondition/@snapshot/@object.2 #//@usecase.2/@precondition/@snapshot/@object.1" assoc="#YX6Sb"/>
+        <link objVar="#//@usecase.2/@precondition/@snapshot/@object.1 #//@usecase.2/@precondition/@snapshot/@object.5" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.2/@precondition/@snapshot/@object.2 #//@usecase.2/@precondition/@snapshot/@object.7" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.2/@precondition/@snapshot/@object.3 #//@usecase.2/@precondition/@snapshot/@object.8" assoc="#i8Lb8"/>
+      </snapshot>
+    </precondition>
+    <postcondition description="Customer purchases. Cashier takes bill. Done the sale.">
+      <snapshot>
+        <object name="_creditPayment" type="#hs6rG" isMatched="true"/>
+        <object name="creditPayment" type="#gkdY1" isMatched="true"/>
+        <object name="creditCard" type="#8nslo"/>
+        <object name="authService" type="#AhqcW"/>
+        <object name="sale" type="#aSxdK"/>
+        <object name="_sale" type="#51csP"/>
+        <object name="_customer" type="#QWAyz"/>
+        <object name="_pos" type="#oXjbK"/>
+        <object name="_creditCard" type="#b+Rdp"/>
+        <object name="store" type="#00EzQ"/>
+        <object name="pos" type="#nawQK"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.1 #//@usecase.2/@postcondition/@snapshot/@object.2" assoc="#ZeUbU"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.3 #//@usecase.2/@postcondition/@snapshot/@object.1" assoc="#BhWsP"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.4 #//@usecase.2/@postcondition/@snapshot/@object.1" assoc="#+GXPT"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.0 #//@usecase.2/@postcondition/@snapshot/@object.1" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.5 #//@usecase.2/@postcondition/@snapshot/@object.0" assoc="#+GXPT"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.9 #//@usecase.2/@postcondition/@snapshot/@object.3" assoc="#ELnP1"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.9 #//@usecase.2/@postcondition/@snapshot/@object.10" assoc="#ObaYG"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.5 #//@usecase.2/@postcondition/@snapshot/@object.7" assoc="#YX6Sb"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.7 #//@usecase.2/@postcondition/@snapshot/@object.10" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.5 #//@usecase.2/@postcondition/@snapshot/@object.4" assoc="#i8Lb8"/>
+        <link objVar="#//@usecase.2/@postcondition/@snapshot/@object.8 #//@usecase.2/@postcondition/@snapshot/@object.2" assoc="#i8Lb8"/>
+      </snapshot>
+    </postcondition>
+    <firstStep xsi:type="frsl:ActStep" name="step01" description="Customer enters the credit account information" isActorStep="true">
+      <nextStep xsi:type="frsl:ActStep" name="step02" description="System sends payment authorization request to &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;an external Payment Authorization Service System, &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;and requests payment approval">
+        <nextStep xsi:type="frsl:ActStep" name="step03" description="System receives payment approval and signals approval to Cashier.">
+          <nextStep xsi:type="frsl:ActStep" name="step04" description="System records the credit payment, which includes the payment approval">
+            <nextStep xsi:type="frsl:ActStep" name="step05" description="System presents credit payment signature input mechanism.">
+              <nextStep xsi:type="frsl:ActStep" name="step06" description="Cashier asks Customer for a credit payment signature. &#xA;&#x9;&#x9;&#x9;&#x9;   Customer enters signature."
+                  isActorStep="true">
+                <preSnapshot>
+                  <object name="_sale" type="#51csP"/>
+                  <object name="_creditPayment" type="#hs6rG"/>
+                  <object name="creditPayment" type="#gkdY1"/>
+                </preSnapshot>
+                <postSnapshot constraint="#Z54tx">
+                  <object name="_sale" type="#51csP"/>
+                  <object name="_creditPayment" type="#hs6rG"/>
+                  <object name="creditPayment" type="#gkdY1"/>
+                  <link objVar="#//@usecase.2/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.0 #//@usecase.2/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1"
+                      assoc="#+GXPT"/>
+                  <link objVar="#//@usecase.2/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.2 #//@usecase.2/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1"
+                      assoc="#i8Lb8"/>
+                </postSnapshot>
+              </nextStep>
+              <preSnapshot>
+                <object name="sale" type="#aSxdK"/>
+                <object name="creditPayment" type="#gkdY1"/>
+              </preSnapshot>
+              <postSnapshot>
+                <object name="sale" type="#aSxdK"/>
+                <object name="creditPayment" type="#gkdY1"/>
+                <object name="creditPaymentInfor" type="#KkQ30"/>
+              </postSnapshot>
+              <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.1" objVars="#//@usecase.2/@firstStep/@nextStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.2"/>
+            </nextStep>
+            <preSnapshot>
+              <object name="sale" type="#aSxdK"/>
+              <object name="creditPayment" type="#gkdY1"/>
+            </preSnapshot>
+            <postSnapshot>
+              <object name="sale" type="#aSxdK"/>
+              <object name="creditPayment" type="#gkdY1"/>
+              <link objVar="#//@usecase.2/@firstStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.0 #//@usecase.2/@firstStep/@nextStep/@nextStep/@nextStep/@preSnapshot/@object.1"
+                  assoc="#+GXPT"/>
+            </postSnapshot>
+          </nextStep>
+          <preSnapshot>
+            <object name="authService" type="#AhqcW"/>
+            <object name="creditCard" type="#8nslo"/>
+            <object name="sale" type="#aSxdK"/>
+          </preSnapshot>
+          <postSnapshot constraint="#pTcyw">
+            <object name="creditPayment" type="#gkdY1" isMatched="true"/>
+            <object name="creditCard" type="#8nslo"/>
+            <object name="authService" type="#AhqcW"/>
+            <object name="sale" type="#aSxdK"/>
+            <object name="approvalInfo" type="#knrlX"/>
+            <link objVar="#//@usecase.2/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.0 #//@usecase.2/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.1"
+                assoc="#ZeUbU"/>
+            <link objVar="#//@usecase.2/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.2 #//@usecase.2/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.0"
+                assoc="#BhWsP"/>
+          </postSnapshot>
+          <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.2/@firstStep/@nextStep/@nextStep/@postSnapshot/@object.4"/>
+        </nextStep>
+        <preSnapshot constraint="#7RQMM">
+          <object name="sale" type="#aSxdK"/>
+          <object name="creditCard" type="#8nslo"/>
+          <object name="pinNumber" type="#RmIOK"/>
+          <object name="authService" type="#AhqcW"/>
+        </preSnapshot>
+        <postSnapshot>
+          <object name="sale" type="#aSxdK"/>
+          <object name="creditCard" type="#8nslo"/>
+          <object name="pinNumber" type="#RmIOK"/>
+          <object name="authService" type="#AhqcW"/>
+          <object name="paymentAuth" type="#hUGau"/>
+        </postSnapshot>
+        <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.4" objVars="#//@usecase.2/@firstStep/@nextStep/@postSnapshot/@object.4"/>
+      </nextStep>
+      <preSnapshot>
+        <object name="_creditCard" type="#b+Rdp"/>
+        <object name="pinNumber" type="#RmIOK" isMatched="true"/>
+      </preSnapshot>
+      <postSnapshot>
+        <object name="_creditPayment" type="#hs6rG" isMatched="true"/>
+        <object name="_creditCard" type="#b+Rdp"/>
+        <link objVar="#//@usecase.2/@firstStep/@postSnapshot/@object.0 #//@usecase.2/@firstStep/@postSnapshot/@object.1" assoc="#ZeUbU"/>
+      </postSnapshot>
+      <action xsi:type="frsl:ActorAction" type="inputAct" actor="#//@actor.1" objVars="#//@usecase.2/@firstStep/@preSnapshot/@object.1"/>
+    </firstStep>
+  </usecase>
+  <usecase name="HandleGiftCertPayment" description="This use case allows the customer to pay with certificate." primaryActor="#//@actor.0">
+    <precondition description="Customer wants to pay with gift certificate.">
+      <snapshot constraint="#sJFWJ">
+        <object name="_sale" type="#KIvZn" isMatched="true"/>
+        <object name="_giftCert" type="#3m,8Z" isMatched="true"/>
+        <object name="sale" type="#rkDLi" isMatched="true"/>
+        <link objVar="#//@usecase.3/@precondition/@snapshot/@object.0 #//@usecase.3/@precondition/@snapshot/@object.2" assoc="#i8Lb8"/>
+      </snapshot>
+    </precondition>
+    <postcondition description="The sale is partly paid by the gift certificate. ">
+      <snapshot constraint="#Obzqn">
+        <object name="giftCertPayment" type="#WjGlX" isMatched="true"/>
+        <object name="sale" type="#rkDLi"/>
+        <object name="_sale" type="#KIvZn"/>
+        <object name="_giftCert" type="#3m,8Z"/>
+        <link objVar="#//@usecase.3/@postcondition/@snapshot/@object.1 #//@usecase.3/@postcondition/@snapshot/@object.0" assoc="#+GXPT"/>
+        <link objVar="#//@usecase.3/@postcondition/@snapshot/@object.2 #//@usecase.3/@postcondition/@snapshot/@object.1" assoc="#i8Lb8"/>
+      </snapshot>
+    </postcondition>
+    <firstStep xsi:type="frsl:ActStep" name="step01" description="1. Customer gives gift certificate to Cashier.&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;Cashier enters gift certificate ID."
+        isActorStep="true">
+      <nextStep xsi:type="frsl:ActStep" name="step02" description="2. System displays the balance of the gift certificate.">
+        <nextStep xsi:type="frsl:ActStep" name="step03" description="3. Cashier enters an amount to pay part of the total payment." isActorStep="true">
+          <nextStep xsi:type="frsl:ActStep" name="step04" description="4. System records the gift payment.">
+            <preSnapshot>
+              <object name="_giftCert" type="#3m,8Z"/>
+              <object name="giftCert" type="#YhsjU"/>
+              <object name="sale" type="#rkDLi"/>
+              <object name="giftPaymentAmount" type="#S+P4m"/>
+            </preSnapshot>
+            <postSnapshot constraint="#0tQVL #1tQVL">
+              <object name="giftCertPayment" type="#WjGlX" isMatched="true"/>
+              <object name="giftCert" type="#YhsjU"/>
+              <object name="sale" type="#rkDLi"/>
+              <object name="_giftCert" type="#3m,8Z"/>
+              <object name="giftPaymentAmount" type="#S+P4m"/>
+              <object name="giftCertInfor" type="#UNfYn"/>
+              <link objVar="#//@usecase.3/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0 #//@usecase.3/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.1"
+                  assoc="#tM0o,"/>
+              <link objVar="#//@usecase.3/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.2 #//@usecase.3/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.0"
+                  assoc="#+GXPT"/>
+            </postSnapshot>
+            <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.3/@firstStep/@nextStep/@nextStep/@nextStep/@postSnapshot/@object.5"/>
+          </nextStep>
+          <preSnapshot constraint="#wl4Ht">
+            <object name="_giftCert" type="#3m,8Z"/>
+            <object name="giftCert" type="#YhsjU"/>
+            <object name="_gifCertPayment" type="#hv4zk"/>
+            <object name="giftPaymentAmount" type="#S+P4m" isMatched="true"/>
+          </preSnapshot>
+          <postSnapshot>
+            <object name="_giftCert" type="#3m,8Z"/>
+            <object name="giftCert" type="#YhsjU"/>
+            <object name="_gifCertPayment" type="#hv4zk"/>
+          </postSnapshot>
+          <action xsi:type="frsl:ActorAction" type="inputAct" actor="#//@actor.0" objVars="#//@usecase.3/@firstStep/@nextStep/@nextStep/@preSnapshot/@object.3"/>
+        </nextStep>
+        <preSnapshot>
+          <object name="_giftCert" type="#3m,8Z"/>
+          <object name="giftCert" type="#YhsjU" isMatched="true"/>
+          <link objVar="#//@usecase.3/@firstStep/@nextStep/@preSnapshot/@object.0 #//@usecase.3/@firstStep/@nextStep/@preSnapshot/@object.1"
+              assoc="#i8Lb8"/>
+        </preSnapshot>
+        <postSnapshot>
+          <object name="_giftCert" type="#3m,8Z"/>
+          <object name="giftCert" type="#YhsjU"/>
+          <object name="giftCertInfor" type="#UNfYnA"/>
+          <link objVar="#//@usecase.3/@firstStep/@nextStep/@postSnapshot/@object.0 #//@usecase.3/@firstStep/@nextStep/@postSnapshot/@object.1"
+              assoc="#i8Lb8"/>
+        </postSnapshot>
+        <action xsi:type="frsl:SystemAction" type="outputAct" actor="#//@actor.0" objVars="#//@usecase.3/@firstStep/@nextStep/@postSnapshot/@object.2"/>
+      </nextStep>
+      <preSnapshot constraint="#4wSJU">
+        <object name="_sale" type="#KIvZn"/>
+        <object name="_giftCert" type="#3m,8Z"/>
+        <object name="giftCertId" type="#TSMuP" isMatched="true"/>
+      </preSnapshot>
+      <postSnapshot>
+        <object name="_giftCertPayment" type="#X6btM" isMatched="true"/>
+        <object name="_sale" type="#KIvZn"/>
+        <object name="_giftCert" type="#3m,8Z"/>
+        <link objVar="#//@usecase.3/@firstStep/@postSnapshot/@object.1 #//@usecase.3/@firstStep/@postSnapshot/@object.0" assoc="#+GXPT"/>
+        <link objVar="#//@usecase.3/@firstStep/@postSnapshot/@object.0 #//@usecase.3/@firstStep/@postSnapshot/@object.2" assoc="#tM0o,"/>
+      </postSnapshot>
+      <action xsi:type="frsl:ActorAction" type="inputAct" actor="#//@actor.0" objVars="#//@usecase.3/@firstStep/@preSnapshot/@object.2"/>
+    </firstStep>
+  </usecase>
+  <ucExtend extendedUC="#//@usecase.0" extension="#//@usecase.3" extPoint="#//@usecase.0/@extPoint.0"/>
+</frsl:FrslModel>

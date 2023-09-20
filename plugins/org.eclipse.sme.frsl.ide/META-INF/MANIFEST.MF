@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.eclipse.sme.frsl.ide
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.sme.frsl.ide
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: org.eclipse.sme.frsl.ide; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.sme.frsl,
+ org.eclipse.xtext.ide,
+ org.eclipse.xtext.xbase.ide,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",
+ org.aopalliance;bundle-version="1.0.0",
+ io.github.classgraph;bundle-version="4.8.138"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: org.eclipse.sme.frsl.ide.contentassist.antlr,
+ org.eclipse.sme.frsl.ide.contentassist.antlr.internal

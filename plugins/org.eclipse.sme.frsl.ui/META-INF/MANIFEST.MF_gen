@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.sme.frsl.ui
+Bundle-SymbolicName: org.eclipse.sme.frsl.ui; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.sme.frsl.ui.contentassist,
+ org.eclipse.sme.frsl.ui.quickfix,
+ org.eclipse.sme.frsl.ui.contentassist.antlr,
+ org.eclipse.sme.frsl.ui.contentassist.antlr.internal
+Require-Bundle: org.eclipse.xtext.ui,
+ org.eclipse.xtext.ui.shared,
+ org.eclipse.ui.editors,
+ org.eclipse.ui,
+ org.eclipse.xtext.builder
+Import-Package: org.apache.log4j
+Bundle-Activator: org.eclipse.sme.frsl.ui.internal.FRSLActivator

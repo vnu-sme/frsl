@@ -1,0 +1,200 @@
+grammar org.eclipse.sme.frsl.FRSL with org.eclipse.ocl.xtext.oclinecore.OCLinEcore
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+import "platform:/resource/org.eclipse.ocl.pivot/model/Pivot.ecore" as pivot
+import "platform:/resource/org.eclipse.ocl.xtext.base/model/BaseCS.ecore" as base
+import "platform:/resource/org.eclipse.ocl.xtext.essentialocl/model/EssentialOCLCS.ecore" as essentialocl
+import "platform:/resource/org.eclipse.ocl.xtext.oclinecore/model/OCLinEcoreCS.ecore" as oclinEcore
+import "platform:/resource/org.eclipse.sme.frsl/model/FRSLCS.ecore"
+
+//generate frsl "http://www.eclipse.org/sme/frsl/Frsl"
+
+FrslModelCS:
+	domainModel = TopLevelCS
+	(assocs += AssociationCS)*
+	(actors += ActorCS)*
+	(usecases += UsecaseCS)*
+	(ucExtends += UcExtendCS)*
+;
+
+UsecaseCS: 
+	'usecase' name = UnrestrictedName
+		('description' '=' description = StringLiteral)?
+		'primaryActor' '=' primaryActor = ActorRefCS
+		('secondaryActors' '=' '{' secondaryActors += ActorRefCS (',' secondaryActors += ActorRefCS)* '}')?
+		(precondition = UsecasePreconditionCS)?
+		(postcondition = UsecasePostconditionCS)?
+		firstStep = StepCS
+		(extPoints += ExtensionPointCS)*
+	'end'		
+;
+
+UsecasePreconditionCS:
+	'ucPrecondition'
+		('description' '=' description = StringLiteral)?
+		snapshot = SnapshotPatternCS
+	'end'
+;
+
+UsecasePostconditionCS:
+	'ucPostcondition'
+		('description' '=' description = StringLiteral)?
+		snapshot = SnapshotPatternCS
+	'end'
+;
+
+StepCS:
+	(ActStepCS | RejoinStepCS | UCStepCS)
+	(altFlows += AltFlowCS)*
+	(nextStep = StepCS)?
+;
+
+ActStepCS:
+	ActorStepCS | SystemStepCS
+;
+
+ActorStepCS returns ActStepCS:
+	(isActorStep ?= 'actStep') (name = UnrestrictedName)? 
+	('description' '=' description = StringLiteral)?
+	'from'
+		preSnapshot = SnapshotPatternCS	
+	'to'
+		postSnapshot = SnapshotPatternCS
+	( 'actions' (actions += ActorActionCS)* )?
+	'end'
+;
+
+SystemStepCS returns ActStepCS:
+	'sysStep' (name = UnrestrictedName)? 
+	('description' '=' description = StringLiteral)?
+	'from'
+		preSnapshot = SnapshotPatternCS	
+	'to'
+		postSnapshot = SnapshotPatternCS
+	( 'actions' (actions += SystemActionCS)* )?
+	'end'
+;
+
+ActorActionCS:
+	InputActionCS
+;
+
+SystemActionCS:
+	OutputActionCS				
+;
+
+InputActionCS returns ActorActionCS:
+	(actor = ActorRefCS)? '->' (objVars += ObjVarCS ';')+
+;
+
+OutputActionCS returns SystemActionCS:
+	actor = ActorRefCS '<-' ( objVars += ObjVarCS '=' values += SpecificationCS ';' )+
+;
+
+RejoinStepCS:
+	'rejoinStep' rejoinTo = StepRefCS 
+	('description' '=' description = StringLiteral)?
+	('when'
+		condition = SnapshotPatternCS)?
+	'end'
+;
+
+UCStepCS:
+	'inclStep' (name = UnrestrictedName)?
+	('description' '=' description = StringLiteral)?
+	includedUC = UsecaseRefCS
+	'end'
+;
+
+AltFlowCS:
+	'altStep' (name = UnrestrictedName)? 'at' baseStep = StepRefCS
+		('description' '=' description = StringLiteral)?
+		'when'
+			condition = SnapshotPatternCS
+		'end'
+		altStep = StepCS
+	'end'
+;
+
+SnapshotPatternCS:
+	{SnapshotPatternCS} ('snapshotID' '=' name = UnrestrictedName)?
+	('description' '=' description = StringLiteral)?
+	( ( objects += ObjVarCS | negObjects += NegObjVarCS ) ';')*
+	(links += VarLinkCS ';')*
+	(constraints += ConstraintCS)*
+;
+
+ObjVarCS:
+	(isMatched ?= '$')?name = UnrestrictedName ':' type = TypedRefCS
+;
+
+NegObjVarCS returns base::ModelElementRefCS:
+	'!' ObjVarRefCS
+;
+
+VarLinkCS:
+	(isNeg ?= '!')? '(' objVars += ObjVarRefCS ',' objVars += ObjVarRefCS ')' ':' assoc = AssocRefCS
+;
+
+AssociationCS:
+	'association' name = UnrestrictedName 
+		assocEnds += AssocEndCS
+		assocEnds += AssocEndCS 
+	'end'	
+;
+	
+ConstraintCS:
+	'[' constrExpr = SpecificationCS ']'
+;
+
+ActorCS:
+	'actor' name = UnrestrictedName
+	('description' '=' description = StringLiteral)?
+	'end'
+;
+
+ExtensionPointCS:
+	{ExtensionPointCS} 'extensionPoint' (name = UnrestrictedName)? 
+			('at' '{' locations += StepRefCS ('|' locations += StepRefCS)* '}')? 
+	('description' '=' description = StringLiteral)?
+	'when'
+			(condition = SnapshotPatternCS)?
+	'end'
+;
+
+UcExtendCS returns ExtendCS:	 
+	extension = UsecaseRefCS 'extends' extendedUC = UsecaseRefCS 
+		'at' '{' extPoints += ExtensionPointRefCS ('|' extPoints += ExtensionPointRefCS)* '}'
+;
+
+AssocEndCS returns base::ReferenceCS:
+	name=UnrestrictedName ':' ownedType=TypedTupeMultiplicityRefCS  
+;
+
+TypedTupeMultiplicityRefCS returns base::TypedRefCS:
+	TypedTypeRefCS (ownedMultiplicity=MultiplicityCS)?
+;
+
+ActorRefCS returns base::ModelElementRefCS:
+	ownedPathName = PathNameCS
+;
+
+UsecaseRefCS returns base::ModelElementRefCS:
+	ownedPathName=PathNameCS
+;
+
+StepRefCS returns base::ModelElementRefCS:
+	ownedPathName=PathNameCS
+;
+
+ExtensionPointRefCS returns base::ModelElementRefCS:
+	ownedPathName = PathNameCS
+;
+
+ObjVarRefCS returns base::ModelElementRefCS:
+	ownedPathName = PathNameCS
+;
+
+AssocRefCS returns base::ModelElementRefCS:
+	ownedPathName = PathNameCS
+;

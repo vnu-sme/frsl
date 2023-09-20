@@ -1,0 +1,578 @@
+module Frsl2Uml;
+create OUT: Uml from IN: Frsl, IN2: Pivot, TYPES: Uml;
+
+-- ====================================================== Helper ======================================================
+	
+helper def: curId: Integer = 0;
+
+helper def: getId(): String = thisModule.refSetValue('curId', thisModule.curId + 1).curId.toString();
+
+helper context Frsl!Step def: getAllMainStep(): Sequence(Frsl!Step) =
+	let res: Sequence(Frsl!Step) = Sequence{}
+	in
+		if self.nextStep.oclIsKindOf(Frsl!Step) then
+			res.union(Sequence{self, self.nextStep.getAllMainStep()}) -> flatten()
+		else
+			res.append(self)
+		endif;
+	
+helper context Frsl!SnapshotPattern def: getTargetTransition(): Frsl!SnapshotPattern =
+	if (self.eContainer().preSnapshot = self) then
+		self.eContainer().postSnapshot
+	else
+		if (not self.eContainer().nextStep.oclIsUndefined()) then
+			if (self.eContainer().nextStep.oclIsTypeOf(Frsl!RejoinStep) or self.eContainer().nextStep.oclIsTypeOf(Frsl!UCStep)) then
+				self.eContainer().nextStep.nextStep.preSnapshot
+			else
+				self.eContainer().nextStep.preSnapshot
+			endif
+		else
+			self
+		endif
+	endif;
+
+helper def: getRootUC(t: OclAny): Frsl!Usecase =
+	if t.oclIsTypeOf(Frsl!Usecase) then
+		t
+	else
+		thisModule.getRootUC(t.eContainer())
+	endif;
+
+helper def: getAllAltFlow(uc: Frsl!Usecase): Sequence(Frsl!AltFlow) =
+	Frsl!AltFlow.allInstances() -> select(e | thisModule.getRootUC(e) = uc) -> asSequence();
+
+helper def: getAllRejoinStep(uc: Frsl!Usecase): Sequence(Frsl!RejoinStep) =
+	Frsl!RejoinStep.allInstances() 
+		-> select(e | thisModule.getRootUC(e) = uc)
+		-> asSequence();
+
+helper def: getAllUCStep(uc: Frsl!Usecase): Sequence(Frsl!UCStep) =
+	Frsl!UCStep.allInstances() 
+	-> select(e | thisModule.getRootUC(e) = uc) -> asSequence();
+
+helper def: getAllActStep(uc: Frsl!Usecase): Sequence(Frsl!ActStep) =
+	Frsl!ActStep.allInstances() -> select(e | thisModule.getRootUC(e) = uc) -> asSequence();
+
+helper def: getEntryP(extP: Frsl!ExtensionPoint): Frsl!UCStep = 
+	thisModule.getAllUCStep(thisModule.getRootUC(extP)) -> select(e | extP.location -> includes(e)).first();
+
+helper context Frsl!Usecase def: getAllSnapshotOfActStep(): Sequence(Frsl!SnapshotPattern) =
+	thisModule.getAllActStep(self) -> iterate(e; res: Sequence(Frsl!SnapshotPattern) = Sequence{} | 
+		res.union(Sequence{e.preSnapshot, e.postSnapshot}) -> flatten());
+
+helper context Frsl!Usecase def: getAllPreSnapshotOfActStep(): Sequence(Frsl!SnapshotPattern) =
+	self.getAllSnapshotOfActStep() -> select(e | e.eContainer().preSnapshot = e);
+
+helper context Frsl!Usecase def: getAllPostSnapshotOfActStep(): Sequence(Frsl!SnapshotPattern) =
+	self.getAllSnapshotOfActStep() 
+		-> select(e | e.eContainer().postSnapshot = e) 
+		-> select(e | e.eContainer().nextStep.oclIsTypeOf(Frsl!ActStep))
+		-> select(e | e.eContainer().nextStep.altFlow->isEmpty());
+
+helper context Frsl!Step def: getTargetState(): Frsl!SnapshotPattern =
+	if (self.nextStep.oclIsUndefined()) then
+--		self.eContainer().eContainer().nextStep.preSnapshot
+		self
+	else
+		self.nextStep.preSnapshot
+	endif;
+
+helper context Frsl!Usecase def: isExtendStep(step: Frsl!Step): Boolean =
+	self.extPoint->exists(e | e.location -> includes(step));
+
+helper context Frsl!Usecase def: getClass(): Frsl!Class =
+	self.eContainer().ownedPackages.at(2).ownedClasses->select(e | e.name = self.name)->first();
+
+helper context Frsl!Class def: getUCFromClass(): Frsl!Usecase = 
+	self.eContainer().eContainer().usecase -> select(e | e.name = self.name) -> first();
+
+helper context Frsl!Class def: getAllSuperClass(): Sequence(Frsl!Class) =
+	self.superClasses->select(e | e.name <> 'OclElement');
+
+helper def : umlType(pivotType: Frsl!PrimitiveType): Uml!PrimitiveType =
+	if pivotType.name = 'Integer' then
+		Uml!PrimitiveType.allInstancesFrom('TYPES')->any(p | p.name = 'Integer')
+	else if pivotType.name = 'String' then
+		Uml!PrimitiveType.allInstancesFrom('TYPES')->any(p | p.name = 'String')
+	else if pivotType.name = 'Real' then
+		Uml!PrimitiveType.allInstancesFrom('TYPES')->any(p | p.name = 'Real')
+	else if pivotType.name = 'Boolean' then
+		Uml!PrimitiveType.allInstancesFrom('TYPES')->any(p | p.name = 'Boolean')
+	else
+		OclUndefined
+	endif
+	endif
+	endif
+	endif
+;
+
+-- ====================================================== Matched Rule ======================================================
+
+rule FrslModel2Model {
+	from
+		s: Frsl!FrslModel
+	to
+		t: Uml!Model (
+			packagedElement <- s.ownedPackages.at(1).ownedClasses,
+			packagedElement <- s.ownedPackages.at(2).ownedClasses
+		)
+}
+
+-- ===== Main rule =====
+	
+rule UC2Class {
+	from
+		s: Frsl!Class (
+			s.oclIsTypeOf(Frsl!Class) and s.eContainer() = Frsl!Package.allInstances()->asSequence().at(2)
+		)
+	using {
+		u: Frsl!Usecase = s.getUCFromClass();
+		lastStep: Frsl!Step = u.firstStep.getAllMainStep()->last();
+	}
+	to 
+		t: Uml!Class (
+			name <- s.name,
+			ownedBehavior <- stateMachine,
+			ownedAttribute <- s.ownedProperties -> select(e | e.ownedExpression.oclIsUndefined() = true)
+		),
+		stateMachine: Uml!StateMachine (
+			name <- s.name + 'SM',
+			region <- region
+		),
+		region: Uml!Region (
+			name <- s.name + 'Region',
+			transition <- Sequence{
+							firstTransition,
+							u.getAllPreSnapshotOfActStep() -> collect(e | thisModule.Snapshot2Transition(e)),
+							u.getAllPostSnapshotOfActStep() -> collect(e | thisModule.Snapshot2Transition(e)),
+							thisModule.getAllRejoinStep(u) -> select(e | e.nextStep.oclIsUndefined() = false)
+														   -> collect(e | Sequence{thisModule.Rejoin2TransitionAtBaseStep(e),
+																				   thisModule.Rejoin2TransitionAtNextStep(e),
+																				   thisModule.Rejoin2TransitionAtRejoinTo(e)}),
+							thisModule.getAllRejoinStep(u)  -> select(e | e.nextStep.oclIsUndefined()),
+							thisModule.getAllUCStep(u) -> select(e | e.nextStep.oclIsUndefined() = false)
+													   -> select(e | not e.eContainer().oclIsTypeOf(Frsl!AltFlow))
+													   -> select(e | not (e.nextStep.oclIsTypeOf(Frsl!RejoinStep) and e.nextStep.nextStep.oclIsUndefined()))
+													   -> collect(e | thisModule.UCStep2Transition(e)),
+							thisModule.getAllUCStep(u) -> select(e | e.altFlow->isEmpty())
+													   -> select(e | not e.eContainer().oclIsTypeOf(Frsl!AltFlow))
+													   -> collect(e | thisModule.UCStep2TransitionAtUCStep(e)),													   
+							thisModule.getAllAltFlow(u) -> collect(e | thisModule.AltFlow2TransitionAtAltStep(e)),
+							thisModule.getAllAltFlow(u) -> select(e | e.baseStep.altFlow.first() = e)
+														-> collect(e | Sequence{thisModule.AltFlow2TransitionAtPreStep(e),
+																				thisModule.AltFlow2TransitionAtBaseStep(e)}),
+							u.extPoint -> collect(e | 
+								Sequence{thisModule.ExtensionPoint2ExitPointTransition(e), 
+									     thisModule.ExtensionPoint2EntryPointTransition(e)}),
+							lastTransition
+						},
+			subvertex <- Sequence{
+							initial,
+							u.getAllSnapshotOfActStep(),
+							thisModule.getAllUCStep(u),
+							u.extPoint -> collect(e | e.extend) -> flatten() -> asSet(),
+							thisModule.getAllAltFlow(u) -> select(e | e.baseStep.altFlow->first() = e),
+							thisModule.getAllRejoinStep(u) -> select(e | not e.nextStep.oclIsUndefined()),
+							finalState
+						}
+		),
+		firstTransition: Uml!Transition (
+			source <- initial,
+			target <- u.getAllSnapshotOfActStep() -> first(),
+			name <- thisModule.getId() + '. ' + 'Initial'
+		),
+		lastTransition: Uml!Transition (
+			source <- if (lastStep.oclIsTypeOf(Frsl!ActStep)) then lastStep.postSnapshot else lastStep endif,
+			target <- finalState,
+			name <- thisModule.getId() + '. ' + 'Final'
+		),
+		initial: Uml!Pseudostate (
+			name <- 'Initial',
+			kind <- 'initial'
+		),
+		finalState: Uml!FinalState (
+			name <- 'Final State'	
+		)	
+}
+
+-- ===== Transfrom to State Rule ===== 
+
+rule SnapshotPattern2State {
+	from
+		s: Frsl!SnapshotPattern (
+			thisModule.getRootUC(s).getAllSnapshotOfActStep() -> includes(s) and 			
+			(not (thisModule.getRootUC(s).getAllPreSnapshotOfActStep() -> includes(s) and
+					thisModule.getRootUC(s).isExtendStep(s.eContainer())))
+		)
+	using {
+		prefixName: String = 
+			if (s.eContainer().preSnapshot = s) then
+				'-pre'
+			else
+				'-post'
+			endif;
+		stepName: String = 
+			if (s.eContainer().name.oclIsUndefined() = false) then
+				s.eContainer().name
+			else
+				'step'
+			endif;
+	}
+	to
+		t: Uml!State (
+			name <- s.eContainer().description + ' (' + stepName + prefixName + ')'
+		)
+}
+
+rule UCStep2State {
+	from
+		s: Frsl!UCStep (
+			(not thisModule.getRootUC(s).isExtendStep(s))
+		)
+	to
+		t: Uml!State (
+			name <- s.name + ' (Include)',
+			submachine <- thisModule.resolveTemp(s.includedUC.getClass(), 'stateMachine')
+		)
+}
+
+rule Extend2State {
+	from
+		s: Frsl!Extend
+	to
+		t: Uml!State (
+			name <- s.extension.name + ' (Extend)',
+			submachine <- thisModule.resolveTemp(s.extension.getClass(), 'stateMachine')
+		)
+}
+
+rule AltFlow2Choice {
+	from
+		s: Frsl!AltFlow (
+			s.baseStep.altFlow->first() = s
+		)
+	to
+		t: Uml!Pseudostate (
+			name <- s.description,
+			kind <- #choice
+		)
+}
+
+rule RejoinStep2Choice {
+	from
+		s: Frsl!RejoinStep (
+			s.nextStep.oclIsUndefined() = false
+		)
+	to
+		t: Uml!Pseudostate (
+			name <- s.description,
+			kind <- #choice
+		)
+}
+
+rule UCStep2ExitEntry {
+	from
+		s: Frsl!UCStep (
+			thisModule.getRootUC(s).isExtendStep(s)
+		)
+	to
+		t: Uml!State (
+			name <- s.description + ' (Include)',
+			submachine <- thisModule.resolveTemp(s.includedUC.getClass(), 'stateMachine'),
+			connectionPoint <- Sequence{exitP, entryP}
+		),
+		exitP: Uml!Pseudostate (
+			kind <- #exitPoint
+		),
+		entryP: Uml!Pseudostate (
+			kind <- #entryPoint
+		)
+}
+
+rule ActStep2ExitEntry {
+	from
+		s: Frsl!SnapshotPattern (
+			thisModule.getRootUC(s).getAllPreSnapshotOfActStep() -> includes(s) and
+					thisModule.getRootUC(s).isExtendStep(s.eContainer())
+		)
+	using {
+		prefixName: String = 
+			if (s.eContainer().preSnapshot = s) then
+				'-pre'
+			else
+				'-post'
+			endif;
+		stepName: String = 
+			if (s.eContainer().name.oclIsUndefined() = false) then
+				s.eContainer().name
+			else
+				'step'
+			endif;
+	}
+	to
+		t: Uml!State (
+			name <- s.eContainer().description + ' (' + stepName + prefixName + ')',
+			connectionPoint <- Sequence{exitP, entryP}
+		),
+		exitP: Uml!Pseudostate (
+			kind <- #exitPoint
+		),
+		entryP: Uml!Pseudostate (
+			kind <- #entryPoint
+		)
+}
+	
+rule Rejoin2TransitionWhenNextStepIsNull {
+	from
+		s: Frsl!RejoinStep (
+			s.nextStep.oclIsUndefined()	
+		)
+	to
+		t: Uml!Transition (
+			source <- if (s.preStep.oclIsTypeOf(Frsl!ActStep)) then s.preStep.postSnapshot else s.preStep endif,
+			target <- if (s.rejoinTo.oclIsTypeOf(Frsl!ActStep)) then s.rejoinTo.preSnapshot else s.rejoinTo endif,
+			name <- thisModule.getId() + '. ' + s.description
+		)
+}
+
+-- ====================================================== Lazy Rule ======================================================
+-- ===== Transfrom to Transition Rule =====
+	
+lazy rule Rejoin2TransitionAtBaseStep {
+	from
+		s: Frsl!RejoinStep
+	to
+		t: Uml!Transition (
+			source <- if (s.preStep.oclIsTypeOf(Frsl!ActStep)) then s.preStep.postSnapshot else s.preStep endif,
+			target <- s,
+			name <- thisModule.getId() + '. ' + s.description
+		)
+}
+
+lazy rule Rejoin2TransitionAtNextStep {
+	from
+		s: Frsl!RejoinStep
+	to
+		t: Uml!Transition (
+			source <- s,
+			target <- if (s.nextStep.oclIsTypeOf(Frsl!ActStep)) then s.nextStep.preSnapshot else s.nextStep endif,
+			name <- thisModule.getId() + '. ' + s.description
+		)
+}
+
+lazy rule Rejoin2TransitionAtRejoinTo {
+	from
+		s: Frsl!RejoinStep
+	to
+		t: Uml!Transition (
+			source <- s,
+			target <- if (s.rejoinTo.oclIsTypeOf(Frsl!ActStep)) then s.rejoinTo.postSnapshot else s.rejoinTo endif,
+			name <- thisModule.getId() + '. ' + s.description
+		)
+}
+	
+lazy rule AltFlow2TransitionAtBaseStep {
+	from
+		s: Frsl!AltFlow (
+			s.baseStep.altFlow.first() = s
+		)
+	to
+		t: Uml!Transition (
+			source <- s.baseStep.altFlow.first(),
+			target <- if (s.baseStep.oclIsTypeOf(Frsl!ActStep)) then s.baseStep.preSnapshot else s.baseStep endif,
+			name <- thisModule.getId() + '. ' + s.description
+		)
+}
+
+lazy rule AltFlow2TransitionAtAltStep {
+	from
+		s: Frsl!AltFlow
+	to
+		t: Uml!Transition (
+			source <- s.baseStep.altFlow.first(),
+			target <- if (s.altStep.oclIsTypeOf(Frsl!ActStep)) then s.altStep.preSnapshot else s.altStep endif,
+			name <- thisModule.getId() + '. ' + s.description
+		)
+}
+
+lazy rule AltFlow2TransitionAtPreStep {
+	from
+		s: Frsl!AltFlow (
+			s.baseStep.altFlow.first() = s	
+		)
+	to
+		t: Uml!Transition (
+			source <- 	if (s.eContainer().eContainer().oclIsTypeOf(Frsl!ActStep)) then
+							s.eContainer().eContainer().postSnapshot
+						else
+							s.eContainer().eContainer()
+						endif,
+			target <- s.baseStep.altFlow.first(),
+			name <- thisModule.getId() + '. ' + s.description
+		)
+}
+
+lazy rule ExtensionPoint2ExitPointTransition {
+	from
+		s: Frsl!ExtensionPoint
+	using {
+		locationStep : Frsl!Step = s.location->first();
+	}
+	to
+		t: Uml!Transition (
+			source <- 
+				if (locationStep.oclIsTypeOf(Frsl!ActStep)) then
+					thisModule.resolveTemp(locationStep.preSnapshot, 'exitP')
+				else
+					thisModule.resolveTemp(locationStep, 'exitP')
+				endif,
+			target <- s.extend.first(),
+			name <- thisModule.getId() + '. ' + s.name + ' (Exit Point)'
+		)
+}
+
+lazy rule ExtensionPoint2EntryPointTransition {
+	from
+		s: Frsl!ExtensionPoint
+	using {
+		locationStep : Frsl!Step = s.location->first();
+	}
+	to
+		t: Uml!Transition (
+			source <- s.extend.first(),
+			target <- if (locationStep.oclIsTypeOf(Frsl!ActStep)) then
+					thisModule.resolveTemp(locationStep.preSnapshot, 'entryP')
+				else
+					thisModule.resolveTemp(locationStep, 'entryP')
+				endif,
+			name <- thisModule.getId() + '. ' + s.name + ' (Entry Point)'
+		)
+}
+
+lazy rule UCStep2Transition {
+	from
+		s: Frsl!UCStep 
+	to
+		t: Uml!Transition (
+			name <- thisModule.getId() + '. ' + s.name,
+			source <- s,
+			target <- if (s.nextStep.oclIsTypeOf(Frsl!ActStep)) then 
+						s.getTargetState() 
+					  else 
+						s.nextStep 
+					  endif
+		)
+}
+
+lazy rule UCStep2TransitionAtUCStep {
+	from
+		s: Frsl!UCStep
+	to
+		t: Uml!Transition (
+			name <- thisModule.getId() + '. ' + s.name,
+			source <- if (s.preStep.oclIsTypeOf(Frsl!ActStep)) then s.preStep.postSnapshot else s.preStep endif,
+			target <- s
+		)
+}
+
+lazy rule Snapshot2Transition {
+	from
+		s: Frsl!SnapshotPattern
+	using {
+		prefixName: String = 
+			if (s.eContainer().preSnapshot = s) then
+				'PreSnapshot'
+			else
+				'PostSnapshot'
+			endif;
+	}
+	to
+		t: Uml!Transition (
+			name <- thisModule.getId() + '. ' + prefixName,
+			source <- s,
+			target <- s.getTargetTransition(),
+			ownedRule <- cons,
+			guard <- cons
+		),
+		cons: Uml!Constraint (
+				specification <- exp
+		),
+		exp: Uml!OpaqueExpression (
+			language <- 'OCL',
+			body <- if (s.constraint.isEmpty()) then 
+						'true' 
+					else
+						s.constraint->iterate(e; res: String = '' | 
+							if e <> s.constraint.last() then
+								res + e.ownedSpecification.body + ' and '
+							else 
+								res + e.ownedSpecification.body
+							endif)
+					endif
+			)
+}
+
+-- ================================================= Pivot Model Rule =================================================
+
+rule Property2Property {
+	from
+		s: Frsl!Property (
+			s.oclIsTypeOf(Frsl!Property) and s.ownedExpression.oclIsUndefined() = true
+		)
+	using {
+		flag: Boolean = if (s.type.oclIsKindOf(Frsl!CollectionType)) then true else false endif;	
+	}
+	to
+		t: Uml!Property (
+			name <- s.name,
+			type <- if flag then
+						s.type.ownedBindings->first().ownedSubstitutions->first().actual
+					else if s.type.oclIsKindOf(Frsl!PrimitiveType) then
+						thisModule.umlType(s.type)
+					else
+						s.type
+					endif
+					endif,
+			upperValue <- u
+		),
+		u: Uml!LiteralUnlimitedNatural (
+			value <- if flag then -1 else 1 endif	
+		)
+}
+
+rule Class2Class {
+	from
+		s: Frsl!Class (
+			s.oclIsTypeOf(Frsl!Class) and s.eContainer() = Frsl!Package.allInstances()->asSequence().at(1)
+		)
+	to 
+		t: Uml!Class (
+			ownedAttribute <- s.ownedProperties,
+			name <- s.name,
+			generalization <- 	if (s.superClasses.oclIsUndefined() = false) then
+									s.getAllSuperClass()->collect(e | thisModule.Class2Generalization(e)) 
+								else 
+									OclAny
+								endif
+		)
+}
+
+lazy rule Class2Generalization {
+	from
+		s: Frsl!Class
+	to
+		t: Uml!Generalization (
+			general <- s
+		)
+}
+
+rule AssociationClass2Association {
+	from
+		s: Frsl!AssociationClass
+	to
+		t: Uml!Association (
+			name <- s.name,
+			ownedEnd <- s.ownedProperties,
+			memberEnd <- s.ownedProperties
+		)
+}

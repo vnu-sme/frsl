@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.eclipse.sme.frsl.tests
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.sme.frsl.tests
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: org.eclipse.sme.frsl.tests; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.sme.frsl,
+ org.eclipse.xtext.testing,
+ org.eclipse.xtext.xbase.testing,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: org.eclipse.sme.frsl.tests;x-internal=true

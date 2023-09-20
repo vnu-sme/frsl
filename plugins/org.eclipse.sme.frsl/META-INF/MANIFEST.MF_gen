@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.sme.frsl
+Bundle-SymbolicName: org.eclipse.sme.frsl; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.sme.frsl,
+ org.eclipse.sme.frsl.services,
+ org.eclipse.sme.frsl.serializer,
+ org.eclipse.sme.frsl.parser.antlr,
+ org.eclipse.sme.frsl.parser.antlr.internal,
+ org.eclipse.sme.frsl.validation,
+ org.eclipse.sme.frsl.scoping,
+ org.eclipse.sme.frsl.formatting
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.util,
+ org.antlr.runtime
+Import-Package: org.apache.log4j
+

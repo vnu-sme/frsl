@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ATL org.eclipse.m2m.atl.frsl2uml Transformation Runtime Plug-in
+Bundle-SymbolicName: org.eclipse.m2m.atl.frsl2uml;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.m2m.atl.frsl2uml.Activator
+Bundle-Vendor: Eclipse Modeling Project
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.uml2.types,
+ org.eclipse.uml2.uml,
+ org.eclipse.m2m.atl.engine.emfvm
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Eclipse-LazyStart: true
+Import-Package: org.eclipse.core.resources,
+ org.eclipse.jface.action,
+ org.eclipse.jface.viewers,
+ org.eclipse.ui
+Export-Package: org.eclipse.m2m.atl.frsl2uml.files

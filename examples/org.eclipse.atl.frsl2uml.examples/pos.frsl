@@ -1,0 +1,633 @@
+package pos : pfx = 'platform:/resource/org.eclipse.atl.frsl2uml.examples/pos.frsl' {
+	class Date {
+		attribute value: String;
+	}					
+	class Customer {				
+		attribute name: String;			
+	}	
+	class Cashier { 
+		attribute name: String;	
+	}				
+	class Sale {				
+		attribute id: String;	
+		attribute date: Date;		
+		attribute total: Real;			
+		attribute isComplete: Boolean;		
+	}
+	class Register {						
+	}	
+	class Store{
+		attribute address: String;
+		attribute name: String;
+	}
+	class Item { 
+		attribute id: String;
+	}				
+	class ProductDescription {		
+		attribute desc: String;		
+		attribute price: Real;			
+		attribute tax: Real;
+		attribute upc: String;			
+	}
+	class ProductCatalog{
+	}
+	class SalesLineItem {				
+		attribute quantity: Integer;	
+	}	
+	class Payment {	
+		attribute amount: Real;										
+	}
+	class CashPayment extends Payment {				
+		attribute amountTendered: Real;			
+	}
+	class CreditPayment extends Payment {		
+	}
+	class GiftCertPayment extends Payment {				
+	}
+	class GiftCertificate{
+		attribute id: String;
+  		attribute amount: Real;
+	}		
+	class CreditCard {	
+		attribute number: String;
+		attribute expireDate: String;
+	}	
+	class AuthService{
+		attribute name: String;
+  		attribute address: String;
+	}
+}
+
+association ProvidedWith
+  store: Store[*]
+  authService: AuthService[*]
+end
+
+association Stocks
+  store: Store [1] 
+  item: Item [*] 
+end
+
+association RecordsSaleOf
+	salesLineItem: SalesLineItem[0..1]
+	item: Item[+]
+end	
+
+association ContainedIn	
+	sale: Sale[1]
+	salesLineItem: SalesLineItem[+]
+end	
+
+association Describes
+	prdDesc: ProductDescription[1]
+	item: Item[*]
+end
+
+association DescribedBy
+  salesLineItem: SalesLineItem[*]  
+  productDesc: ProductDescription[1] 
+end
+
+association Contains
+  prdtCtlg: ProductCatalog[1]
+  prdtDesc: ProductDescription[1..*] 
+end
+
+association UsedBy
+  prdtCtlg: ProductCatalog[1] 
+  store: Store[*] 
+end
+
+association Houses  
+  store: Store[1]
+  register: Register[1..*]
+end
+
+association CapturedOn
+	sale: Sale[?]
+	register: Register[1]
+end
+
+association LogsCompleted
+  store: Store[0..1] 
+  sale: Sale[0..*] 
+end
+
+association IsFor
+  sale: Sale[*] 
+  customer: Customer[1] 
+end
+
+association WorksOn
+	cashier: Cashier[1]
+	register: Register[1]
+end
+
+association Approves
+  authService: AuthService[1] 
+  payment: CreditPayment[*]   
+end
+
+association PaidBy
+	sale: Sale[1]
+	payment: Payment[1]
+end
+
+association Logs
+  store: Store[1] 
+  accountsReceivable: CreditPayment[*] 
+end
+
+association PaidWith 
+  payment: GiftCertPayment[0..1]  
+  giftCert: GiftCertificate[1] 
+end
+
+association CheckedBy 
+  payment: CreditPayment[*]  
+  creditCard: CreditCard[1]  
+end
+
+actor Cashier
+end
+
+actor Customer
+end
+
+actor InventorySystem
+end
+
+actor AccountingSystem
+end
+
+actor PaymentAuthServiceSystem
+end
+
+usecase ProcessSales		
+	description = 'This use-case describes the process sale of Cashier'	
+	primaryActor = Cashier	
+	secondaryActors = {InventorySystem, AccountingSystem}
+	
+	ucPrecondition	
+		description = 'Cashier is identified and authenticated. Customer is ready to buy.'
+		_cashier: Cashier;
+		_customer: Customer;
+		_sale: Sale;
+		_pos: Register;
+		_items: Set(Item);
+		store: Store;
+		pos: Register;
+		cashier: Cashier;
+		(_sale, _customer): IsFor;
+		(_cashier, _pos): WorksOn;
+		(_pos, pos): _Tracks;
+		(_cashier, cashier): _Tracks;
+		(store, pos): Houses;
+		[_sale.isComplete = false]	
+		[_items->isEmpty() = false]	
+	end		
+	
+	ucPostcondition	
+		description = 'Sale is saved. Tax is correctly calculated. Accounting and Inventory are updated. Commissions recorded. Receipts are generated.'
+		sale: Sale;
+		(_sale, sale):_Tracks;
+		(store, sale): LogsCompleted;
+		!(sale, pos): CapturedOn;	
+		!(_sale, _pos): CapturedOn;	
+		[sale.isComplete = true]
+		[sale.total.oclIsUndefined() = false]
+		[_sale.isComplete = true]
+	end	
+	
+	actStep step01 	
+	description = '1. Customer arrives at POS checkout with goods and/or services to purchase'
+	from
+		_pos: Register;
+		_customer: Customer;
+		_sale: Sale;
+		_items: Set(Item);		
+		(_sale, _customer): IsFor;
+		[_items->isEmpty() = false]
+	to			
+	end	
+	
+	actStep step02	
+	description = '2. Cashier starts a new sale'
+	from
+		_pos: Register;
+		_cashier: Cashier;
+		_sale: Sale;
+		(_cashier, _pos): WorksOn;
+	to	
+		(_sale, _pos): CapturedOn;
+		[_sale.total = 0]
+		[_sale.isComplete = false]
+	end	
+
+	sysStep step03	
+	description = '3. The system creates a new sale and requires the cashier to enter items'
+	from
+		_sale: Sale;
+		_pos: Register;		
+		_cashier: Cashier;		
+		$pos: Register;
+		$cashier: Cashier;
+		$curDate: Date;	
+		(cashier, pos): WorksOn;			
+		(_pos, pos): _Tracks;
+		(_cashier, cashier): _Tracks;	
+		
+	to	
+		sale: Sale;		
+		(sale, pos): CapturedOn;				
+		(_sale, sale): _Tracks;
+		[sale.oclIsUndefined() = false]
+		[sale.total = 0]
+		[sale.date = curDate]
+	actions	
+		Cashier <- saleInfor: Sequence(OclAny) = Sequence{sale.id, sale.total};
+		Cashier <- cashierInfor: Sequence(OclAny) = Sequence{cashier.name};
+	end
+	
+	actStep step04  	
+	description = '4. Cashier enters item identifier'
+	from
+		_sale: Sale;
+		_items: Set(Item);
+		$_item: Item;
+		[_items->includes(_item)]
+		[_item.id = itemId]
+		[_item.salesLineItem->isEmpty()]
+	to			
+		_salesLineItem: SalesLineItem;		
+		(_salesLineItem, _sale): ContainedIn;
+		(_salesLineItem, _item): RecordsSaleOf;		
+		[_salesLineItem.oclIsUndefined() = false]
+		[_salesLineItem.quantity = 1]
+	actions
+		Cashier -> itemId: String;
+	end	
+	
+	sysStep step05 	
+	description = '5. System records sale line item and presents item description, price, 
+				   and running total with calculated tax. Price calculated from a set of price rules.'
+	from
+		_item: Item;
+		_salesLineItem: SalesLineItem;	
+		sale: Sale;
+		$item: Item;
+		$prdDesc: ProductDescription;
+		(prdDesc, item): Describes;
+		(_item, item): _Tracks; 
+	to 	
+		salesLineItem: SalesLineItem;
+		(salesLineItem, sale): ContainedIn;
+		(salesLineItem, item): RecordsSaleOf;
+		(salesLineItem, prdDesc): DescribedBy;
+		(_salesLineItem, salesLineItem): _Tracks;
+		[salesLineItem.oclIsUndefined() = false]
+		[salesLineItem.quantity = 1]
+		[sale.total = sale@pre.total + prdDesc.price * prdDesc.tax]
+	actions	
+		Cashier <- itemInfor: Sequence(OclAny) = Sequence{prdDesc.desc, prdDesc.price, prdDesc.upc};
+		Cashier <- saleInfor: Sequence(OclAny) = Sequence{sale.total};
+	end	
+	
+	rejoinStep step04 
+	description = '(*) Cashier repeats steps 4-5 until indicates done.'
+	when
+		_items: Set(Item);
+		$_item: Item;
+		[_items->includes(_item)]
+		[_item.salesLineItem.oclIsUndefined()]
+	end
+	
+	sysStep step06 		
+	description = '6. System presents total with taxes calculated'	
+	from
+		sale: Sale;
+	to		
+	actions		
+		Cashier <- paymentInfor: Real = sale.total;
+	end
+	
+	actStep step07
+	description = '7. Cashier tells Customer the total and asks for payment'
+	from
+		_sale: Sale;
+		sale: Sale;
+	to	
+		[_sale.total = sale.total]
+	end
+	
+	inclStep step08
+	description = '8. Customer wants to pay the sale by cash. The use case HandleCashPayment is involked.'
+		HandleCashPayment 
+	end
+		
+	sysStep step09 	
+	description = '9. System logs completed sale and sends sale and payment information to the external Accounting system (for accounting and commissions) and Inventory system (to update inventory)'
+	from
+		store: Store;
+		sale: Sale;
+		pos: Register;
+		$payment: Payment;
+		(sale, pos): CapturedOn;
+		(sale, payment): PaidBy;
+		!(store, sale): LogsCompleted;
+		[sale.isComplete = false]
+	to	
+		!(sale, pos): CapturedOn;
+		(store, sale): LogsCompleted;
+		[sale.isComplete = true]
+	actions	
+		AccountingSystem <- saleInfor2AccSys: Sequence(OclAny) = Sequence{sale, payment};
+		InventorySystem  <- saleInfor2InvSys: Sequence(OclAny) = Sequence{sale, payment};
+	end	
+	
+	actStep step10  	
+	description = '10. Customer leaves with receipt and goods (if any)'
+	from
+		_pos: Register;
+		_sale: Sale;	
+	to	
+		!(_sale, _pos): CapturedOn;		
+		[_sale.isComplete = true]
+	end	
+	
+	altStep at step08 
+		description = 'Customer wants to pay the sale by credit payment.'
+		when
+			$_creditCard: CreditCard;			
+		end
+		
+		inclStep step08a
+			HandleCreditPayment 
+		end
+	end
+	
+	extensionPoint PaidByGiftCert at {step08}
+	description = 'This extension flow occurs when Customer wants to pay with gift certificate'
+	when
+		$_giftCert: GiftCertificate;		
+	end	
+end
+
+usecase HandleCashPayment
+	description = 'This use-case allows Customer to pay the sale by a cash payment.'	
+	primaryActor = Cashier
+	
+	ucPrecondition	
+	description = 'Customer is ready to pay the sale by a cash payment.'
+		_sale: Sale;
+		sale: Sale;
+		(_sale, sale): _Tracks;
+		[sale.isComplete = false]
+	end
+	
+	ucPostcondition	
+	description = 'The sale is paid by a cash payment.'
+		cashPayment: CashPayment;
+		(sale, cashPayment): PaidBy;
+		[cashPayment.amountTendered >= sale.total]
+		[cashPayment.amount = sale.total]
+	end
+	
+	actStep step01
+	description = '1. Customer wants to pay the sale by cash.'
+	from
+	to
+		_cashPayment: CashPayment;
+	end
+	
+	actStep step02
+	description = '2. Cashier enters the cash amount tendered.'
+	from
+		_cashPayment: CashPayment;
+	to
+		[_cashPayment.amountTendered = amountTendered]
+	actions
+		Cashier -> amountTendered: Real;
+	end
+	
+	sysStep step3 	
+	description = '3. System presents the balance due, and releases the cash drawer.' 
+	from
+		_cashPayment: CashPayment;
+		sale: Sale;
+	to
+	actions
+		Cashier <- balanceDue: Real = _cashPayment.amountTendered - sale.total;
+	end
+
+	actStep step4 	
+	description = '4. Cashier deposits cash tendered and returns balance in cash to Customer.' 
+	from
+		_sale: Sale;
+		_cashPayment: CashPayment;
+	to
+		(_sale, _cashPayment): PaidBy;
+	end
+	
+	sysStep step5 	
+	description = '5. System records the cash payment.' 
+	from
+		_cashPayment: CashPayment;
+		sale: Sale;
+	to
+		cashPayment: CashPayment;
+		(sale, cashPayment): PaidBy;
+		[cashPayment.amountTendered = _cashPayment.amountTendered]
+	end
+		
+end
+
+usecase HandleCreditPayment
+	description = 'This use-case is involked as Customer wants to pay by a credit payment.'	
+	primaryActor = Customer	
+	secondaryActors = {PaymentAuthServiceSystem}
+	
+	ucPrecondition	
+	description = 'Customer is ready to pay the sale by a credit payment.'
+		_customer: Customer;
+		_pos: Register;
+		_sale: Sale;		
+		_creditCard: CreditCard;
+		store: Store;
+		pos: Register;
+		authService: AuthService;
+		sale: Sale;
+		creditCard: CreditCard;		
+		(store, authService): ProvidedWith;
+		(store, pos): Houses;
+		(_sale, _pos): CapturedOn;
+		(_pos, pos): _Tracks;		
+		(_sale, sale): _Tracks;
+		(_creditCard, creditCard): _Tracks;		
+		[sale.isComplete = false]
+	end	
+	
+	ucPostcondition	
+	description = 'Customer purchases. Cashier takes bill. Done the sale.'
+		_creditPayment: CreditPayment;
+		creditPayment: CreditPayment;		
+		(creditPayment, creditCard): CheckedBy;
+		(authService, creditPayment): Approves;
+		(sale, creditPayment): PaidBy;		
+		(_creditPayment, creditPayment): _Tracks;
+		(_sale, _creditPayment): PaidBy;
+	end	
+	
+	actStep step01	
+	description = 'Customer enters the credit account information'
+	from
+		_creditCard: CreditCard;
+	to	
+		_creditPayment: CreditPayment;
+		(_creditPayment, _creditCard): CheckedBy;
+	actions
+		Customer -> pinNumber: Integer;
+	end	
+
+	sysStep step02	
+	description = 'System sends payment authorization request to 
+					an external Payment Authorization Service System, 
+					and requests payment approval'
+	from
+		sale: Sale;
+		creditCard: CreditCard;
+		pinNumber: Integer;
+		authService: AuthService;			
+		[sale.isComplete = false]
+	to	
+	actions
+		PaymentAuthServiceSystem <- paymentAuth: Sequence(OclAny) = Sequence{authService, creditCard, pinNumber, sale.total};
+	end	
+	
+	sysStep step03 
+	description = 'System receives payment approval and signals approval to Cashier.'
+	from		
+		authService: AuthService;		
+		creditCard: CreditCard;
+		sale: Sale;
+	to	
+		creditPayment: CreditPayment;
+		(creditPayment, creditCard): CheckedBy;
+		(authService, creditPayment): Approves;
+		[creditPayment.amount = sale.total]
+	actions
+		Cashier <- approvalInfo:String = 'paymentApproval';
+	end	
+	
+	sysStep step04
+	description = 'System records the credit payment, which includes the payment approval'
+	from
+		sale: Sale;
+		creditPayment: CreditPayment;
+	to 	
+		(sale, creditPayment): PaidBy;
+	actions	
+	end	
+	
+	sysStep step05 
+	description = 'System presents credit payment signature input mechanism.'
+	from	
+		sale: Sale;
+		creditPayment: CreditPayment;
+	to	
+	actions	
+		Customer <- creditPaymentInfor: Sequence(OclAny) = Sequence{sale, creditPayment};
+	end	
+	
+	actStep step06
+	description = 'Cashier asks Customer for a credit payment signature. 
+				   Customer enters signature.'
+	from
+		_sale: Sale;			
+		_creditPayment: CreditPayment;
+		creditPayment: CreditPayment;
+	to	
+		(_sale, _creditPayment): PaidBy;
+		(creditPayment, _creditPayment): _Tracks;
+		[creditPayment.amount = _creditPayment.amount]
+	end		
+end
+
+usecase HandleGiftCertPayment		
+	description = 'This use case allows the customer to pay with certificate.'	
+	primaryActor = Cashier	
+		
+	ucPrecondition	
+		description = 'Customer wants to pay with gift certificate.'
+		_sale: Sale;
+		_giftCert: GiftCertificate;
+		sale: Sale;
+		(_sale, sale): _Tracks;
+		[sale.isComplete = false]
+	end		
+	
+	ucPostcondition	
+		description = 'The sale is partly paid by the gift certificate. '
+		giftCertPayment: GiftCertPayment;
+		(sale, giftCertPayment): PaidBy;	
+		[giftCertPayment.giftCert.amount = giftCertPayment.giftCert@pre.amount - giftCertPayment.amount]
+	end	
+	
+	actStep step01 	
+	description = '1. Customer gives gift certificate to Cashier.
+					Cashier enters gift certificate ID.'
+	from
+		_sale: Sale;
+		_giftCert: GiftCertificate;	
+		[_giftCert.id = giftCertId]
+	to
+		_giftCertPayment: GiftCertPayment;
+		(_sale, _giftCertPayment): PaidBy;
+		(_giftCertPayment, _giftCert): PaidWith;		
+	actions
+		Cashier -> giftCertId: String;
+	end	
+	
+	sysStep step02 	
+	description = '2. System displays the balance of the gift certificate.'
+	from
+		_giftCert: GiftCertificate;	
+		$giftCert: GiftCertificate;
+		(_giftCert, giftCert): _Tracks;
+	to		
+	actions	
+		Cashier <- giftCertInfor: Sequence(OclAny) = Sequence{giftCert.id, giftCert.amount};
+	end	
+	
+	actStep step03 	
+	description = '3. Cashier enters an amount to pay part of the total payment.'
+	from
+		_giftCert: GiftCertificate;	
+		giftCert: GiftCertificate;		
+		_gifCertPayment: GiftCertPayment;
+		[giftPaymentAmount <= giftCert.amount]
+	to	
+	actions		
+		Cashier -> giftPaymentAmount: Real;
+	end	
+	
+	sysStep step04 	
+	description = '4. System records the gift payment.'
+	from
+		_giftCert: GiftCertificate;	
+		giftCert: GiftCertificate;
+		sale: Sale;
+		giftPaymentAmount: Real;
+	to		
+		giftCertPayment: GiftCertPayment;
+		(giftCertPayment, giftCert): PaidWith;
+		(sale, giftCertPayment): PaidBy;	
+		[giftCertPayment.amount = giftPaymentAmount]
+		[giftCert.amount = giftCert@pre.amount - giftPaymentAmount]	
+	actions	
+		Cashier <- giftCertInfor: Sequence(OclAny) = Sequence{giftCert.id, giftCert.amount};
+	end	
+	
+end
+
+HandleGiftCertPayment extends ProcessSales at {PaidByGiftCert}
