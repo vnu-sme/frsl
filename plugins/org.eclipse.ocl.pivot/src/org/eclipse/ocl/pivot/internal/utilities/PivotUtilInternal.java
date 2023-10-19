@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -28,7 +27,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.ocl.pivot.CollectionLiteralExp;
@@ -36,8 +34,10 @@ import org.eclipse.ocl.pivot.CollectionLiteralPart;
 import org.eclipse.ocl.pivot.CompleteClass;
 import org.eclipse.ocl.pivot.Constraint;
 import org.eclipse.ocl.pivot.Element;
+import org.eclipse.ocl.pivot.ExpressionInOCL;
 import org.eclipse.ocl.pivot.Import;
 import org.eclipse.ocl.pivot.Iteration;
+import org.eclipse.ocl.pivot.IteratorVariable;
 import org.eclipse.ocl.pivot.LambdaType;
 import org.eclipse.ocl.pivot.LanguageExpression;
 import org.eclipse.ocl.pivot.LoopExp;
@@ -75,19 +75,15 @@ import org.eclipse.ocl.pivot.internal.manager.MetamodelManagerInternal;
 import org.eclipse.ocl.pivot.internal.manager.PivotExecutorManager;
 import org.eclipse.ocl.pivot.internal.manager.PivotMetamodelManager;
 import org.eclipse.ocl.pivot.internal.resource.ASResourceFactoryRegistry;
-import org.eclipse.ocl.pivot.internal.resource.EnvironmentFactoryAdapter;
-import org.eclipse.ocl.pivot.internal.resource.OCLAdapter;
 import org.eclipse.ocl.pivot.internal.resource.ProjectMap;
 import org.eclipse.ocl.pivot.internal.scoping.Attribution;
 import org.eclipse.ocl.pivot.internal.scoping.NullAttribution;
 import org.eclipse.ocl.pivot.library.LibraryFeature;
 import org.eclipse.ocl.pivot.resource.ASResource;
-import org.eclipse.ocl.pivot.resource.CSResource;
 import org.eclipse.ocl.pivot.resource.ProjectManager;
 import org.eclipse.ocl.pivot.utilities.ClassUtil;
 import org.eclipse.ocl.pivot.utilities.EnvironmentFactory;
 import org.eclipse.ocl.pivot.utilities.NameUtil;
-import org.eclipse.ocl.pivot.utilities.OCL;
 import org.eclipse.ocl.pivot.utilities.PivotConstants;
 import org.eclipse.ocl.pivot.utilities.PivotHelper;
 import org.eclipse.ocl.pivot.utilities.PivotUtil;
@@ -130,72 +126,23 @@ public class PivotUtilInternal //extends PivotUtil
 		}
 	}
 
+	@Deprecated /* @deprecated Use ThreadLocalExecutor.basicGetEnvironmentFactory() */
 	public static @Nullable EnvironmentFactoryInternal findEnvironmentFactory(@Nullable EObject eObject) {
-		EnvironmentFactoryInternal environmentFactory2 = ThreadLocalExecutor.basicGetEnvironmentFactory();
-		if (environmentFactory2 != null) {
-			return environmentFactory2;
-		}
-		if (eObject == null) {
-			return null;
-		}
-		EObject eRoot = EcoreUtil.getRootContainer(eObject);
-		if (eRoot == null) {
-			return null;
-		}
-		Resource eResource = eRoot.eResource();
-		if (eResource == null) {
-			return null;
-		}
-		return findEnvironmentFactory(eResource);
+		return ThreadLocalExecutor.basicGetEnvironmentFactory();
 	}
 
+	@Deprecated /* @deprecated Use ThreadLocalExecutor.basicGetEnvironmentFactory() */
 	public static @Nullable EnvironmentFactoryInternal findEnvironmentFactory(@NonNull Resource resource) {
-		EnvironmentFactoryInternal environmentFactory2 = ThreadLocalExecutor.basicGetEnvironmentFactory();
-		if (environmentFactory2 != null) {
-			return environmentFactory2;
-		}
-		for (Adapter adapter : resource.eAdapters()) {
-			if (adapter instanceof EnvironmentFactoryAdapter) {
-				return ((EnvironmentFactoryAdapter)adapter).getEnvironmentFactory();
-			}
-		}
-		ResourceSet resourceSet = resource.getResourceSet();
-		if (resourceSet == null) {
-			return null;
-		}
-		return findEnvironmentFactory(resourceSet);
+		return ThreadLocalExecutor.basicGetEnvironmentFactory();
 	}
 
+	@Deprecated /* @deprecated Use ThreadLocalExecutor.basicGetEnvironmentFactory() */
 	public static @Nullable EnvironmentFactoryInternal findEnvironmentFactory(@NonNull ResourceSet resourceSet) {
-		EnvironmentFactory localEnvironmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
-		if (localEnvironmentFactory != null) {
-			return (EnvironmentFactoryInternal)localEnvironmentFactory;
-		}
-		EnvironmentFactoryInternal.EnvironmentFactoryInternalExtension environmentFactory = null;
-		synchronized (resourceSet) {
-			for (Adapter adapter : resourceSet.eAdapters()) {
-				if (adapter instanceof EnvironmentFactoryAdapter) {
-					environmentFactory = (EnvironmentFactoryInternal.EnvironmentFactoryInternalExtension)((EnvironmentFactoryAdapter)adapter).getEnvironmentFactory();
-					if (!environmentFactory.isDisposed()) {
-						break;
-					}
-				}
-				else if (adapter instanceof PivotMetamodelManager) {
-					environmentFactory = (EnvironmentFactoryInternal.EnvironmentFactoryInternalExtension)((PivotMetamodelManager)adapter).getEnvironmentFactory();
-					if (!environmentFactory.isDisposed()) {
-						break;
-					}
-				}
-			}
-		}
-	//	if (localEnvironmentFactory != null) {
-	//		assert localEnvironmentFactory == environmentFactory;
-	//	}
-		return environmentFactory;
+		return ThreadLocalExecutor.basicGetEnvironmentFactory();
 	}
 
 	public static @Nullable PivotMetamodelManager findMetamodelManager(@NonNull Resource resource) {
-		EnvironmentFactoryInternal environmentFactory = findEnvironmentFactory(resource);
+		EnvironmentFactoryInternal environmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
 		if (environmentFactory == null) {
 			return null;
 		}
@@ -266,7 +213,7 @@ public class PivotUtilInternal //extends PivotUtil
 
 	@Deprecated /* @deprecated not used, use PivotUtil.getBehavioralType */
 	public static @Nullable Type getBehavioralType(@Nullable TypedElement element) {
-		Type type = getType(element);
+		Type type = element != null ? getType(element) : null;
 		return type != null ? PivotUtil.getBehavioralType(type) : null;
 	}
 
@@ -300,43 +247,24 @@ public class PivotUtilInternal //extends PivotUtil
 	}
 
 	public static @NonNull EnvironmentFactoryInternal getEnvironmentFactory(@Nullable Resource resource) {
-		EnvironmentFactoryInternal environmentFactory2 = ThreadLocalExecutor.basicGetEnvironmentFactory();
-		if (environmentFactory2 != null) {
-			return environmentFactory2;
-		}
-		if (resource instanceof ASResource) {							// ASResource has a MetamodelManager adapting its ResourceSet
-			ResourceSet resourceSet = ClassUtil.nonNullState(resource.getResourceSet());
-			PivotMetamodelManager metamodelManager = PivotMetamodelManager.findAdapter(resourceSet);
-			if (metamodelManager != null) {								// The metamodelManager may be missing if a *.oclas is opened by EMF
-				return metamodelManager.getEnvironmentFactory();
+		EnvironmentFactoryInternal environmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
+		if (environmentFactory == null) {
+			ProjectManager projectManager = null;
+			ResourceSet asResourceSet = null;
+			if (resource instanceof ASResource) {							// ASResource has a MetamodelManager adapting its ResourceSet
+				asResourceSet = ClassUtil.nonNullState(resource.getResourceSet());
+			//	PivotMetamodelManager metamodelManager = PivotMetamodelManager.findAdapter(resourceSet);
+			//	if (metamodelManager != null) {								// The metamodelManager may be missing if a *.oclas is opened by EMF
+			//		return metamodelManager.getEnvironmentFactory();
+			//	}
+				projectManager = ProjectMap.findAdapter(asResourceSet);
 			}
-			ProjectManager projectManager = ProjectMap.findAdapter(resourceSet);
 			if (projectManager == null) {
-				projectManager = OCL.CLASS_PATH;
+				projectManager = ProjectManager.CLASS_PATH;
 			}
-			return ASResourceFactoryRegistry.INSTANCE.createEnvironmentFactory(projectManager, null, resourceSet);
+			environmentFactory = ASResourceFactoryRegistry.INSTANCE.createEnvironmentFactory(projectManager, null, asResourceSet);
 		}
-		else if (resource instanceof CSResource) {						// CSResource has an EnvironmentFactoryAdapter adapting its ResourceSet
-			EnvironmentFactoryInternal environmentFactory = PivotUtilInternal.findEnvironmentFactory(resource);
-			if (environmentFactory != null) {							// The environmentFactory may be missing for an Xtext ResourceSet
-				return environmentFactory;
-			}
-			ResourceSet resourceSet = ClassUtil.nonNullState(resource.getResourceSet());
-			return OCLAdapter.createEnvironmentFactory(resourceSet);
-		}
-		else {															// other (e.g. ecore/genmodel) may have an EnvironmentFactoryAdapter adapting its ResourceSet
-			if (resource != null) {
-				EnvironmentFactoryInternal environmentFactory = PivotUtilInternal.findEnvironmentFactory(resource);
-				if (environmentFactory != null) {							// The environmentFactory may be missing for an Xtext ResourceSet
-					return environmentFactory;
-				}
-			}
-			EnvironmentFactory environmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
-			if (environmentFactory != null) {							// The environmentFactory may be missing for an Xtext ResourceSet
-				return (EnvironmentFactoryInternal) environmentFactory;
-			}
-			return ASResourceFactoryRegistry.INSTANCE.createEnvironmentFactory(ProjectManager.CLASS_PATH, null, null);
-		}
+		return environmentFactory;
 	}
 
 	/** @deprecated use getExecutor() */
@@ -352,7 +280,7 @@ public class PivotUtilInternal //extends PivotUtil
 	public static @NonNull Executor getExecutor(@NonNull EObject eObject) {
 		Resource asResource = eObject.eResource();
 		if (asResource != null) {
-			EnvironmentFactory environmentFactory = findEnvironmentFactory(asResource);
+			EnvironmentFactory environmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
 			if (environmentFactory != null) {
 				return new PivotExecutorManager(environmentFactory, eObject);
 			}
@@ -523,6 +451,13 @@ public class PivotUtilInternal //extends PivotUtil
 	}
 
 	/**
+	 * @since 1.18
+	 */
+	public static @NonNull List<@NonNull Parameter> getOwnedAccumulatorsList(@NonNull Iteration iteration) {
+		return ClassUtil.nullFree(iteration.getOwnedAccumulators());
+	}
+
+	/**
 	 * @since 1.3
 	 */
 	public static @NonNull List<@NonNull OCLExpression> getOwnedArgumentsList(@NonNull OperationCallExp operationCallExp) {
@@ -539,7 +474,7 @@ public class PivotUtilInternal //extends PivotUtil
 	/**
 	 * @since 1.6
 	 */
-	public static @NonNull List<@NonNull Variable> getOwnedCoIteratorsList(@NonNull LoopExp loopExp) {
+	public static @NonNull List<@NonNull IteratorVariable> getOwnedCoIteratorsList(@NonNull LoopExp loopExp) {
 		return ClassUtil.nullFree(loopExp.getOwnedCoIterators());
 	}
 
@@ -583,6 +518,13 @@ public class PivotUtilInternal //extends PivotUtil
 	 */
 	public static @NonNull List<org.eclipse.ocl.pivot.@NonNull Package> getOwnedPackagesList(org.eclipse.ocl.pivot.@NonNull Package asPackage) {
 		return ClassUtil.nullFree(asPackage.getOwnedPackages());
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public static @NonNull List<@NonNull Variable> getOwnedParametersList(@NonNull ExpressionInOCL expressionInOCL) {
+		return ClassUtil.nullFree(expressionInOCL.getOwnedParameters());
 	}
 
 	/**
@@ -708,7 +650,7 @@ public class PivotUtilInternal //extends PivotUtil
 		return ClassUtil.nullFree(asClass.getSuperClasses());
 	}
 
-	public static @Nullable Type getType(@Nullable TypedElement typedElement) {
+/*	public static @Nullable Type getType(@Nullable TypedElement typedElement) {
 		if (typedElement == null) {
 			return null;
 		}
@@ -716,6 +658,27 @@ public class PivotUtilInternal //extends PivotUtil
 		if (type == null) {
 			return null;
 		}
+		//		type = getType(type);
+		type = getNonLambdaType(type);
+		if (type instanceof SelfType) {
+			if (typedElement instanceof Parameter) {
+				Operation operation = ((Parameter)typedElement).getOwningOperation();
+				if (operation != null) {
+					org.eclipse.ocl.pivot.Class selfType = operation.getOwningClass();
+					if (selfType != null) {
+						type = selfType;
+					}
+				}
+			}
+		}
+		return type;
+	} */
+
+	/**
+	 * @since 1.17
+	 */
+	public static @NonNull Type getType(@NonNull TypedElement typedElement) {
+		Type type = PivotUtil.getType(typedElement);
 		//		type = getType(type);
 		type = getNonLambdaType(type);
 		if (type instanceof SelfType) {

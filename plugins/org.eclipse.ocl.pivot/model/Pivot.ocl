@@ -9,6 +9,22 @@ context Constraint
 inv BooleanValued: ownedSpecification <> null and ownedSpecification.type <> null implies ownedSpecification.type = Boolean or ownedSpecification.type = OclVoid
 inv UniqueName: true -- _'context'.ownedRule->excluding(self)->forAll(name <> self.name or stereotype <> self.stereotype)
 
+context DataType
+/**
+ * A behavioral class must be distinctly named to avoid the risk of conformance loops.
+ * FIXME relax this once CompleteClasses are eliminated.
+ */
+inv BehavioralClassHasDistinctName: behavioralClass <> null implies superClasses->closure(superClasses)->forAll(b | b.name <> name)
+/**
+ * A behavioral class must be a PrimitiveType, specifically Integer or Real.
+ * FIXME relax this once behavioralClass is re-typed to PrimitiveType..
+ */
+inv BehavioralClassIsPrimitiveType: behavioralClass <> null implies behavioralClass.oclIsKindOf(PrimitiveType)
+/**
+ * The behavioral class must be a superClass to ensure that its conformance provides the beahvioral functionaality., specifically Integer or Real.
+ */
+inv BehavioralClassIsSuperClass: behavioralClass <> null implies superClasses->includes(behavioralClass)
+
 context Element
 def: allOwnedElements() : Set(Element) =
 	self->closure(oclContents()->selectByKind(Element))
@@ -39,6 +55,10 @@ def: allOwnedElements() : Set(Element) =
 --p.oclIsKindOf(self.oclType())
 
 context Type
+/**
+ * Return the type to be used as the element type when this is flattened. For most types this is self.
+ * For a CollectionType, it is the transitive element type.
+ */
 def: flattenedType() : Type[?] = self
 
 --context CollectionType
@@ -262,11 +282,13 @@ inv SourceIsIterable: ownedSource?.type.oclIsKindOf(IterableType)
 /** The loop variable of an iterator expression has no init expression. */
 inv NoInitializers: self.ownedIterators->forAll(ownedInit->isEmpty())
 /** The loop variable of an iterator expression has no init expression. */
-inv NoCoInitializers: self.ownedCoIterators->forAll(ownedInit->isEmpty())
-/** A Map must have the same number of iterators and co-iterators. */
-inv MatchingMapCoIterators: ownedSource?.type.oclIsKindOf(MapType) implies self.ownedCoIterators->size() = self.ownedIterators->size()
-/** A Collection must have the same no co-iterators. */
-inv NoCollectionCoIterators: ownedSource?.type.oclIsKindOf(CollectionType) implies self.ownedCoIterators->isEmpty()
+inv NoCoInitializers: self.ownedCoIterators?->forAll(ownedInit->isEmpty())
+/** A Map must have the no co-iterators or the same number of iterators and co-iterators. */
+inv MatchingMapCoIterators: ownedSource?.type.oclIsKindOf(MapType) implies (self.ownedCoIterators->size() = 0) or (self.ownedCoIterators->size() = self.ownedIterators->size())
+/** An Ordered Collection must have the no co-iterators or the same number of iterators and co-iterators. */
+inv MatchingOrderedCollectionCoIterators: (ownedSource?.type.oclIsKindOf(OrderedSetType) or ownedSource?.type.oclIsKindOf(SequenceType)) implies (self.ownedCoIterators->size() = 0) or (self.ownedCoIterators->size() = self.ownedIterators->size())
+/** A not-Ordered Collection must have no co-iterators. */
+inv NoNotOrderedCollectionCoIterators: (ownedSource?.type.oclIsKindOf(BagType) or ownedSource?.type.oclIsKindOf(SetType)) implies self.ownedCoIterators->isEmpty()
 
 context IteratorExp
 /** The type of each collection iterator variable must be the type of the elements of the source collection. */

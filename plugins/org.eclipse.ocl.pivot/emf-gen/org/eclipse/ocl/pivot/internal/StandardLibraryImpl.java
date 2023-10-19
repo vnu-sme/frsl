@@ -435,7 +435,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 	public void defineLibraryType(org.eclipse.ocl.pivot.@NonNull Class pivotType) {
 		Map<String, org.eclipse.ocl.pivot.Class> nameToLibraryTypeMap2 = nameToLibraryTypeMap;
 		if (nameToLibraryTypeMap2 == null) {
-			nameToLibraryTypeMap = nameToLibraryTypeMap2 = new HashMap<String, org.eclipse.ocl.pivot.Class>();
+			nameToLibraryTypeMap = nameToLibraryTypeMap2 = new HashMap<>();
 		}
 		String name = pivotType.getName();
 		org.eclipse.ocl.pivot.Class oldType = nameToLibraryTypeMap2.put(name, pivotType);
@@ -448,7 +448,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 	public void defineLibraryTypes(@NonNull Iterable<org.eclipse.ocl.pivot.@NonNull Class> pivotTypes) {
 		Map<String, org.eclipse.ocl.pivot.Class> nameToLibraryTypeMap2 = nameToLibraryTypeMap;
 		if (nameToLibraryTypeMap2 == null) {
-			nameToLibraryTypeMap = nameToLibraryTypeMap2 = new HashMap<String, org.eclipse.ocl.pivot.Class>();
+			nameToLibraryTypeMap = nameToLibraryTypeMap2 = new HashMap<>();
 		}
 		for (org.eclipse.ocl.pivot.@NonNull Class pivotType : pivotTypes) {
 			String name = pivotType.getName();
@@ -570,7 +570,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 	public org.eclipse.ocl.pivot.Class getLibraryType(@NonNull String typeName) {
 		Map<String, org.eclipse.ocl.pivot.Class> nameToLibraryTypeMap2 = nameToLibraryTypeMap;
 		if (nameToLibraryTypeMap2 == null) {
-			nameToLibraryTypeMap = nameToLibraryTypeMap2 = new HashMap<String, org.eclipse.ocl.pivot.Class>();
+			nameToLibraryTypeMap = nameToLibraryTypeMap2 = new HashMap<>();
 			loadDefaultLibrary(defaultStandardLibraryURI);
 		}
 		return nameToLibraryTypeMap2.get(typeName);
@@ -606,10 +606,10 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 	}
 
 	@Override
-	public Type getMetaType(@NonNull Type instanceType) {
-		if (instanceType instanceof PrimitiveType) {
-			return getASClass(TypeId.PRIMITIVE_TYPE_NAME);
-		}
+	public @NonNull Type getMetaType(@NonNull Type instanceType) {
+	//	if (instanceType instanceof PrimitiveType) {
+	//		return getASClass(TypeId.PRIMITIVE_TYPE_NAME);
+	//	}
 		//		throw new UnsupportedOperationException();
 		return getMetaclass(instanceType);
 	}
@@ -663,6 +663,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 	public @NonNull Operation getOclInvalidOperation() {
 		Operation oclInvalidOperation2 = oclInvalidOperation;
 		if (oclInvalidOperation2 == null) {
+			AnyType anyType = getOclAnyType();
 			InvalidType invalidType = getOclInvalidType();
 			List<Operation> invalidOperations = invalidType.getOwnedOperations();
 			String invalidName = "oclBadOperation";
@@ -670,7 +671,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 			if (oclInvalidOperation2 == null) {
 				oclInvalidOperation2 = PivotFactory.eINSTANCE.createOperation();
 				oclInvalidOperation2.setName(invalidName);
-				oclInvalidOperation2.setType(invalidType);
+				oclInvalidOperation2.setType(anyType);
 				oclInvalidOperation2.setImplementation(OclAnyUnsupportedOperation.INSTANCE);
 				invalidOperations.add(oclInvalidOperation2);
 			}
@@ -683,6 +684,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 	public @NonNull Property getOclInvalidProperty() {
 		Property oclInvalidProperty2 = oclInvalidProperty;
 		if (oclInvalidProperty2 == null) {
+			AnyType anyType = getOclAnyType();
 			InvalidType invalidType = getOclInvalidType();
 			List<Property> invalidProperties = invalidType.getOwnedProperties();
 			String invalidName = "oclBadProperty";
@@ -690,7 +692,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 			if (oclInvalidProperty2 == null) {
 				oclInvalidProperty2 = PivotFactory.eINSTANCE.createProperty();
 				oclInvalidProperty2.setName(invalidName);
-				oclInvalidProperty2.setType(invalidType);
+				oclInvalidProperty2.setType(anyType);
 				oclInvalidProperty2.setImplementation(OclAnyUnsupportedOperation.INSTANCE);
 				invalidProperties.add(oclInvalidProperty2);
 			}
@@ -756,7 +758,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 	public org.eclipse.ocl.pivot.@NonNull Class getOclTupleType() {
 		org.eclipse.ocl.pivot.Class oclTupleType2 = oclTupleType;
 		if (oclTupleType2 == null) {
-			oclTupleType2 = oclTupleType = resolveRequiredSimpleType(org.eclipse.ocl.pivot.Class.class, "OclTuple");
+			oclTupleType2 = oclTupleType = resolveRequiredSimpleType(org.eclipse.ocl.pivot.Class.class, TypeId.OCL_TUPLE_NAME);
 		}
 		return oclTupleType2;
 	}
@@ -770,7 +772,7 @@ public class StandardLibraryImpl extends ElementImpl implements StandardLibrary,
 	public org.eclipse.ocl.pivot.@NonNull Class getOclTypeType() {
 		org.eclipse.ocl.pivot.Class oclTypeType2 = oclTypeType;
 		if (oclTypeType2 == null) {
-			oclTypeType2 = oclTypeType = resolveRequiredSimpleType(org.eclipse.ocl.pivot.Class.class, "OclType");
+			oclTypeType2 = oclTypeType = resolveRequiredSimpleType(org.eclipse.ocl.pivot.Class.class, TypeId.OCL_TYPE_NAME);
 		}
 		return oclTypeType2;
 	}

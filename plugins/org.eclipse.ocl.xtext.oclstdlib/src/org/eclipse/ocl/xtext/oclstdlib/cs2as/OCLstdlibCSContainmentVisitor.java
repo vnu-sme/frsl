@@ -12,7 +12,9 @@
 package org.eclipse.ocl.xtext.oclstdlib.cs2as;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -34,6 +36,7 @@ import org.eclipse.ocl.pivot.internal.utilities.PivotUtilInternal;
 import org.eclipse.ocl.pivot.model.OCLstdlib;
 import org.eclipse.ocl.pivot.utilities.NameUtil;
 import org.eclipse.ocl.pivot.utilities.PivotUtil;
+import org.eclipse.ocl.pivot.values.NumberValue;
 import org.eclipse.ocl.xtext.base.cs2as.CS2ASConversion;
 import org.eclipse.ocl.xtext.base.cs2as.Continuation;
 import org.eclipse.ocl.xtext.base.utilities.BaseCSResource;
@@ -51,6 +54,8 @@ import org.eclipse.ocl.xtext.oclstdlibcs.MetaclassNameCS;
 import org.eclipse.ocl.xtext.oclstdlibcs.OCLstdlibCSPackage;
 import org.eclipse.ocl.xtext.oclstdlibcs.PrecedenceCS;
 import org.eclipse.ocl.xtext.oclstdlibcs.util.AbstractOCLstdlibCSContainmentVisitor;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 
 public class OCLstdlibCSContainmentVisitor extends AbstractOCLstdlibCSContainmentVisitor
 {
@@ -72,23 +77,99 @@ public class OCLstdlibCSContainmentVisitor extends AbstractOCLstdlibCSContainmen
 	}
 
 	@Override
-	public Continuation<?> visitLibClassCS(@NonNull LibClassCS csElement) {
+	public Continuation<?> visitLibClassCS(@NonNull LibClassCS csClass) {
+		//
+		//	Resolve explicit insstanceClass
+		//
+		String instanceClassName = null;
+		JavaClassCS implementation = csClass.getImplementation();
+		if ((implementation != null) && !implementation.eIsProxy()) {
+			instanceClassName = implementation.getName();
+		}
+		Class<?> instanceClass = null;
+		if (instanceClassName != null) {
+			try {
+				instanceClass = metamodelManager.getImplementationManager().loadImplementation(csClass, instanceClassName);
+			} catch (ClassNotFoundException e) {
+				context.addError(csClass, e.toString(), e);
+			}
+		}
+		//
+		//	Resolve explicit metaType name object
+		//
+		MetaclassNameCS csMetaclassName = null;
+		List<INode> featureNodes = NodeModelUtils.findNodesForFeature(csClass, OCLstdlibCSPackage.Literals.LIB_CLASS_CS__METACLASS_NAME);
+		if ((featureNodes != null) && (featureNodes.size() > 0)) {
+			INode metaclassNameNode = featureNodes.get(0);
+			String metaTypeNameText = NodeModelUtils.getTokenText(metaclassNameNode);
+			if (metaTypeNameText != null) {
+				csMetaclassName = ((OCLstdlibCS2AS)context.getConverter()).getMetaclassName(metaTypeNameText);
+			}
+			if (csMetaclassName == null) {
+				context.addError(csClass, metaclassNameNode, "Unresolved metatype for ''{0}''", csClass);
+			}
+		}
+		csClass.setMetaclassName(csMetaclassName);
+		//
+		//	Resolve metaType EClass and provide a default implicit instanceClass
+		//
 		EClass eClass = null;
-		MetaclassNameCS metaType = ((OCLstdlibCS2AS)context.getConverter()).lookUpMetaTypeName(csElement, OCLstdlibCSPackage.Literals.LIB_CLASS_CS__METACLASS_NAME);
-		if ((metaType != null) && !metaType.eIsProxy()) {
-			String metaTypeName = metaType.getName();
+		if ((csMetaclassName != null) && !csMetaclassName.eIsProxy()) {
+			String metaTypeName = csMetaclassName.getName();
 			eClass = (EClass) NameUtil.getENamedElement(PivotPackage.eINSTANCE.getEClassifiers(), metaTypeName);
+			if (eClass != null) {
+				instanceClass = eClass.getInstanceClass();
+			}
 		}
+		//
+		//	Provide a default metaType EClass
+		//
 		if (eClass == null) {
-			eClass = PivotPackage.Literals.CLASS;
+			if (instanceClass == null) {
+				eClass = PivotPackage.Literals.CLASS;
+			}
+			else if (Boolean.class == instanceClass) {
+				eClass = PivotPackage.Literals.BOOLEAN_TYPE;
+			}
+			else if (String.class == instanceClass) {
+				eClass = PivotPackage.Literals.PRIMITIVE_TYPE;
+			}
+			else if (Collection.class.isAssignableFrom(instanceClass)) {
+				eClass = PivotPackage.Literals.COLLECTION_TYPE;
+			}
+			else if (Map.class.isAssignableFrom(instanceClass)) {
+				eClass = PivotPackage.Literals.MAP_TYPE;
+			}
+			else if (NumberValue.class.isAssignableFrom(instanceClass)) {
+				eClass = PivotPackage.Literals.PRIMITIVE_TYPE;
+			}
+			else if (Number.class.isAssignableFrom(instanceClass)) {
+				eClass = PivotPackage.Literals.PRIMITIVE_TYPE;
+			}
+			else {
+				eClass = PivotPackage.Literals.CLASS;
+			}
 		}
+		//
+		//	Provide a default instanceClass
+		//
+	//	if (instanceClass == null) {
+	//		instanceClass = EObject.class;
+	//	}
+		if ((instanceClass != null) && (instanceClassName == null)) {
+			instanceClassName = instanceClass.getName();
+		}
+		//
+		//	Finally refresh the class.
+		//
 		@SuppressWarnings("unchecked")
-		Class<org.eclipse.ocl.pivot.Class> instanceClass = (Class<org.eclipse.ocl.pivot.Class>)eClass.getInstanceClass();
-		if (instanceClass != null) {
-			org.eclipse.ocl.pivot.Class pivotElement = refreshNamedElement(instanceClass, eClass, csElement);
-			refreshClass(pivotElement, csElement);
+		Class<org.eclipse.ocl.pivot.Class> eInstanceClass = (Class<org.eclipse.ocl.pivot.Class>)eClass.getInstanceClass();
+		if (eInstanceClass != null) {
+			org.eclipse.ocl.pivot.Class pivotElement = refreshNamedElement(eInstanceClass, eClass, csClass);
+			refreshClass(pivotElement, csClass);
+			pivotElement.setInstanceClassName(instanceClassName);
 			List<Operation> coercions = null;
-			for (OperationCS csOperation : csElement.getOwnedOperations()) {
+			for (OperationCS csOperation : csClass.getOwnedOperations()) {
 				if (csOperation instanceof LibCoercionCS) {
 					if (pivotElement instanceof PrimitiveType) {
 						if (coercions == null) {

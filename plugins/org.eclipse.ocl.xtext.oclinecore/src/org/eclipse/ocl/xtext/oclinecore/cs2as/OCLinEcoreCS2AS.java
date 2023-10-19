@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ocl.xtext.oclinecore.cs2as;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.ocl.pivot.Element;
 import org.eclipse.ocl.pivot.internal.utilities.EnvironmentFactoryInternal;
@@ -28,7 +24,8 @@ import org.eclipse.ocl.xtext.oclinecorecs.util.OCLinEcoreCSVisitor;
 public class OCLinEcoreCS2AS extends EssentialOCLCS2AS
 {
 	public OCLinEcoreCS2AS(@NonNull EnvironmentFactoryInternal environmentFactory, @NonNull BaseCSResource csResource, @NonNull ASResource asResource) {
-		super(environmentFactory, csResource, asResource);	}
+		super(environmentFactory, csResource, asResource);
+	}
 
 	@Override
 	protected @NonNull OCLinEcoreCSVisitor<Continuation<?>> createContainmentVisitor(@NonNull CS2ASConversion converter) {

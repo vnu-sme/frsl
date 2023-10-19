@@ -57,6 +57,7 @@ import org.eclipse.ocl.pivot.Variable;
 import org.eclipse.ocl.pivot.VoidType;
 import org.eclipse.ocl.pivot.evaluation.EvaluationEnvironment;
 import org.eclipse.ocl.pivot.evaluation.EvaluationVisitor;
+import org.eclipse.ocl.pivot.evaluation.Executor;
 import org.eclipse.ocl.pivot.evaluation.ModelManager;
 import org.eclipse.ocl.pivot.ids.IdManager;
 import org.eclipse.ocl.pivot.ids.IdResolver;
@@ -72,8 +73,8 @@ import org.eclipse.ocl.pivot.internal.ecore.EcoreASResourceFactory;
 import org.eclipse.ocl.pivot.internal.evaluation.AbstractCustomizable;
 import org.eclipse.ocl.pivot.internal.evaluation.BasicOCLExecutor;
 import org.eclipse.ocl.pivot.internal.evaluation.ExecutorInternal;
-import org.eclipse.ocl.pivot.internal.evaluation.PivotModelManager;
 import org.eclipse.ocl.pivot.internal.library.ImplementationManager;
+import org.eclipse.ocl.pivot.internal.library.executor.LazyEcoreModelManager;
 import org.eclipse.ocl.pivot.internal.manager.FlowAnalysis;
 import org.eclipse.ocl.pivot.internal.manager.PivotMetamodelManager;
 import org.eclipse.ocl.pivot.internal.manager.TemplateParameterSubstitutionVisitor;
@@ -260,7 +261,8 @@ public abstract class AbstractEnvironmentFactory extends AbstractCustomizable im
 	public void analyzeExpressions(@NonNull EObject eRootObject,
 			@NonNull Set<@NonNull CompleteClass> allInstancesCompleteClasses, @NonNull Set<@NonNull Property> implicitOppositeProperties) {
 		Type oclElementType = standardLibrary.getOclElementType();
-		OperationId allInstancesOperationId = oclElementType.getTypeId().getOperationId(0, "allInstances", IdManager.getParametersId());
+		Type classType = standardLibrary.getClassType();
+		OperationId allInstancesOperationId = classType.getTypeId().getOperationId(0, "allInstances", IdManager.getParametersId());
 		for (EObject eObject : new TreeIterable(eRootObject, true)) {
 			if (eObject instanceof OppositePropertyCallExp) {
 				OppositePropertyCallExp oppositePropertyCallExp = (OppositePropertyCallExp)eObject;
@@ -347,8 +349,15 @@ public abstract class AbstractEnvironmentFactory extends AbstractCustomizable im
 
 	@Override
 	public @NonNull EvaluationEnvironment createEvaluationEnvironment(@NonNull NamedElement executableObject, @NonNull ModelManager modelManager) {
-		ExecutorInternal executor = createExecutor(modelManager);
-		return executor.initializeEvaluationEnvironment(executableObject);
+		Executor executor = ThreadLocalExecutor.basicGetExecutor();
+		assert executor == null;
+		executor = createExecutor(modelManager);
+//		Executor executor = ThreadLocalExecutor.basicGetExecutor();
+		assert executor != null;
+		ExecutorInternal interpretedExecutor = executor.basicGetInterpretedExecutor();
+		assert interpretedExecutor != null;
+		assert interpretedExecutor.getModelManager() == modelManager;
+		return interpretedExecutor.initializeEvaluationEnvironment(executableObject);
 	}
 
 	/** @deprecated no longer used */
@@ -360,6 +369,7 @@ public abstract class AbstractEnvironmentFactory extends AbstractCustomizable im
 
 	@Override
 	public @NonNull EvaluationVisitor createEvaluationVisitor(@Nullable Object context, @NonNull ExpressionInOCL expression, @Nullable ModelManager modelManager) {
+		ThreadLocalExecutor.setExecutor(null);					// Eliminate obsolete dropping from previous EvaluationVisitor
 		if (modelManager == null) {
 			// let the evaluation environment create one
 			modelManager = createModelManager(context);
@@ -394,7 +404,41 @@ public abstract class AbstractEnvironmentFactory extends AbstractCustomizable im
 	 */
 	@Override
 	public @NonNull ExecutorInternal createExecutor(@NonNull ModelManager modelManager) {
-		return new BasicOCLExecutor(this, modelManager);
+		Executor executor = ThreadLocalExecutor.basicGetExecutor();
+		ExecutorInternal interpretedExecutor = executor != null ? executor.basicGetInterpretedExecutor() : null;
+		if (executor == null) {
+//			interpretedExecutor = new BasicOCLExecutor(this, modelManager);
+//			executor.setInterpretedExecutor(interpretedExecutor);
+		}
+		else {
+			assert executor.getModelManager() == modelManager;
+			if (executor != interpretedExecutor) {
+				executor.setInterpretedExecutor(interpretedExecutor);
+			}
+		}
+		if (interpretedExecutor == null) {
+			interpretedExecutor = new BasicOCLExecutor(this, modelManager);
+			if (executor == null) {
+				ThreadLocalExecutor.setExecutor(interpretedExecutor);
+			}
+			else {
+				executor.setInterpretedExecutor(interpretedExecutor);
+			}
+		}
+
+
+/*		if (executor != null) {
+			ExecutorInternal interpretedExecutor = executor.basicGetInterpretedExecutor();
+		//	assert interpretedExecutor == null;
+		}
+		BasicOCLExecutor interpretedExecutor = new BasicOCLExecutor(this, modelManager);
+		if (executor == null) {
+			ThreadLocalExecutor.setExecutor(interpretedExecutor);
+		}
+		else {
+			executor.setInterpretedExecutor(interpretedExecutor);
+		} */
+		return interpretedExecutor;
 	}
 
 	/**
@@ -436,7 +480,7 @@ public abstract class AbstractEnvironmentFactory extends AbstractCustomizable im
 			object = ((ObjectValue) object).getObject();
 		}
 		if (object instanceof EObject) {
-			return new PivotModelManager(this, (EObject) object);
+			return new LazyEcoreModelManager((EObject)object);
 		}
 		return ModelManager.NULL;
 	}
@@ -580,7 +624,8 @@ public abstract class AbstractEnvironmentFactory extends AbstractCustomizable im
 	@Override
 	public @NonNull TemplateParameterSubstitutionVisitor createTemplateParameterSubstitutionVisitor(
 			@Nullable Type selfType, @Nullable Type selfTypeValue) {
-		return new TemplateParameterSubstitutionVisitor(this, selfType, selfTypeValue);
+		// assert selfTypeValue == null;			// Bug 580791 Enforcing redundant argument
+		return new TemplateParameterSubstitutionVisitor(this, selfType, null);
 	}
 
 	protected @NonNull HashMap<Object, StatusCodes.Severity> createValidationKey2severityMap() {
@@ -941,7 +986,7 @@ public abstract class AbstractEnvironmentFactory extends AbstractCustomizable im
 		if (expression == null) {
 			throw new ParserException(PivotMessagesInternal.MissingSpecificationBody_ERROR_, NameUtil.qualifiedNameFor(contextElement), PivotUtilInternal.getSpecificationRole(specification));
 		}
-		expression = PivotUtilInternal.getBodyExpression(expression);
+	//	expression = PivotUtilInternal.getBodyExpression(expression);
 		ParserContext parserContext = createParserContext(specification);
 		if (parserContext == null) {
 			throw new ParserException(PivotMessagesInternal.UnknownContextType_ERROR_, NameUtil.qualifiedNameFor(contextElement), PivotUtilInternal.getSpecificationRole(specification));

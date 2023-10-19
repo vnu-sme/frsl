@@ -12,8 +12,8 @@ package org.eclipse.ocl.pivot.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-
 import java.util.Map;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.EList;

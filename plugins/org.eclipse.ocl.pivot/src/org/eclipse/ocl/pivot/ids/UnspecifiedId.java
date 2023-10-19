@@ -6,14 +6,14 @@
  * http://www.eclipse.org/legal/epl-v20.html
  *
  * Contributors:
- *     E.D.Willink - initial API and implementation
+ *	 E.D.Willink - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ocl.pivot.ids;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
- * A UnspecifiedTypeId provides a unique identifier for an unspecified type such as a wildcard or under-specified type.
+ * A UnspecifiedTypeId provides a unique identifier for an unspecified type such as an under-specified type.
  */
 public interface UnspecifiedId extends TypeId
 {

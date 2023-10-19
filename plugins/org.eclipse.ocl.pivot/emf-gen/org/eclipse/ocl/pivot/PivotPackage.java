@@ -238,6 +238,27 @@ extends EPackage
 	EReference getElementExtension_Stereotype();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.ocl.pivot.ElementLiteralExp <em>Element Literal Exp</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Element Literal Exp</em>'.
+	 * @see org.eclipse.ocl.pivot.ElementLiteralExp
+	 * @generated
+	 */
+	EClass getElementLiteralExp();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.ocl.pivot.ElementLiteralExp#getReferredElement <em>Referred Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Referred Element</em>'.
+	 * @see org.eclipse.ocl.pivot.ElementLiteralExp#getReferredElement()
+	 * @see #getElementLiteralExp()
+	 * @generated
+	 */
+	EAttribute getElementLiteralExp_ReferredElement();
+
+	/**
 	 * Returns the meta object for the container reference '{@link org.eclipse.ocl.pivot.ElementExtension#getBase <em>Base</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -399,6 +420,36 @@ extends EPackage
 	EAttribute getDataType_Value();
 
 	/**
+	 * Returns the meta object for the '{@link org.eclipse.ocl.pivot.DataType#validateBehavioralClassHasDistinctName(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map) <em>Validate Behavioral Class Has Distinct Name</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Validate Behavioral Class Has Distinct Name</em>' operation.
+	 * @see org.eclipse.ocl.pivot.DataType#validateBehavioralClassHasDistinctName(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map)
+	 * @generated
+	 */
+	EOperation getDataType__ValidateBehavioralClassHasDistinctName__DiagnosticChain_Map();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.ocl.pivot.DataType#validateBehavioralClassIsPrimitiveType(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map) <em>Validate Behavioral Class Is Primitive Type</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Validate Behavioral Class Is Primitive Type</em>' operation.
+	 * @see org.eclipse.ocl.pivot.DataType#validateBehavioralClassIsPrimitiveType(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map)
+	 * @generated
+	 */
+	EOperation getDataType__ValidateBehavioralClassIsPrimitiveType__DiagnosticChain_Map();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.ocl.pivot.DataType#validateBehavioralClassIsSuperClass(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map) <em>Validate Behavioral Class Is Super Class</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Validate Behavioral Class Is Super Class</em>' operation.
+	 * @see org.eclipse.ocl.pivot.DataType#validateBehavioralClassIsSuperClass(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map)
+	 * @generated
+	 */
+	EOperation getDataType__ValidateBehavioralClassIsSuperClass__DiagnosticChain_Map();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.ocl.pivot.BooleanLiteralExp <em>Boolean Literal Exp</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -428,6 +479,16 @@ extends EPackage
 	 * @generated
 	 */
 	EOperation getBooleanLiteralExp__ValidateTypeIsBoolean__DiagnosticChain_Map();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.ocl.pivot.BooleanType <em>Boolean Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Boolean Type</em>'.
+	 * @see org.eclipse.ocl.pivot.BooleanType
+	 * @generated
+	 */
+	EClass getBooleanType();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.ocl.pivot.PrimitiveLiteralExp <em>Primitive Literal Exp</em>}'.
@@ -1813,6 +1874,16 @@ extends EPackage
 	EOperation getLoopExp__ValidateMatchingMapCoIterators__DiagnosticChain_Map();
 
 	/**
+	 * Returns the meta object for the '{@link org.eclipse.ocl.pivot.LoopExp#validateMatchingOrderedCollectionCoIterators(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map) <em>Validate Matching Ordered Collection Co Iterators</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Validate Matching Ordered Collection Co Iterators</em>' operation.
+	 * @see org.eclipse.ocl.pivot.LoopExp#validateMatchingOrderedCollectionCoIterators(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map)
+	 * @generated
+	 */
+	EOperation getLoopExp__ValidateMatchingOrderedCollectionCoIterators__DiagnosticChain_Map();
+
+	/**
 	 * Returns the meta object for the '{@link org.eclipse.ocl.pivot.LoopExp#validateNoCoInitializers(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map) <em>Validate No Co Initializers</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1821,16 +1892,6 @@ extends EPackage
 	 * @generated
 	 */
 	EOperation getLoopExp__ValidateNoCoInitializers__DiagnosticChain_Map();
-
-	/**
-	 * Returns the meta object for the '{@link org.eclipse.ocl.pivot.LoopExp#validateNoCollectionCoIterators(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map) <em>Validate No Collection Co Iterators</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Validate No Collection Co Iterators</em>' operation.
-	 * @see org.eclipse.ocl.pivot.LoopExp#validateNoCollectionCoIterators(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map)
-	 * @generated
-	 */
-	EOperation getLoopExp__ValidateNoCollectionCoIterators__DiagnosticChain_Map();
 
 	/**
 	 * Returns the meta object for the '{@link org.eclipse.ocl.pivot.LoopExp#validateSourceIsCollection(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map) <em>Validate Source Is Collection</em>}' operation.
@@ -1979,6 +2040,16 @@ extends EPackage
 	 * @generated
 	 */
 	EOperation getLoopExp__ValidateNoInitializers__DiagnosticChain_Map();
+
+	/**
+	 * Returns the meta object for the '{@link org.eclipse.ocl.pivot.LoopExp#validateNoNotOrderedCollectionCoIterators(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map) <em>Validate No Not Ordered Collection Co Iterators</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Validate No Not Ordered Collection Co Iterators</em>' operation.
+	 * @see org.eclipse.ocl.pivot.LoopExp#validateNoNotOrderedCollectionCoIterators(org.eclipse.emf.common.util.DiagnosticChain, java.util.Map)
+	 * @generated
+	 */
+	EOperation getLoopExp__ValidateNoNotOrderedCollectionCoIterators__DiagnosticChain_Map();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.ocl.pivot.MessageExp <em>Message Exp</em>}'.
@@ -5695,6 +5766,16 @@ extends EPackage
 	EDataType getBoolean();
 
 	/**
+	 * Returns the meta object for data type '{@link org.eclipse.emf.ecore.EObject <em>Ecore Object</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Ecore Object</em>'.
+	 * @see org.eclipse.emf.ecore.EObject
+	 * @generated
+	 */
+	EDataType getEcoreObject();
+
+	/**
 	 * Returns the meta object for data type '{@link java.lang.Number <em>Integer</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5931,6 +6012,24 @@ extends EPackage
 		EReference ELEMENT_EXTENSION__STEREOTYPE = eINSTANCE.getElementExtension_Stereotype();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.ocl.pivot.internal.ElementLiteralExpImpl <em>Element Literal Exp</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.ocl.pivot.internal.ElementLiteralExpImpl
+		 * @see org.eclipse.ocl.pivot.internal.PivotPackageImpl#getElementLiteralExp()
+		 * @generated
+		 */
+		EClass ELEMENT_LITERAL_EXP = eINSTANCE.getElementLiteralExp();
+
+		/**
+		 * The meta object literal for the '<em><b>Referred Element</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ELEMENT_LITERAL_EXP__REFERRED_ELEMENT = eINSTANCE.getElementLiteralExp_ReferredElement();
+
+		/**
 		 * The meta object literal for the '<em><b>Base</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6101,6 +6200,30 @@ extends EPackage
 		EAttribute DATA_TYPE__VALUE = eINSTANCE.getDataType_Value();
 
 		/**
+		 * The meta object literal for the '<em><b>Validate Behavioral Class Has Distinct Name</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DATA_TYPE___VALIDATE_BEHAVIORAL_CLASS_HAS_DISTINCT_NAME__DIAGNOSTICCHAIN_MAP = eINSTANCE.getDataType__ValidateBehavioralClassHasDistinctName__DiagnosticChain_Map();
+
+		/**
+		 * The meta object literal for the '<em><b>Validate Behavioral Class Is Primitive Type</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DATA_TYPE___VALIDATE_BEHAVIORAL_CLASS_IS_PRIMITIVE_TYPE__DIAGNOSTICCHAIN_MAP = eINSTANCE.getDataType__ValidateBehavioralClassIsPrimitiveType__DiagnosticChain_Map();
+
+		/**
+		 * The meta object literal for the '<em><b>Validate Behavioral Class Is Super Class</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DATA_TYPE___VALIDATE_BEHAVIORAL_CLASS_IS_SUPER_CLASS__DIAGNOSTICCHAIN_MAP = eINSTANCE.getDataType__ValidateBehavioralClassIsSuperClass__DiagnosticChain_Map();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.ocl.pivot.internal.BooleanLiteralExpImpl <em>Boolean Literal Exp</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6125,6 +6248,16 @@ extends EPackage
 		 * @generated
 		 */
 		EOperation BOOLEAN_LITERAL_EXP___VALIDATE_TYPE_IS_BOOLEAN__DIAGNOSTICCHAIN_MAP = eINSTANCE.getBooleanLiteralExp__ValidateTypeIsBoolean__DiagnosticChain_Map();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.ocl.pivot.internal.BooleanTypeImpl <em>Boolean Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.ocl.pivot.internal.BooleanTypeImpl
+		 * @see org.eclipse.ocl.pivot.internal.PivotPackageImpl#getBooleanType()
+		 * @generated
+		 */
+		EClass BOOLEAN_TYPE = eINSTANCE.getBooleanType();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.ocl.pivot.internal.PrimitiveLiteralExpImpl <em>Primitive Literal Exp</em>}' class.
@@ -7217,20 +7350,20 @@ extends EPackage
 		EOperation LOOP_EXP___VALIDATE_MATCHING_MAP_CO_ITERATORS__DIAGNOSTICCHAIN_MAP = eINSTANCE.getLoopExp__ValidateMatchingMapCoIterators__DiagnosticChain_Map();
 
 		/**
+		 * The meta object literal for the '<em><b>Validate Matching Ordered Collection Co Iterators</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation LOOP_EXP___VALIDATE_MATCHING_ORDERED_COLLECTION_CO_ITERATORS__DIAGNOSTICCHAIN_MAP = eINSTANCE.getLoopExp__ValidateMatchingOrderedCollectionCoIterators__DiagnosticChain_Map();
+
+		/**
 		 * The meta object literal for the '<em><b>Validate No Co Initializers</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EOperation LOOP_EXP___VALIDATE_NO_CO_INITIALIZERS__DIAGNOSTICCHAIN_MAP = eINSTANCE.getLoopExp__ValidateNoCoInitializers__DiagnosticChain_Map();
-
-		/**
-		 * The meta object literal for the '<em><b>Validate No Collection Co Iterators</b></em>' operation.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EOperation LOOP_EXP___VALIDATE_NO_COLLECTION_CO_ITERATORS__DIAGNOSTICCHAIN_MAP = eINSTANCE.getLoopExp__ValidateNoCollectionCoIterators__DiagnosticChain_Map();
 
 		/**
 		 * The meta object literal for the '<em><b>Validate Source Is Collection</b></em>' operation.
@@ -7349,6 +7482,14 @@ extends EPackage
 		 * @generated
 		 */
 		EOperation LOOP_EXP___VALIDATE_NO_INITIALIZERS__DIAGNOSTICCHAIN_MAP = eINSTANCE.getLoopExp__ValidateNoInitializers__DiagnosticChain_Map();
+
+		/**
+		 * The meta object literal for the '<em><b>Validate No Not Ordered Collection Co Iterators</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation LOOP_EXP___VALIDATE_NO_NOT_ORDERED_COLLECTION_CO_ITERATORS__DIAGNOSTICCHAIN_MAP = eINSTANCE.getLoopExp__ValidateNoNotOrderedCollectionCoIterators__DiagnosticChain_Map();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.ocl.pivot.internal.MessageExpImpl <em>Message Exp</em>}' class.
@@ -10342,6 +10483,16 @@ extends EPackage
 		 * @generated
 		 */
 		EDataType BOOLEAN = eINSTANCE.getBoolean();
+
+		/**
+		 * The meta object literal for the '<em>Ecore Object</em>' data type.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.emf.ecore.EObject
+		 * @see org.eclipse.ocl.pivot.internal.PivotPackageImpl#getEcoreObject()
+		 * @generated
+		 */
+		EDataType ECORE_OBJECT = eINSTANCE.getEcoreObject();
 
 		/**
 		 * The meta object literal for the '<em>Integer</em>' data type.

@@ -65,7 +65,6 @@ import org.eclipse.ocl.pivot.ShadowExp;
 import org.eclipse.ocl.pivot.ShadowPart;
 import org.eclipse.ocl.pivot.StandardLibrary;
 import org.eclipse.ocl.pivot.StringLiteralExp;
-import org.eclipse.ocl.pivot.TemplateParameter;
 import org.eclipse.ocl.pivot.TupleLiteralExp;
 import org.eclipse.ocl.pivot.TupleLiteralPart;
 import org.eclipse.ocl.pivot.TupleType;
@@ -78,9 +77,10 @@ import org.eclipse.ocl.pivot.VariableDeclaration;
 import org.eclipse.ocl.pivot.VariableExp;
 import org.eclipse.ocl.pivot.ids.TypeId;
 import org.eclipse.ocl.pivot.internal.manager.PivotMetamodelManager;
-import org.eclipse.ocl.pivot.internal.manager.TemplateParameterSubstitutionHelper;
+import org.eclipse.ocl.pivot.internal.manager.TemplateParameterSubstitutionVisitor;
+import org.eclipse.ocl.pivot.internal.utilities.EnvironmentFactoryInternal;
 import org.eclipse.ocl.pivot.internal.utilities.PivotUtilInternal;
-import org.eclipse.ocl.pivot.library.LibraryFeature;
+import org.eclipse.ocl.pivot.library.LibraryIterationOrOperation;
 import org.eclipse.ocl.pivot.values.TemplateParameterSubstitutions;
 
 import com.google.common.collect.Iterables;
@@ -322,14 +322,14 @@ public class PivotHelper
 				boolean gotOne = true;
 				for (int i = 0; i < argumentCount; i++) {
 					Type asParameterType = ClassUtil.nonNullState(asParameters.get(i).getType());
+					OCLExpression asArgument = asArguments[i];
+					Type asArgumentType = asArgument.getType();
 					if (asParameterType instanceof SelfType) {
-						Type asArgumentType = asArguments[i].getType();
 						if (asArgumentType.conformsTo(standardLibrary, asType) && asType.conformsTo(standardLibrary, asArgumentType)) {
 							exactMatches++;
 						}
 					}
 					else {
-						Type asArgumentType = asArguments[i].getType();
 						if (!asArgumentType.conformsTo(standardLibrary, asParameterType)) {
 							gotOne = false;
 							break;
@@ -488,12 +488,14 @@ public class PivotHelper
 		return tupleLiteralPart;
 	}
 
-	public @NonNull TypeExp createTypeExp(@NonNull Type type) {
+	public @NonNull TypeExp createTypeExp(@NonNull Type type) {		// FIXME Class
+		assert type instanceof org.eclipse.ocl.pivot.Class;		// Not TemplateParameter
 		TypeExp asTypeExp = PivotFactory.eINSTANCE.createTypeExp();
 		asTypeExp.setIsRequired(true);
 		asTypeExp.setReferredType(type);
 		asTypeExp.setName(type.getName());
-		asTypeExp.setType(type instanceof TemplateParameter ? metamodelManager.getOclType("TemplateParameter") : standardLibrary.getClassType());
+		Type metaType = standardLibrary.getMetaclass(type);
+		asTypeExp.setType(metaType);
 		asTypeExp.setTypeValue(type);
 		return asTypeExp;
 	}
@@ -678,8 +680,11 @@ public class PivotHelper
 	@Deprecated /* @deprecated not used -doesn't set behavioral type */
 	public void setBehavioralType(@NonNull TypedElement targetElement, @NonNull TypedElement sourceElement) {
 		if (!sourceElement.eIsProxy()) {
-			Type type = PivotUtil.getBehavioralType(sourceElement);
-			if ((type != null) && type.eIsProxy()) {
+			Type type = PivotUtil.getType(sourceElement);
+			if (type instanceof SelfType) {
+				type = standardLibrary.getOclAnyType();
+			}
+			if (type.eIsProxy()) {
 				type = null;
 			}
 			boolean isRequired = sourceElement.isIsRequired();
@@ -714,50 +719,35 @@ public class PivotHelper
 	public void setOperationReturnType(@NonNull CallExp asCallExp, @NonNull Operation asOperation) {
 		OCLExpression asSourceExpression = asCallExp.getOwnedSource();
 		Type sourceType;
-		Type sourceTypeValue;
 		if (asSourceExpression != null) {
 			sourceType = asSourceExpression.getType();
-			sourceTypeValue = asSourceExpression.getTypeValue();
 		}
 		else {
 			sourceType = null;
-			sourceTypeValue = null;
 		}
 		Type returnType = null;
 		Type formalType = asOperation.getType();
-		boolean isTypeof = asOperation.isIsTypeof();
 		boolean returnIsRequired = asOperation.isIsRequired();
+		Object returnValue = null;			// Currently always a Type - see Bug 577902
 		if ((formalType != null) && (sourceType != null)) {
-			if (isTypeof) {
-				returnType = metamodelManager.specializeType(formalType, asCallExp, sourceType, null);
-			}
-			else {
-				returnType = metamodelManager.specializeType(formalType, asCallExp, sourceType, sourceTypeValue);
-			}
+			returnType = TemplateParameterSubstitutionVisitor.specializeType(formalType, asCallExp, (EnvironmentFactoryInternal)environmentFactory, sourceType, null);
 		}
 		//
 		//	The flattening of collect() and consequently implicit-collect is not modelled accurately.
 		//	Other library operations have subtle non-null/size computations.
-		//	Therefore allow an operation-specific TemplateParameterSubstitutionHelper to adjust the regular functionality above.
+		//	Therefore allow an operation-specific overrides to adjust the regular functionality above.
 		//
-		LibraryFeature implementationClass = asOperation.getImplementation();
-		if (implementationClass != null) {
-			Class<? extends LibraryFeature> libraryClass = implementationClass.getClass();
-			TemplateParameterSubstitutionHelper substitutionHelper = TemplateParameterSubstitutionHelper.getHelper(libraryClass);
-			if (substitutionHelper != null) {
-				returnType = substitutionHelper.resolveReturnType(metamodelManager, asCallExp, returnType);
-				returnIsRequired = substitutionHelper.resolveReturnNullity(metamodelManager, asCallExp, returnIsRequired);
-			}
-		}
-		Type returnTypeValue;
-		if (isTypeof) {
-			returnTypeValue = returnType;
-			returnType = standardLibrary.getClassType();
+		LibraryIterationOrOperation implementation = (LibraryIterationOrOperation)asOperation.getImplementation();
+		if (implementation != null) {		// Library classes have implementations, Complete OCL classes may be recursive
+			returnType = implementation.resolveReturnType(environmentFactory, asCallExp, returnType);
+			returnIsRequired = implementation.resolveReturnNullity(environmentFactory, asCallExp, returnIsRequired);
+			returnValue = implementation.resolveReturnValue(environmentFactory, asCallExp);
+		//	assert (returnValue == null) || ((returnType != null) && returnType.getName().equals(((EObject)returnValue).eClass().getName()));	// Not valid once AnyType/VoidType get involved
 		}
 		else {
-			returnTypeValue = null;
+			assert !asOperation.isIsTypeof();			// typeof return declaration must now be realized by an operation override
 		}
-		setType(asCallExp, returnType, returnIsRequired, returnTypeValue);
+		setType(asCallExp, returnType, returnIsRequired, (Type)returnValue);
 	}
 
 	public void setType(@NonNull OCLExpression asExpression, Type type, boolean isRequired, @Nullable Type typeValue) {

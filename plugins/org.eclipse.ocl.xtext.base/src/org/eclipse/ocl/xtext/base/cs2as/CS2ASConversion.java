@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -67,6 +63,7 @@ import org.eclipse.ocl.pivot.Type;
 import org.eclipse.ocl.pivot.TypedElement;
 import org.eclipse.ocl.pivot.VariableDeclaration;
 import org.eclipse.ocl.pivot.internal.context.AbstractBase2ASConversion;
+import org.eclipse.ocl.pivot.internal.manager.Orphanage;
 import org.eclipse.ocl.pivot.internal.scoping.ScopeFilter;
 import org.eclipse.ocl.pivot.internal.utilities.IllegalLibraryException;
 import org.eclipse.ocl.pivot.internal.utilities.PivotConstantsInternal;
@@ -121,7 +118,7 @@ import com.google.common.collect.Iterables;
 
 public class CS2ASConversion extends AbstractBase2ASConversion
 {
-	
+	private static final Logger logger = Logger.getLogger(CS2ASConversion.class);
 	public static final @NonNull TracingOption CONTINUATION = new TracingOption("org.eclipse.ocl.xtext.base", "continuation");  //$NON-NLS-1$//$NON-NLS-2$
 
 	public static class CacheKey<T>
@@ -141,7 +138,6 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 	/**
 	 * The Visitors
 	 */
-	private static final Logger logger = Logger.getLogger(CS2ASConversion.class);
 	private final @NonNull BaseCSVisitor<Continuation<?>> containmentVisitor;
 	private final @NonNull BaseCSVisitor<Element> left2RightVisitor;
 	private final @NonNull BaseCSVisitor<Continuation<?>> postOrderVisitor;
@@ -158,12 +154,14 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 
 	private Map<String, org.eclipse.ocl.pivot.Package> oldPackagesByName = null;
 	private Map<String, org.eclipse.ocl.pivot.Package> oldPackagesByQualifiedName = null;	// WIP lose this since using nsURIs
+
 	/**
 	 * The handler for any generated diagnostics. If null (which is deprecated) diagnostics are inserted
 	 * directly into the resource errors list.
 	 */
 	@SuppressWarnings("unused")
 	private final IDiagnosticConsumer diagnosticsConsumer;
+
 	private boolean hasFailed = false;
 	private boolean optionalDefaultMultiplicity;
 
@@ -200,25 +198,26 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 	}
 
 	public void addError(@NonNull ElementCS csElement, /*@NonNull*/ String message, Object... bindings) {
-		String boundMessage = NLS.bind(message, bindings);
 		INode node = NodeModelUtils.getNode(csElement);
+		addError(csElement, node, message, bindings);
+	}
+
+	public void addError(@NonNull ElementCS csElement, /*@NonNull*/ INode node, /*@NonNull*/ String message, Object... bindings) {
+		String boundMessage = NLS.bind(message, bindings);
 		Resource.Diagnostic resourceDiagnostic = new ValidationDiagnostic(node, boundMessage);
 		csElement.eResource().getErrors().add(resourceDiagnostic);
-		
-//		ILog log = Platform.getLog(CS2ASConversion.class);
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2ASConversion$addError"
-//			+ "\n****message = " + message
-//			);
-//		log.log(status);	
-		
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ocl.xtext.base.cs2as.DiagnosticHandler#addWarning(org.eclipse.ocl.xtext.basecs.ModelElementCS, java.lang.String, java.lang.Object)
 	 */
 	public void addWarning(@NonNull ModelElementCS csElement, /*@NonNull*/ String message, Object... bindings) {
-		String boundMessage = NLS.bind(message, bindings);
 		INode node = NodeModelUtils.getNode(csElement);
+		addWarning(csElement, node, message, bindings);
+	}
+
+	public void addWarning(@NonNull ModelElementCS csElement, /*@NonNull*/ INode node, /*@NonNull*/ String message, Object... bindings) {
+		String boundMessage = NLS.bind(message, bindings);
 		Resource.Diagnostic resourceDiagnostic = new ValidationDiagnostic(node, boundMessage);
 		csElement.eResource().getWarnings().add(resourceDiagnostic);
 	}
@@ -348,8 +347,8 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 			allPivotResources.add(lockingObject);						// Locked elements are not dead
 		}
 		allPivotResources.addAll(metamodelManager.getLibraries());			// Library elements are not dead
-		allPivotResources.addAll(cs2asResourceMap.keySet());			// Incoming elements are not dead
-		allPivotResources.remove(metamodelManager.getCompleteModel().getOrphanage().eResource());
+		allPivotResources.addAll(cs2asResourceMap.keySet());				// Incoming elements are not dead
+		allPivotResources.remove(metamodelManager.getCompleteModel().getOrphanage().eResource());			// FIXME redundant ??
 		@SuppressWarnings("serial")
 		Map<EObject, Collection<Setting>> referencesToOrphans = new EcoreUtil.CrossReferencer(allPivotResources)
 		{
@@ -567,25 +566,13 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 			if (name.equals(qualifiedName)) {
 				oldPkg = oldPackagesByName.put(name, pkg);
 				if ((oldPkg != null) && name.equals(getQualifiedName(new StringBuilder(), oldPkg))) {
-					//logger.warn("oldPkg.eContainer = " + oldPkg.eContainer().getClass() );					
 					logger.warn("Duplicate unqualified package name: " + qualifiedName);
 				}
-				
-				
-				if("$$".equals(name)) {
-					logger.warn("oldPkg.put and oldPkg.eContainer = " + pkg.eContainer().getClass() );			
-				}
-				
 			}
 			else {
 				oldPkg = oldPackagesByName.get(name);
 				if (oldPkg == null) {
 					oldPackagesByName.put(name, pkg);
-					
-					if("$$".equals(name)) {
-						logger.warn("oldPkg.put and oldPkg.eContainer = " + pkg.eContainer().getClass() );			
-					}
-					
 				}
 			}
 			@NonNull List<org.eclipse.ocl.pivot.Package> nestedPackage = pkg.getOwnedPackages();
@@ -597,6 +584,7 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 		return converter;
 	}
 
+	@Override
 	public final @NonNull PivotHelper getHelper() {
 		return converter.getHelper();
 	}
@@ -812,16 +800,8 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 	}
 
 	public void installRootElement(@NonNull BaseCSResource csResource, @NonNull Element pivotElement) {
-		Resource asResource = converter.getASResource();		
+		Resource asResource = converter.getASResource();
 		asResource.getContents().add(pivotElement);
-
-//		ILog log = Platform.getLog(CS2ASConversion.class);		
-//		IStatus logMsg = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2ASConversion::installRootElement"
-//				+ "\n**** asResource = " + asResource
-//				+ "\n**** pivotElement =" + pivotElement.getClass()
-//				);
-//		log.log(logMsg);
-		
 		metamodelManager.installResource(asResource);
 	}
 
@@ -1001,43 +981,31 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 			Constraint contextConstraint = (Constraint)eContainer;
 			eContainer = contextConstraint.eContainer();
 			eContainingFeature = contextConstraint.eContainingFeature();
-			
 			if (eContainingFeature == PivotPackage.Literals.CLASS__OWNED_INVARIANTS) {
 				Type contextType = (Type)eContainer;
 				if (contextType != null) {
 					setClassifierContext(pivotSpecification, contextType);
 				}
-				setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextType, null);
+				getHelper().setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextType, null);
 			}
 			else if (eContainingFeature == PivotPackage.Literals.OPERATION__OWNED_PRECONDITIONS) {
 				Operation contextOperation = (Operation)eContainer;
 				if (contextOperation != null) {
-					
-					setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextOperation.getOwningClass(), null);
+					getHelper().setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextOperation.getOwningClass(), null);
 					setOperationContext(pivotSpecification, contextOperation, null);
-					
-//					ILog log = Platform.getLog(CS2ASConversion.class);
-//					Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2ASConversion$refreshContextVariable"
-//						+ "\n****eContainingFeature = " + eContainingFeature
-//						+ "\n****contextOperation.getOwningClass() = " + contextOperation.getOwningClass().getSuperClasses().get(0)
-//						+ "\n****contextOperation = " + contextOperation
-//
-//						);
-//					log.log(status);
-//					
 				}
 				else {
-					setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, null, null);
+					getHelper().setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, null, null);
 				}
 			}
 			else if (eContainingFeature == PivotPackage.Literals.OPERATION__OWNED_POSTCONDITIONS) {
 				Operation contextOperation = (Operation)eContainer;
 				if (contextOperation != null) {
-					setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextOperation.getOwningClass(), null);
+					getHelper().setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextOperation.getOwningClass(), null);
 					setOperationContext(pivotSpecification, contextOperation, PivotConstants.RESULT_NAME);
 				}
 				else {
-					setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, null, null);
+					getHelper().setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, null, null);
 				}
 			}
 			else {
@@ -1047,11 +1015,11 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 		else if (eContainingFeature == PivotPackage.Literals.PROPERTY__OWNED_EXPRESSION) {
 			Property contextProperty = (Property)eContainer;
 			setPropertyContext(pivotSpecification, contextProperty);
-			setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextProperty.getOwningClass(), null);
+			getHelper().setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextProperty.getOwningClass(), null);
 		}
 		else if (eContainingFeature == PivotPackage.Literals.OPERATION__BODY_EXPRESSION) {
 			Operation contextOperation = (Operation)eContainer;
-			setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextOperation.getOwningClass(), null);
+			getHelper().setContextVariable(pivotSpecification, PivotConstants.SELF_NAME, contextOperation.getOwningClass(), null);
 			setOperationContext(pivotSpecification, contextOperation, null);
 		}
 		else {
@@ -1086,16 +1054,16 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 		return converter.refreshModelElement(pivotClass, pivotEClass, csElement);
 	}
 
-	/* @deprecated use PivotHelper.refreshName() */
-	@Override
+	/* @deprecated no longer used / use PivotHelper.refreshName() */
 	@Deprecated
+	@Override
 	public void refreshName(@NonNull NamedElement pivotNamedElement, @Nullable String newName) {
 		getHelper().refreshName(pivotNamedElement, newName);
 	}
 
-	/* @deprecated use PivotHelper.refreshNsURI() */
-	@Override
+	/* @deprecated no longer used / use PivotHelper.refreshNsURI() */
 	@Deprecated
+	@Override
 	public void refreshNsURI(org.eclipse.ocl.pivot.@NonNull Package pivotPackage, String newNsURI) {
 		getHelper().refreshNsURI(pivotPackage, newNsURI);
 	}
@@ -1193,9 +1161,9 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 		}
 	}
 
-	/* @deprecated use PivotHelper.setBehavioralType() */
-	@Override
+	/* @deprecated no longer used / use PivotHelper.setBehavioralType() */
 	@Deprecated
+	@Override
 	public void setBehavioralType(@NonNull TypedElement targetElement, @NonNull TypedElement sourceElement) {
 		getHelper().setBehavioralType(targetElement, sourceElement);
 	}
@@ -1217,23 +1185,23 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 		expression.setName(operation != null ? operation.getName() : null);
 	}
 
-	/* @deprecated use PivotHelper.setType() */
-	@Override
+	/* @deprecated no longer used / use PivotHelper.setType() */
 	@Deprecated
+	@Override
 	public void setType(@NonNull OCLExpression pivotElement, Type type, boolean isRequired, @Nullable Type typeValue) {
 		getHelper().setType(pivotElement, type, isRequired, typeValue);
 	}
 
-	/* @deprecated use PivotHelper.setType() */
-	@Override
+	/* @deprecated no longer used / use PivotHelper.setType() */
 	@Deprecated
+	@Override
 	public void setType(@NonNull VariableDeclaration pivotElement, Type type, boolean isRequired, @Nullable Type typeValue) {
 		getHelper().setType(pivotElement, type, isRequired, typeValue);
 	}
 
-	/* @deprecated use PivotHelper.setType() */
-	@Override
+	/* @deprecated no longer used / use PivotHelper.setType() */
 	@Deprecated
+	@Override
 	public void setType(@NonNull TypedElement pivotElement, Type type, boolean isRequired) {
 		getHelper().setType(pivotElement, type, isRequired);
 	}
@@ -1341,7 +1309,8 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 			}
 			TypeRefCS csActualParameter = csTemplateParameterSubstitution.getOwnedActualParameter();
 			if (csActualParameter instanceof WildcardTypeRefCS) {
-				templateParameterSubstitution.setActual(null);		// null is the wildcard
+				Orphanage orphanage = environmentFactory.getCompleteModel().getOrphanage();
+				templateParameterSubstitution.setActual(Orphanage.getOrphanWildcardType(orphanage));
 			}
 			else {
 				Type pivotActualParameter = PivotUtil.getPivot(Type.class, csActualParameter);
@@ -1409,25 +1378,13 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 	 * Sequence the update passes to make the pivot match the CS.
 	 */
 	public boolean update(@NonNull BaseCSResource csResource) {
-//		ASResource asResource1 = converter.csi2asMapping.getASResource(csResource);		
-//		ILog log = Platform.getLog(CS2ASConversion.class);
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2ASConversion$update asResource1 SIZE = ****" + (asResource1==null?0:asResource1.getContents().size()));
-//		log.log(status);
-//
-//		
-//				
 		resetPivotMappings(csResource);
-		
-			
-		
-//		asResource1 = converter.csi2asMapping.getASResource(csResource);
-//		status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2ASConversion$update asResource2 SIZE = ****" + (asResource1==null?0:asResource1.getContents().size()));
-//		log.log(status);
-		
 		oldPackagesByName = new HashMap<String, org.eclipse.ocl.pivot.Package>();
 		oldPackagesByQualifiedName = new HashMap<String, org.eclipse.ocl.pivot.Package>();
 		ASResource asResource = converter.csi2asMapping.getASResource(csResource);
+		boolean wasUpdating = false;
 		if (asResource != null) {
+			asResource.resetLUSSIDs();			// Hopefully reset already, not wanted till save. See Bug 579052.
 			for (EObject eObject : asResource.getContents()) {
 				if (eObject instanceof Model) {
 					List<org.eclipse.ocl.pivot.Package> nestedPackage = ((Model)eObject).getOwnedPackages();
@@ -1560,19 +1517,11 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 				}
 			}
 		}
-
-		
-//		
-//		
-//		
-//		asResource1 = converter.csi2asMapping.getASResource(csResource);
-//		status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2ASConversion$update asResource3 SIZE = ****" + (asResource1==null?0:asResource1.getContents().size()));
-//		log.log(status);
-//
-//
-		
-		
-		
+		if (asResource == null) {
+			asResource = converter.csi2asMapping.getASResource(csResource);
+			assert asResource != null;
+		}
+		asResource.setUpdating(wasUpdating);
 		return true;
 	}
 
@@ -1606,16 +1555,6 @@ public class CS2ASConversion extends AbstractBase2ASConversion
 	}
 
 	protected void visitInPostOrder(@NonNull ElementCS csElement, @NonNull List<BasicContinuation<?>> continuations) {
-		
-//		ILog log = Platform.getLog(CS2ASConversion.class);
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2ASConversion$visitInPostOrder" 
-//				+ "\n****csElement.getClass ="  + csElement.getClass()
-//				+ "\n****csElement.getDesc ="  + csElement.getDescription()
-//		);
-//		log.log(status);
-
-		
-		
 		for (EObject eContent : csElement.eContents()) {
 			if (eContent instanceof ElementCS) {
 				visitInPostOrder((ElementCS) eContent, continuations);

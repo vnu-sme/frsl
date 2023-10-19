@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v20.html
  *
  * Contributors:
- *     E.D.Willink - initial API and implementation
+ *	 E.D.Willink - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ocl.pivot.ids;
 
@@ -43,10 +43,23 @@ public class IdHash
 		return (int)hash;
 	}
 
+	@Deprecated /* @deprecated provide null values */
 	public static int createParametersHash(@NonNull Class<?> globalContext, @NonNull ElementId @NonNull [] typeIds) {
+		return createParametersHash(globalContext, typeIds, null);
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public static int createParametersHash(@NonNull Class<?> globalContext, @NonNull ElementId @NonNull [] typeIds, @NonNull Object @Nullable [] values) {
 		long hash = 0;
 		for (ElementId typeId : typeIds) {
 			hash = FUNCTION_PARAMETER_SCALING * hash + longValueOf(typeId.hashCode());
+		}
+		if (values != null) {
+			for (Object value : values) {
+				hash = FUNCTION_PARAMETER_SCALING * hash + longValueOf(value.hashCode());
+			}
 		}
 		return (int)hash + globalContext.getName().hashCode();
 	}

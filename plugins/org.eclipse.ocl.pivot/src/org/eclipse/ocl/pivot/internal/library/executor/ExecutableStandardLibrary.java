@@ -19,6 +19,7 @@ import java.util.WeakHashMap;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.ocl.pivot.BagType;
 import org.eclipse.ocl.pivot.Class;
 import org.eclipse.ocl.pivot.CollectionType;
 import org.eclipse.ocl.pivot.CompleteEnvironment;
@@ -28,6 +29,9 @@ import org.eclipse.ocl.pivot.Element;
 import org.eclipse.ocl.pivot.LambdaType;
 import org.eclipse.ocl.pivot.MapType;
 import org.eclipse.ocl.pivot.Operation;
+import org.eclipse.ocl.pivot.OrderedSetType;
+import org.eclipse.ocl.pivot.SequenceType;
+import org.eclipse.ocl.pivot.SetType;
 import org.eclipse.ocl.pivot.StandardLibrary;
 import org.eclipse.ocl.pivot.StandardLibrary.StandardLibraryExtension;
 import org.eclipse.ocl.pivot.TupleType;
@@ -36,16 +40,20 @@ import org.eclipse.ocl.pivot.TypedElement;
 import org.eclipse.ocl.pivot.ids.PrimitiveTypeId;
 import org.eclipse.ocl.pivot.ids.TemplateParameterId;
 import org.eclipse.ocl.pivot.ids.TupleTypeId;
-import org.eclipse.ocl.pivot.ids.TypeId;
 import org.eclipse.ocl.pivot.internal.elements.AbstractExecutorElement;
+import org.eclipse.ocl.pivot.internal.executor.ExecutorBagType;
 import org.eclipse.ocl.pivot.internal.executor.ExecutorCollectionType;
 import org.eclipse.ocl.pivot.internal.executor.ExecutorMapType;
+import org.eclipse.ocl.pivot.internal.executor.ExecutorOrderedSetType;
+import org.eclipse.ocl.pivot.internal.executor.ExecutorSequenceType;
+import org.eclipse.ocl.pivot.internal.executor.ExecutorSetType;
 import org.eclipse.ocl.pivot.internal.executor.ExecutorTupleType;
 import org.eclipse.ocl.pivot.messages.StatusCodes;
 import org.eclipse.ocl.pivot.oclstdlib.OCLstdlibTables;
 import org.eclipse.ocl.pivot.options.PivotValidationOptions;
 import org.eclipse.ocl.pivot.utilities.ClassUtil;
 import org.eclipse.ocl.pivot.utilities.NameUtil;
+import org.eclipse.ocl.pivot.utilities.PivotUtil;
 import org.eclipse.ocl.pivot.utilities.TypeUtil;
 import org.eclipse.ocl.pivot.utilities.ValueUtil;
 import org.eclipse.ocl.pivot.values.CollectionTypeParameters;
@@ -59,17 +67,17 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 	/**
 	 * Shared cache of the lazily created lazily deleted specializations of each collection type.
 	 */
-	private @NonNull Map<@NonNull Type, @NonNull Map<@NonNull CollectionTypeParameters<@NonNull Type>, @NonNull WeakReference<@NonNull ExecutorCollectionType>>> collectionSpecializations = new WeakHashMap<>();
+	private @NonNull Map<@NonNull Type, @NonNull Map<@NonNull CollectionTypeParameters<@NonNull Type>, @NonNull WeakReference<@Nullable ExecutorCollectionType>>> collectionSpecializations = new /*Weak*/HashMap<>();	// Keys are not singletons
 
 	/**
 	 * Shared cache of the lazily created lazily deleted specializations of each map type.
 	 */
-	private @NonNull Map<@NonNull Type, @NonNull Map<@NonNull MapTypeParameters<@NonNull Type, @NonNull Type>, @NonNull WeakReference<@NonNull ExecutorMapType>>> mapSpecializations = new WeakHashMap<>();
+	private @NonNull Map<@NonNull Type, @NonNull Map<@NonNull MapTypeParameters<@NonNull Type, @NonNull Type>, @NonNull WeakReference<@Nullable ExecutorMapType>>> mapSpecializations = new /*Weak*/HashMap<>();		// Keys are not singletons
 
 	/**
 	 * Shared cache of the lazily created lazily deleted tuples.
 	 */
-	private @NonNull Map<@NonNull TupleTypeId, @NonNull WeakReference<@NonNull TupleType>> tupleTypeMap = new WeakHashMap<>();
+	private @NonNull Map<@NonNull TupleTypeId, @NonNull WeakReference<@NonNull TupleType>> tupleTypeMap = new WeakHashMap<>();		// Keys are singletons
 
 	/**
 	 * Configuration of validation preferences.
@@ -131,7 +139,7 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 		}
 		CollectionTypeParameters<@NonNull Type> typeParameters = TypeUtil.createCollectionTypeParameters(elementType, isNullFree, lower2, upper2);
 		ExecutorCollectionType specializedType = null;
-		Map<@NonNull CollectionTypeParameters<@NonNull Type>, @NonNull WeakReference<@NonNull ExecutorCollectionType>> map = collectionSpecializations.get(genericType);
+		Map<@NonNull CollectionTypeParameters<@NonNull Type>, @NonNull WeakReference<@Nullable ExecutorCollectionType>> map = collectionSpecializations.get(genericType);
 		if (map == null) {
 			map = new WeakHashMap<>();
 			collectionSpecializations.put(genericType, map);
@@ -140,7 +148,22 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 			specializedType = weakGet(map, typeParameters);
 		}
 		if (specializedType == null) {
-			specializedType = new ExecutorCollectionType(ClassUtil.nonNullModel(genericType.getName()), genericType, elementType, isNullFree, lower, upper);
+			String name = ClassUtil.nonNullModel(genericType.getName());
+			if (genericType instanceof BagType) {
+				specializedType = new ExecutorBagType(name, genericType, elementType, isNullFree, lower, upper);
+			}
+			else if (genericType instanceof OrderedSetType) {
+				specializedType = new ExecutorOrderedSetType(name, genericType, elementType, isNullFree, lower, upper);
+			}
+			else if (genericType instanceof SequenceType) {
+				specializedType = new ExecutorSequenceType(name, genericType, elementType, isNullFree, lower, upper);
+			}
+			else if (genericType instanceof SetType) {
+				specializedType = new ExecutorSetType(name, genericType, elementType, isNullFree, lower, upper);
+			}
+			else {
+				specializedType = new ExecutorCollectionType(name, genericType, elementType, isNullFree, lower, upper);
+			}
 			map.put(typeParameters, new WeakReference<>(specializedType));
 		}
 		return specializedType;
@@ -171,7 +194,7 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 	public synchronized @NonNull MapType getMapType(org.eclipse.ocl.pivot.@NonNull Class genericType, @NonNull Type keyType, boolean keyValuesAreNullFree, @NonNull Type valueType, boolean valuesAreNullFree) {
 		MapTypeParameters<@NonNull Type, @NonNull Type> typeParameters = TypeUtil.createMapTypeParameters(keyType, keyValuesAreNullFree, valueType, valuesAreNullFree);
 		ExecutorMapType specializedType = null;
-		Map<@NonNull MapTypeParameters<@NonNull Type, @NonNull Type>, @NonNull WeakReference<@NonNull ExecutorMapType>> map = mapSpecializations.get(genericType);
+		Map<@NonNull MapTypeParameters<@NonNull Type, @NonNull Type>, @NonNull WeakReference<@Nullable ExecutorMapType>> map = mapSpecializations.get(genericType);
 		if (map == null) {
 			map = new WeakHashMap<>();
 			mapSpecializations.put(genericType, map);
@@ -180,7 +203,7 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 			specializedType = weakGet(map, typeParameters);
 		}
 		if (specializedType == null) {
-			specializedType = new ExecutorMapType(ClassUtil.nonNullModel(genericType.getName()), genericType, keyType, valueType);
+			specializedType = new ExecutorMapType(PivotUtil.getName(genericType), genericType, keyType, keyValuesAreNullFree, valueType, valuesAreNullFree);
 			map.put(typeParameters, new WeakReference<>(specializedType));
 		}
 		return specializedType;
@@ -190,7 +213,7 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 	public synchronized @NonNull MapType getMapType(org.eclipse.ocl.pivot.@NonNull Class genericType, org.eclipse.ocl.pivot.@NonNull Class entryClass) {
 		MapTypeParameters<@NonNull Type, @NonNull Type> typeParameters = TypeUtil.createMapTypeParameters(entryClass);
 		ExecutorMapType specializedType = null;
-		Map<@NonNull MapTypeParameters<@NonNull Type, @NonNull Type>, @NonNull WeakReference<@NonNull ExecutorMapType>> map = mapSpecializations.get(genericType);
+		Map<@NonNull MapTypeParameters<@NonNull Type, @NonNull Type>, @NonNull WeakReference<@Nullable ExecutorMapType>> map = mapSpecializations.get(genericType);
 		if (map == null) {
 			map = new WeakHashMap<>();
 			mapSpecializations.put(genericType, map);
@@ -205,42 +228,14 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 		return specializedType;
 	}
 
-	// FIXME cf MetamodelManager
 	@Override
-	public org.eclipse.ocl.pivot.@NonNull Class getMetaclass(@NonNull Type classType) {
-		org.eclipse.ocl.pivot.Class metaType = null;
-		if (classType instanceof CollectionType) {
-			CollectionType collectionType = (CollectionType)classType;
-			if (collectionType.isOrdered()) {
-				if (collectionType.isUnique()) {
-					metaType = getPivotType(TypeId.ORDERED_SET_TYPE_NAME);
-				}
-				else {
-					metaType =  getPivotType(TypeId.SEQUENCE_TYPE_NAME);
-				}
-			}
-			else {
-				if (collectionType.isUnique()) {
-					metaType =  getPivotType(TypeId.SET_TYPE_NAME);
-				}
-				else {
-					metaType =  getPivotType(TypeId.BAG_TYPE_NAME);
-				}
-			}
-
-		}
-		else if (classType instanceof MapType) {
-			metaType =  getPivotType(TypeId.MAP_TYPE_NAME);
-		}
-		if (metaType != null) {
-			return metaType;
-		}
-		//		return OCLstdlibTables.Types._OclType;
-		return getClassType();
+	public org.eclipse.ocl.pivot.@NonNull Class getMetaclass(@NonNull Type asInstanceType) {
+		String metaclassName = TypeUtil.getMetaclassName(asInstanceType);
+		return ClassUtil.nonNullState(getPivotType(metaclassName));
 	}
 
 	@Override
-	public Type getMetaType(@NonNull Type instanceType) {
+	public @NonNull Type getMetaType(@NonNull Type instanceType) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -473,7 +468,7 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 	}
 
 	public synchronized @NonNull TupleType getTupleType(@NonNull TupleTypeId typeId) {
-		WeakReference<TupleType> ref = tupleTypeMap.get(typeId);
+		WeakReference<@NonNull TupleType> ref = tupleTypeMap.get(typeId);
 		if (ref != null) {
 			TupleType domainTupleType = ref.get();
 			if (domainTupleType != null) {
@@ -524,7 +519,7 @@ public abstract class ExecutableStandardLibrary extends AbstractExecutorElement 
 	 * Return the map.get(key).get() entry if there is one or null if not, removing any stale
 	 * entry that may be encountered.
 	 */
-	protected <K, V> @Nullable V weakGet(@NonNull Map<K, WeakReference<V>> map, @NonNull K key) {
+	protected <K, V> @Nullable V weakGet(@NonNull Map<K, @NonNull WeakReference<V>> map, @NonNull K key) {
 		WeakReference<V> ref = map.get(key);
 		if (ref == null) {
 			return null;

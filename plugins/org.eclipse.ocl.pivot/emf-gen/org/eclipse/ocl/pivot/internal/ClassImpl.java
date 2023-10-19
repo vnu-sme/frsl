@@ -52,6 +52,7 @@ import org.eclipse.ocl.pivot.TemplateSignature;
 import org.eclipse.ocl.pivot.TemplateableElement;
 import org.eclipse.ocl.pivot.Type;
 import org.eclipse.ocl.pivot.evaluation.Executor;
+import org.eclipse.ocl.pivot.ids.CollectionTypeId;
 import org.eclipse.ocl.pivot.ids.IdManager;
 import org.eclipse.ocl.pivot.ids.IdResolver;
 import org.eclipse.ocl.pivot.ids.TypeId;
@@ -60,6 +61,7 @@ import org.eclipse.ocl.pivot.internal.manager.PivotMetamodelManager;
 import org.eclipse.ocl.pivot.internal.utilities.EnvironmentFactoryInternal;
 import org.eclipse.ocl.pivot.internal.utilities.PivotUtilInternal;
 import org.eclipse.ocl.pivot.library.LibraryFeature;
+import org.eclipse.ocl.pivot.library.classifier.ClassifierAllInstancesOperation;
 import org.eclipse.ocl.pivot.library.oclany.OclComparableLessThanEqualOperation;
 import org.eclipse.ocl.pivot.library.string.CGStringGetSeverityOperation;
 import org.eclipse.ocl.pivot.library.string.CGStringLogDiagnosticOperation;
@@ -694,13 +696,13 @@ implements org.eclipse.ocl.pivot.Class {
 			 *         constraintName.logDiagnostic(self, null, diagnostics, context, null, severity, result, 0)
 			 *     endif
 			 */
-			final /*@NonInvalid*/ @NonNull Executor executor = PivotUtil.getExecutor(this, context);
+			final /*@NonInvalid*/ @NonNull Executor executor = PivotUtil.getExecutor(this);
 			final /*@NonInvalid*/ @NonNull IdResolver idResolver = executor.getIdResolver();
 			final /*@NonInvalid*/ @NonNull IntegerValue severity_0 = CGStringGetSeverityOperation.INSTANCE.evaluate(executor, PivotPackage.Literals.CLASS___VALIDATE_UNIQUE_INVARIANT_NAME__DIAGNOSTICCHAIN_MAP);
 			final /*@NonInvalid*/ boolean le = OclComparableLessThanEqualOperation.INSTANCE.evaluate(executor, severity_0, PivotTables.INT_0).booleanValue();
-			/*@NonInvalid*/ boolean symbol_0;
+			/*@NonInvalid*/ boolean IF_le;
 			if (le) {
-				symbol_0 = true;
+				IF_le = true;
 			}
 			else {
 				/*@Caught*/ @NonNull Object CAUGHT_result;
@@ -736,9 +738,9 @@ implements org.eclipse.ocl.pivot.Class {
 					CAUGHT_result = ValueUtil.createInvalidValue(e);
 				}
 				final /*@NonInvalid*/ boolean logDiagnostic = CGStringLogDiagnosticOperation.INSTANCE.evaluate(executor, TypeId.BOOLEAN, constraintName, this, (Object)null, diagnostics, context, (Object)null, severity_0, CAUGHT_result, PivotTables.INT_0).booleanValue();
-				symbol_0 = logDiagnostic;
+				IF_le = logDiagnostic;
 			}
-			return symbol_0;
+			return IF_le;
 		}
 		catch (Throwable e) {
 			return ValueUtil.validationFailedDiagnostic(constraintName, this, diagnostics, context, e);
@@ -1130,6 +1132,7 @@ implements org.eclipse.ocl.pivot.Class {
 	}
 
 	private TypeId typeId = null;
+	private TypeId normalizedTypeId = null;
 	private @Nullable ClassListeners<ClassListeners.IClassListener> classListeners = null;
 
 	@Override
@@ -1147,6 +1150,13 @@ implements org.eclipse.ocl.pivot.Class {
 
 	public @NonNull TypeId computeId() {
 		return IdManager.getClassId(this);
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public @NonNull TypeId computeNormalizedId() {
+		return computeId();
 	}
 
 	@Override
@@ -1298,24 +1308,49 @@ implements org.eclipse.ocl.pivot.Class {
 			 *         constraintName.logDiagnostic(self, null, diagnostics, context, null, severity, result, 0)
 			 *     endif
 			 */
-			final /*@NonInvalid*/ @NonNull Executor executor = PivotUtil.getExecutor(this, context);
+			final /*@NonInvalid*/ @NonNull Executor executor = PivotUtil.getExecutor(this);
 			final /*@NonInvalid*/ @NonNull IntegerValue severity_0 = CGStringGetSeverityOperation.INSTANCE.evaluate(executor, PivotPackage.Literals.CLASS___VALIDATE_NAME_IS_NOT_NULL__DIAGNOSTICCHAIN_MAP);
 			final /*@NonInvalid*/ boolean le = OclComparableLessThanEqualOperation.INSTANCE.evaluate(executor, severity_0, PivotTables.INT_0).booleanValue();
-			/*@NonInvalid*/ boolean symbol_0;
+			/*@NonInvalid*/ boolean IF_le;
 			if (le) {
-				symbol_0 = true;
+				IF_le = true;
 			}
 			else {
 				final /*@NonInvalid*/ @Nullable String name = this.getName();
 				final /*@NonInvalid*/ boolean result = name != null;
 				final /*@NonInvalid*/ boolean logDiagnostic = CGStringLogDiagnosticOperation.INSTANCE.evaluate(executor, TypeId.BOOLEAN, constraintName, this, (Object)null, diagnostics, context, (Object)null, severity_0, result, PivotTables.INT_0).booleanValue();
-				symbol_0 = logDiagnostic;
+				IF_le = logDiagnostic;
 			}
-			return symbol_0;
+			return IF_le;
 		}
 		catch (Throwable e) {
 			return ValueUtil.validationFailedDiagnostic(constraintName, this, diagnostics, context, e);
 		}
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public @NonNull SetValue allInstances(@NonNull Executor executor, @NonNull CollectionTypeId returnTypeId) {
+		return ClassifierAllInstancesOperation.allInstances(executor, returnTypeId, this);
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public @NonNull TypeId getNormalizedTypeId() {
+		TypeId normalizedTypeId2 = normalizedTypeId;
+		if (normalizedTypeId2 == null) {
+			synchronized (this) {
+				normalizedTypeId2 = normalizedTypeId;
+				if (normalizedTypeId2 == null) {
+					normalizedTypeId = normalizedTypeId2 = computeNormalizedId();
+				}
+			}
+		}
+		return normalizedTypeId2;
 	}
 
 	@Override

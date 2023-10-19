@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
@@ -218,16 +214,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 		}
 		UnresolvedProxyMessageProvider unresolvedProxyMessageProvider = unresolvedProxyMessageProviderMap.get(eReference);
 		if (unresolvedProxyMessageProvider != null) {
-			
-//			Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$getUnresolvedProxyText"
-//					+ "\n***csContext = " + csContext 
-//					+ "\n***linkText = " + linkText 				
-//			);
-//			ILog log = Platform.getLog(CS2AS.class);
-//			log.log(status);	
-			
-			
-			
 			return unresolvedProxyMessageProvider.getMessage(csContext, linkText);
 		}
 		@SuppressWarnings("null") @NonNull String messageTemplate = PivotMessagesInternal.Unresolved_ERROR_;
@@ -291,6 +277,12 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 		}
 	}
 
+	public static @Nullable EClassifier getElementType(@NonNull PathNameCS pathNameCS) {
+		List<PathElementCS> path = pathNameCS.getOwnedPathElements();
+		int iSize = path.size();
+		return iSize > 0 ? path.get(iSize-1).getElementType() : null;
+	}
+
 	public static MessageBinder getMessageBinder() {
 		return messageBinder;
 	}
@@ -332,48 +324,24 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	}
 
 	public static void refreshContext(@NonNull PathNameCS pathNameCS, ElementCS csContext) {
-//		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$refreshContext(..) ****" + csContext);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);		
-//		
 		if (pathNameCS.getContext() != csContext) {
 			pathNameCS.setContext(csContext);
 		}
 	}
 
 	public static void refreshElementType(PathElementCS pathElementCS, EClassifier elementType) {
-//		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$refreshElementType(..) ****" + elementType);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);		
-//		
-//		
-//		
 		if ((pathElementCS != null)  && (pathElementCS.getElementType() != elementType)) {
 			pathElementCS.setElementType(elementType);
 		}
 	}
 
 	public static void refreshScopeFilter(@NonNull PathNameCS pathNameCS, ScopeFilter scopeFilter) {
-//		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$refreshScopeFilter(..) ****" + scopeFilter);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);		
-//		
-//		
-		
 		if (pathNameCS.getScopeFilter() != scopeFilter) {
 			pathNameCS.setScopeFilter(scopeFilter);
 		}
 	}
 
 	public static void setElementType(@NonNull PathNameCS pathNameCS, /*@NonNull*/ EClass elementType, @NonNull ElementCS csContext, @Nullable ScopeFilter scopeFilter) {
-
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$setElementType(..) ****" + pathNameCS + "***" + elementType);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);
-		
 		assert elementType != null;
 		refreshContext(pathNameCS, csContext);
 		refreshScopeFilter(pathNameCS, scopeFilter);
@@ -405,11 +373,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	 * @param ambiguities
 	 */
 	public static void setPathElement(@NonNull PathNameCS csPathName, @Nullable Element element, @Nullable List<@NonNull ? extends EObject> ambiguities) {
-		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$setPathElement(..) ****" + csPathName);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);
-
 		List<@NonNull PathElementCS> csPath = ClassUtil.nullFree(csPathName.getOwnedPathElements());
 		PathElementCS csLastElement = csPath.get(csPath.size()-1);
 		AmbiguitiesAdapter.setAmbiguities(csLastElement, ambiguities);
@@ -469,11 +432,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 
 	protected CS2AS(@NonNull CS2AS aConverter) {
 		super(aConverter.getEnvironmentFactory());
-//
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$CS2AS(@NonNull CS2AS aConverter) asResource SIZE = ****" + (aConverter.getASResource()==null?0:aConverter.getASResource().getContents().size()));
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);
-//		
 		this.csResource = aConverter.csResource;
 		this.asResource = aConverter.asResource;
 		this.csi2asMapping = CSI2ASMapping.getCSI2ASMapping(environmentFactory);
@@ -526,7 +484,7 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 		return helper2;
 	}
 
-	public Element getPivotElement(@NonNull ModelElementCS csElement) {
+	public @Nullable Element getPivotElement(@NonNull ModelElementCS csElement) {
 		return csi2asMapping.get(csElement);
 	}
 
@@ -549,7 +507,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	 */
 	public void installPivotDefinition(@NonNull ModelElementCS csElement, @NonNull Element newPivotElement) {
 		//	logger.trace("Installing " + csElement.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
-
 		EObject oldPivotElement = csElement.getPivot();
 		if (oldPivotElement != newPivotElement) {
 			assert !newPivotElement.eIsProxy();
@@ -614,13 +571,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	}
 
 	public @Nullable Iteration lookupIteration(@NonNull ElementCS csElement, @NonNull PathNameCS csPathName, @Nullable ScopeFilter scopeFilter) {
-//
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$lookupIteration ****" + csElement);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);		
-//		
-//		
-//		
 		setElementType(csPathName, PivotPackage.Literals.ITERATION, csElement, scopeFilter);
 		Element namedElement = csPathName.getReferredElement();
 		if ((namedElement instanceof Iteration) && !namedElement.eIsProxy()) {
@@ -632,14 +582,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	}
 
 	public @Nullable Operation lookupOperation(@NonNull ElementCS csElement, @NonNull PathNameCS csPathName, @Nullable ScopeFilter scopeFilter) {
-//
-//		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$lookupOperation ****" + csElement);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);		
-//		
-//		
-//		
 		setElementType(csPathName, PivotPackage.Literals.OPERATION, csElement, scopeFilter);
 		Element namedElement = csPathName.getReferredElement();
 		if ((namedElement instanceof Operation) && !namedElement.eIsProxy()) {
@@ -651,13 +593,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	}
 
 	public @Nullable Property lookupProperty(@NonNull ElementCS csElement, @NonNull PathNameCS csPathName, @Nullable ScopeFilter scopeFilter) {
-//
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$lookupProperty ****" + csElement);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);		
-//		
-//		
-//		
 		setElementType(csPathName, PivotPackage.Literals.PROPERTY, csElement, scopeFilter);
 		Element namedElement = csPathName.getReferredElement();
 		if ((namedElement instanceof Property) && !namedElement.eIsProxy()) {
@@ -679,14 +614,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	}
 
 	public @Nullable Type lookupType(@NonNull ElementCS csElement, @NonNull PathNameCS csPathName) {
-//		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$lookupType ****" + csElement);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);
-//		
-//		
-//		
-		
 		setElementType(csPathName, PivotPackage.Literals.TYPE, csElement, null);
 		Element namedElement = csPathName.getReferredElement();
 		if ((namedElement instanceof Type) && !namedElement.eIsProxy()) {
@@ -698,16 +625,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	}
 
 	public @Nullable Type lookupTypeQualifier(@NonNull PathNameCS csPathName) {
-//		
-//
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$lookupTypeQualifier ****" + csPathName);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);
-//
-//		
-//		
-//		
-		
 		List<PathElementCS> path = csPathName.getOwnedPathElements();
 		int iMax = path.size();
 		if (iMax <= 1) {
@@ -728,12 +645,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	}
 
 	public @Nullable Type lookupTypeValue(@NonNull ElementCS csElement, @NonNull PathNameCS csPathName) {
-//
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$lookupTypeValue ****" + csElement);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);
-//		
-		
 		setElementType(csPathName, PivotPackage.Literals.NAMED_ELEMENT, csElement, TypeValueFilter.INSTANCE);	// Type or Variable
 		Element namedElement = csPathName.getReferredElement();
 		if ((namedElement instanceof Type) && !namedElement.eIsProxy()) {
@@ -745,64 +656,36 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 	}
 
 	public @Nullable Element lookupUndecoratedName(@NonNull ElementCS csElement, @NonNull PathNameCS csPathName) {
-//
-//		STATUS STATUS = NEW STATUS(ISTATUS.INFO, "ORG.ECLIPSE.SME.FRSL", "HANHDD: CS2AS$LOOKUPUNDECORATEDNAME ****" + CSELEMENT);
-//		ILOG LOG = PLATFORM.GETLOG(CS2AS.CLASS);
-//		LOG.LOG(STATUS);				
-//		
 		setElementType(csPathName, PivotPackage.Literals.ELEMENT, csElement, UndecoratedNameFilter.INSTANCE);
 		Element namedElement = csPathName.getReferredElement();
 		return namedElement;
 	}
 
 	public @NonNull <T extends Element> T refreshModelElement(@NonNull Class<T> pivotClass, @NonNull EClass pivotEClass, @Nullable ModelElementCS csElement) {
-		Element pivotElement = csElement != null ? getPivotElement(csElement) : null;		@NonNull Element pivotElement2;
+		Element pivotElement = csElement != null ? getPivotElement(csElement) : null;
+		@NonNull Element pivotElement2;
 		if ((pivotElement != null)
 				&& pivotClass.isAssignableFrom(pivotElement.getClass())					// Avoid resetting container of incidental reference
 				&& ((csElement == null) || (csElement.eContainer() != null))) {			// Avoid resetting container of potentially re-used root
 			PivotUtilInternal.resetContainer(pivotElement);		// Bypass child-stealing detector
 		}
-		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd CS2AS@refreshModelElement ****" 
-//				+ "\n**** pivotEClass = " + pivotEClass 
-//				+ "\n**** csElement = " + csElement 
-//				+ "\n**** pivotElement = " + pivotElement
-//				);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		log.log(status);
-//		
-		
 		if ((pivotElement == null) || (pivotEClass != pivotElement.eClass())) {
 			EFactory eFactoryInstance = pivotEClass.getEPackage().getEFactoryInstance();
-			@NonNull Element pivotElement3  = (Element) eFactoryInstance.create(pivotEClass);
+			@NonNull Element pivotElement3 = (Element) eFactoryInstance.create(pivotEClass);
 			pivotElement2 = pivotElement3;
 		}
 		else {
 			pivotElement2 = pivotElement;
 		}
-		
-//		status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "****" 
-//				+ " newPivotElement = " + pivotElement2.getClass()
-//				+ " hash = " + pivotElement2.hashCode()
-//				);
-//		log.log(status);		
-
-
 		if (csElement != null) {
 			installPivotDefinition(csElement, pivotElement2);
 		}
-		
 		@SuppressWarnings("unchecked")
 		@NonNull T castElement = (T) pivotElement2;
 		return castElement;
 	}
 
 	public synchronized void update(@NonNull IDiagnosticConsumer diagnosticsConsumer) {
-//		ASResource asResource1 = csi2asMapping.getASResource(csResource);
-//		ILog log = Platform.getLog(CS2AS.class);
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: CS2AS$update asResource1 SIZE = ****" + (asResource1==null?0:asResource1.getContents().size()));
-//		log.log(status);
-
 		//		printDiagnostic("CS2AS.update start", false, 0);
 		@SuppressWarnings("unused") Map<CSI, Element> oldCSI2AS = csi2asMapping.getMapping();
 		@SuppressWarnings("unused") Set<CSI> newCSIs = csi2asMapping.computeCSIs(csResource);
@@ -811,6 +694,11 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 		//			System.out.println("CS " + csResource.getClass().getName() + "@" + csResource.hashCode() + " " + csResource.getURI());
 		//		}
 		CS2ASConversion conversion = createConversion(diagnosticsConsumer, csResource);
+		boolean wasUpdating = false;
+		ASResource asResource = csi2asMapping.getASResource(csResource);
+		if (asResource != null) {
+			asResource.setUpdating(true);
+		}
 		conversion.update(csResource);
 		//		System.out.println("---------------------------------------------------------------------------");
 		//		Collection<? extends Resource> pivotResources = cs2asResourceMap.values();
@@ -826,7 +714,8 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 //			metamodelManager.kill(deadPivot);
 		} */
 		Map<BaseCSResource, ASResource> cs2asResourceMap = new HashMap<BaseCSResource, ASResource>();
-		ASResource asResource = csi2asMapping.getASResource(csResource);		
+		asResource = csi2asMapping.getASResource(csResource);
+		assert asResource != null;
 		cs2asResourceMap.put(csResource, asResource);
 		AbstractJavaClassScope javaClassScope = AbstractJavaClassScope.findAdapter(csResource);
 		if (javaClassScope != null) {
@@ -835,5 +724,6 @@ public abstract class CS2AS extends AbstractConversion	// FIXME migrate function
 		conversion.garbageCollect(cs2asResourceMap);
 		csi2asMapping.update();
 		//		printDiagnostic("CS2AS.update end", false, 0);
+		assert asResource.basicGetLUSSIDs() == null;			// Confirming Bug 579025
 	}
 }

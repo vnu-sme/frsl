@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 Willink Transformations and others.
+ * Copyright (c) 2015, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -252,6 +252,10 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 						setCardinality("*", createGroup(
 							createKeyword(","),
 							createAssignment("ownedSuperTypes", "+=", createRuleCall(PR_TypedRefCS)))))),
+					setCardinality("?", createGroup(
+						createKeyword("=>"),
+						createAssignment("implementation", "=", createCrossReference(
+							createTypeRef(MM, org.eclipse.ocl.xtext.oclstdlibcs.OCLstdlibCSPackage.Literals.JAVA_CLASS_CS), createRuleCall(_Base.TR_SINGLE_QUOTED_STRING))))),
 					createKeyword("{"),
 					setCardinality("*", createAlternatives(
 						createAssignment("ownedOperations", "+=", createRuleCall(PR_OperationCS)),
@@ -796,6 +800,7 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 					createKeyword("or"),
 					createKeyword("or2"),
 					createKeyword("then"),
+					createKeyword("with"),
 					createKeyword("xor"),
 					createKeyword("xor2")));
 			PR_EssentialOCLUnaryOperatorName.setAlternatives(
@@ -876,7 +881,9 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 			PR_MapLiteralPartCS.setAlternatives(
 				createGroup(
 					createAssignment("ownedKey", "=", createRuleCall(PR_ExpCS)),
-					createKeyword("<-"),
+					createAlternatives(
+						createKeyword("with"),
+						createKeyword("<-")),
 					createAssignment("ownedValue", "=", createRuleCall(PR_ExpCS))));
 			PR_MapTypeCS.setAlternatives(
 				createGroup(
@@ -904,7 +911,9 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 						createAssignment("ownedNameExpression", "=", createRuleCall(PR_NavigatingArgExpCS)),
 						setCardinality("?", createAlternatives(
 							createGroup(
-								createKeyword("<-"),
+								createAlternatives(
+									createKeyword("with"),
+									createKeyword("<-")),
 								createAssignment("ownedCoIterator", "=", createRuleCall(PR_CoIteratorVariableCS)),
 								setCardinality("?", createGroup(
 									createKeyword("="),
@@ -913,7 +922,9 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 								createKeyword(":"),
 								createAssignment("ownedType", "=", createRuleCall(PR_TypeExpCS)),
 								setCardinality("?", createGroup(
-									createKeyword("<-"),
+									createAlternatives(
+										createKeyword("with"),
+										createKeyword("<-")),
 									createAssignment("ownedCoIterator", "=", createRuleCall(PR_CoIteratorVariableCS)))),
 								setCardinality("?", createGroup(
 									createKeyword("="),
@@ -923,7 +934,9 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 									createKeyword(":"),
 									createAssignment("ownedType", "=", createRuleCall(PR_TypeExpCS)))),
 								setCardinality("?", createGroup(
-									createKeyword("<-"),
+									createAlternatives(
+										createKeyword("with"),
+										createKeyword("<-")),
 									createAssignment("ownedCoIterator", "=", createRuleCall(PR_CoIteratorVariableCS)))),
 								createKeyword("in"),
 								createAssignment("ownedInitExpression", "=", createRuleCall(PR_ExpCS)))))),
@@ -948,7 +961,9 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 					createAssignment("ownedNameExpression", "=", createRuleCall(PR_NavigatingArgExpCS)),
 					setCardinality("?", createAlternatives(
 						createGroup(
-							createKeyword("<-"),
+							createAlternatives(
+								createKeyword("with"),
+								createKeyword("<-")),
 							createAssignment("ownedCoIterator", "=", createRuleCall(PR_CoIteratorVariableCS)),
 							setCardinality("?", createGroup(
 								createKeyword("="),
@@ -957,7 +972,9 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 							createKeyword(":"),
 							createAssignment("ownedType", "=", createRuleCall(PR_TypeExpCS)),
 							setCardinality("?", createGroup(
-								createKeyword("<-"),
+								createAlternatives(
+									createKeyword("with"),
+									createKeyword("<-")),
 								createAssignment("ownedCoIterator", "=", createRuleCall(PR_CoIteratorVariableCS)))),
 							setCardinality("?", createGroup(
 								createKeyword("="),
@@ -967,7 +984,9 @@ public class OCLstdlibGrammarResource extends AbstractGrammarResource
 								createKeyword(":"),
 								createAssignment("ownedType", "=", createRuleCall(PR_TypeExpCS)))),
 							setCardinality("?", createGroup(
-								createKeyword("<-"),
+								createAlternatives(
+									createKeyword("with"),
+									createKeyword("<-")),
 								createAssignment("ownedCoIterator", "=", createRuleCall(PR_CoIteratorVariableCS)))),
 							createKeyword("in"),
 							createAssignment("ownedInitExpression", "=", createRuleCall(PR_ExpCS)))))));

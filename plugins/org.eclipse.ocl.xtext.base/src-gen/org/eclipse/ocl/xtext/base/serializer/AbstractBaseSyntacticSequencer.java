@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 Willink Transformations and others.
+ * Copyright (c) 2011, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ public abstract class AbstractBaseSyntacticSequencer extends AbstractSyntacticSe
 	}
 
 	/**
+	 * <pre>
 	 * Ambiguous syntax:
 	 *     '|?'?
 	 *
@@ -63,6 +64,8 @@ public abstract class AbstractBaseSyntacticSequencer extends AbstractSyntacticSe
 	 *     stringBounds='+' (ambiguity) ']' (rule end)
 	 *     stringBounds='?' (ambiguity) ']' (rule end)
 	 *     upperBound=UPPER (ambiguity) ']' (rule end)
+
+	 * </pre>
 	 */
 	protected void emit_MultiplicityCS_VerticalLineQuestionMarkKeyword_2_0_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);

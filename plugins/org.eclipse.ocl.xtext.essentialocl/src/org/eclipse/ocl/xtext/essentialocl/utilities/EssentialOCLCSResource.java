@@ -20,10 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -60,6 +56,7 @@ import org.eclipse.ocl.pivot.utilities.ClassUtil;
 import org.eclipse.ocl.pivot.utilities.EnvironmentFactory;
 import org.eclipse.ocl.pivot.utilities.ParserContext;
 import org.eclipse.ocl.pivot.utilities.PivotConstants;
+import org.eclipse.ocl.pivot.utilities.ThreadLocalExecutor;
 import org.eclipse.ocl.xtext.base.as2cs.AS2CS;
 import org.eclipse.ocl.xtext.base.cs2as.CS2AS;
 import org.eclipse.ocl.xtext.base.cs2as.ImportDiagnostic;
@@ -282,7 +279,8 @@ public class EssentialOCLCSResource extends LazyLinkingResource implements BaseC
 		return super.basicSetResourceSet(resourceSet, notifications);
 	}
 
-	protected @NonNull ASResource createASResource(@NonNull ResourceSet asResourceSet) {	URI uri = ClassUtil.nonNullState(getURI());
+	protected @NonNull ASResource createASResource(@NonNull ResourceSet asResourceSet) {
+		URI uri = ClassUtil.nonNullState(getURI());
 		URI asURI = getASURI(uri);
 		if (uri.fileExtension().equals(PivotConstants.ESSENTIAL_OCL_FILE_EXTENSION)) {	// FIXME use csResource.getASResource(metamodelManager);
 			return new TransientASResource(asResourceSet, asURI);
@@ -613,7 +611,7 @@ public class EssentialOCLCSResource extends LazyLinkingResource implements BaseC
 		if (ElementUtil.hasSyntaxError(errors)) {
 			return;
 		}
-		EnvironmentFactoryInternal environmentFactory = PivotUtilInternal.findEnvironmentFactory(this);
+		EnvironmentFactoryInternal environmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
 		if (environmentFactory != null) {
 			StandardLibraryInternal standardLibrary = environmentFactory.getStandardLibrary();
 			//			if (metamodelManager.getLibraryResource() != org.eclipse.ocl.library.oclstdlib.OCLstdlib.INSTANCE) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,11 @@ public abstract class AbstractMergedVisitor<R, C>
 
 	@Override
 	public R visitBooleanLiteralExp(org.eclipse.ocl.pivot.@NonNull BooleanLiteralExp object) {
+		return visiting(object);
+	}
+
+	@Override
+	public R visitBooleanType(org.eclipse.ocl.pivot.@NonNull BooleanType object) {
 		return visiting(object);
 	}
 
@@ -181,6 +186,11 @@ public abstract class AbstractMergedVisitor<R, C>
 
 	@Override
 	public R visitElementExtension(org.eclipse.ocl.pivot.@NonNull ElementExtension object) {
+		return visiting(object);
+	}
+
+	@Override
+	public R visitElementLiteralExp(org.eclipse.ocl.pivot.@NonNull ElementLiteralExp object) {
 		return visiting(object);
 	}
 

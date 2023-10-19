@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
@@ -56,8 +52,8 @@ public class CSI2ASMapping implements ICSI2ASMapping
 	 */
 	public static @Nullable CSI2ASMapping basicGetCSI2ASMapping(@NonNull EnvironmentFactoryInternal environmentFactory) {
 		return (CSI2ASMapping) environmentFactory.getCSI2ASMapping();
-	}	
-	
+	}
+
 	/**
 	 * Create/reuse the CSI2ASMapping owned by the environmentFactory on behalf of CS-aware consumers.
 	 */
@@ -233,7 +229,7 @@ public class CSI2ASMapping implements ICSI2ASMapping
 		}
 
 		private void add(@NonNull AbstractCSI csi) {
-			WeakReference<@NonNull AbstractCSI> csiRef = new WeakReference<>(csi);
+			WeakReference<@Nullable AbstractCSI> csiRef = new WeakReference<>(csi);
 			int hashCode = csi.hashCode();
 			int hashIndex = hashCode & hashMask;
 			Object entry = hash2csis[hashIndex];
@@ -241,14 +237,14 @@ public class CSI2ASMapping implements ICSI2ASMapping
 				hash2csis[hashIndex] = csiRef;
 			}
 			else if (entry instanceof WeakReference<?>) {
-				List<@NonNull WeakReference<@NonNull AbstractCSI>> csiList = new ArrayList<>();
+				List<@NonNull WeakReference<@Nullable AbstractCSI>> csiList = new ArrayList<>();
 				hash2csis[hashIndex] = csiList;
-				@SuppressWarnings("unchecked")WeakReference<@NonNull AbstractCSI> castEntry = (WeakReference<@NonNull AbstractCSI>)entry;
+				@SuppressWarnings("unchecked")WeakReference<@Nullable AbstractCSI> castEntry = (WeakReference<@Nullable AbstractCSI>)entry;
 				csiList.add(castEntry);
 				csiList.add(csiRef);
 			}
 			else {
-				@SuppressWarnings("unchecked") List<@NonNull WeakReference<@NonNull AbstractCSI>> csiList = (List<@NonNull WeakReference<@NonNull AbstractCSI>>) entry;
+				@SuppressWarnings("unchecked") List<@NonNull WeakReference<@Nullable AbstractCSI>> csiList = (List<@NonNull WeakReference<@Nullable AbstractCSI>>) entry;
 				csiList.add(csiRef);
 			}
 			// FIXME grow() ??
@@ -258,8 +254,8 @@ public class CSI2ASMapping implements ICSI2ASMapping
 			int hashIndex = hashCode & hashMask;
 			Object entry = hash2csis[hashIndex];
 			if (entry instanceof List<?>) {
-				@SuppressWarnings("unchecked") List<@NonNull WeakReference<@NonNull AbstractCSI>> csiList = (List<@NonNull WeakReference<@NonNull AbstractCSI>>) entry;
-				for (@NonNull WeakReference<@NonNull AbstractCSI> thatRef : csiList) {
+				@SuppressWarnings("unchecked") List<@NonNull WeakReference<@Nullable AbstractCSI>> csiList = (List<@NonNull WeakReference<@Nullable AbstractCSI>>) entry;
+				for (@NonNull WeakReference<@Nullable AbstractCSI> thatRef : csiList) {
 					AbstractCSI thatCSI = thatRef.get();
 					if (thatCSI != null) {
 						AbstractCSI childCSI = thatCSI.isCSIfor(thisParent, thisChild, thisName, thisIndex);
@@ -270,7 +266,7 @@ public class CSI2ASMapping implements ICSI2ASMapping
 				}
 			}
 			else if (entry instanceof WeakReference<?>) {
-				@SuppressWarnings("unchecked") WeakReference<@NonNull AbstractCSI> thatRef = (WeakReference<@NonNull AbstractCSI>) entry;
+				@SuppressWarnings("unchecked") WeakReference<@Nullable AbstractCSI> thatRef = (WeakReference<@Nullable AbstractCSI>) entry;
 				AbstractCSI thatCSI = thatRef.get();
 				if (thatCSI != null) {
 					AbstractCSI childCSI = thatCSI.isCSIfor(thisParent, thisChild, thisName, thisIndex);

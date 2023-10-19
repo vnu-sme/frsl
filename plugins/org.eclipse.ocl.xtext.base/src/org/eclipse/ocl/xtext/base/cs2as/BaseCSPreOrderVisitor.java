@@ -13,13 +13,8 @@ package org.eclipse.ocl.xtext.base.cs2as;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.ocl.pivot.AnyType;
-import org.eclipse.ocl.pivot.DataType;
 import org.eclipse.ocl.pivot.Element;
 import org.eclipse.ocl.pivot.LambdaType;
 import org.eclipse.ocl.pivot.MapType;
@@ -528,13 +523,6 @@ public class BaseCSPreOrderVisitor extends AbstractExtendingBaseCSVisitor<Contin
 
 	@Override
 	public Continuation<?> visitDataTypeCS(@NonNull DataTypeCS csDataType) {
-		DataType pivotElement = PivotUtil.getPivot(DataType.class, csDataType);
-		if (pivotElement != null) {
-			List<org.eclipse.ocl.pivot.Class> pivotSuperClasses = pivotElement.getSuperClasses();
-			pivotSuperClasses.clear();
-			org.eclipse.ocl.pivot.Class oclElementType = context.getStandardLibrary().getOclElementType();
-			pivotSuperClasses.add(oclElementType);
-		}
 		return null;
 	}
 
@@ -675,25 +663,6 @@ public class BaseCSPreOrderVisitor extends AbstractExtendingBaseCSVisitor<Contin
 
 	@Override
 	public Continuation<?> visitTypedTypeRefCS(@NonNull TypedTypeRefCS csTypedTypeRef) {
-		
-		
-//		ILog log = Platform.getLog(getClass());
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: BaseCSPreOrderVisitor$visitTypedTypeRefCS "
-//				//+ "csTypedTypeRef = " + csTypedTypeRef	+ "***"
-//				//+ "\n***cTypedTypeRefCls class = " 	+ csTypedTypeRef.getClass() 	+ "***"
-//				//+ "\n getOwnedBinding() = " + csTypedTypeRef.getOwnedBinding()	+ "***"
-//				//+ "" + "***"
-//				//+ "getReferredElement() = " + csTypedTypeRef.getOwnedPathName().getReferredElement() + "***"
-//				//+ "getType() = " + csTypedTypeRef.getOwnedPathName().getReferredElement().getClass() + "***\n"
-//				//+ "getOwnedPathElements()[0].getClass().getReferredElement.getClass = " + csTypedTypeRef.getOwnedPathName().getOwnedPathElements().get(0).getReferredElement().getClass() + "***\n"
-//				);
-//		log.log(status);
-		
-//		for(ElementCS elementCS : csTypedTypeRef.getOwnedPathName().getContext()) {
-//			
-//		}
-		
-		
 		if (csTypedTypeRef.getOwnedBinding() == null) {
 			return new UnspecializedTypeRefContinuation(context, csTypedTypeRef);
 		}

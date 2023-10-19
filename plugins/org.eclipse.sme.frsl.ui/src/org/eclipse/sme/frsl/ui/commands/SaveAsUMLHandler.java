@@ -29,9 +29,9 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.m2m.atl.common.ATLExecutionException;
-import org.eclipse.m2m.atl.core.ATLCoreException;
-import org.eclipse.m2m.atl.frsl2uml.files.Frsl2Sm;
+//import org.eclipse.m2m.atl.common.ATLExecutionException;
+//import org.eclipse.m2m.atl.core.ATLCoreException;
+//import org.eclipse.m2m.atl.frsl2uml.files.Frsl2Sm;
 import org.eclipse.ocl.pivot.resource.ASResource;
 import org.eclipse.ocl.pivot.utilities.URIUtil;
 import org.eclipse.ocl.xtext.base.ui.messages.BaseUIMessages;
@@ -170,22 +170,22 @@ public class SaveAsUMLHandler extends AbstractSaveAsHandler
 				}
 				
 				public void genUml(String[] args, InputStream inputStream) {
-					try {
-						if (args.length < 3) {
-							System.out.println("===== Arguments not valid !!!");
-						} else {
-							Frsl2Sm runner = new Frsl2Sm();
-							runner.loadModels(inputStream, args[0], args[1]);
-							runner.doFrsl2Sm(new NullProgressMonitor());
-							runner.saveModels(args[2]);
-						}
-					} catch (ATLCoreException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (ATLExecutionException e) {
-						e.printStackTrace();
-					}
+//					try {
+//						if (args.length < 3) {
+//							System.out.println("===== Arguments not valid !!!");
+//						} else {
+//							Frsl2Sm runner = new Frsl2Sm();
+//							runner.loadModels(inputStream, args[0], args[1]);
+//							runner.doFrsl2Sm(new NullProgressMonitor());
+//							runner.saveModels(args[2]);
+//						}
+//					} catch (ATLCoreException e) {
+//						e.printStackTrace();
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					} catch (ATLExecutionException e) {
+//						e.printStackTrace();
+//					}
 				}
 			});
 		} catch (Throwable e) {

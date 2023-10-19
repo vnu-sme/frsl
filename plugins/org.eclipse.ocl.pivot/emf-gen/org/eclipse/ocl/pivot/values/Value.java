@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.ocl.pivot.Element;
+import org.eclipse.ocl.pivot.LiteralExp;
 import org.eclipse.ocl.pivot.ids.IdResolver;
 import org.eclipse.ocl.pivot.ids.TypeId;
 
@@ -40,11 +41,11 @@ import org.eclipse.ocl.pivot.ids.TypeId;
  * <p>
  * A boxed value is not needed for the large number of ordinary EObjects not in the above list.
  * <p>
- * asXXX returns a non-null XXX if self is convertible to an XXX and is not NullValue/InvalidValue
+ * asYYY returns a non-null YYY if self is convertible to an YYY and is not NullValue/InvalidValue
  * throws an InvalidValueException for a NullValue/InvalidValue. A Value object may be converted
- * if the conversion to XXX is exact and type conformant.
+ * if the conversion to YYY is exact and type conformant.
  * <p>
- * isXXX returns an XXX-related value if self is an XXX and is not a NullValue/InvalidValue, returns null otherwise.
+ * isYYY returns an YYY-related value if self is an YYY and is not a NullValue/InvalidValue, returns null otherwise.
  * <!-- end-model-doc -->
  *
  *
@@ -189,6 +190,13 @@ public interface Value
 	 * @generated NOT
 	 */
 	@NonNull UnlimitedNaturalValue asUnlimitedNaturalValue();
+
+	/**
+	 * @generated NOT
+	 *
+	 * @since 1.18
+	 */
+	@NonNull LiteralExp createLiteralExp();
 
 	/**
 	 * Return the type of this value determined from its content. In the case of collections

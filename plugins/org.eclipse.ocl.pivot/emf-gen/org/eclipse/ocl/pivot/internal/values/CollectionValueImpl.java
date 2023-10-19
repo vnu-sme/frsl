@@ -26,6 +26,12 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.util.EcoreEList;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.ocl.pivot.CollectionItem;
+import org.eclipse.ocl.pivot.CollectionKind;
+import org.eclipse.ocl.pivot.CollectionLiteralExp;
+import org.eclipse.ocl.pivot.CollectionLiteralPart;
+import org.eclipse.ocl.pivot.LiteralExp;
+import org.eclipse.ocl.pivot.PivotFactory;
 import org.eclipse.ocl.pivot.ids.CollectionTypeId;
 import org.eclipse.ocl.pivot.ids.EnumerationLiteralId;
 import org.eclipse.ocl.pivot.ids.IdResolver;
@@ -380,6 +386,19 @@ public abstract class CollectionValueImpl extends ValueImpl implements Collectio
 		return ValueUtil.integerValueOf(count);
 	}
 
+	@Override
+	public @NonNull LiteralExp createLiteralExp() {
+		CollectionLiteralExp literalExp = PivotFactory.eINSTANCE.createCollectionLiteralExp();
+		literalExp.setKind(CollectionKind.getByName(getKind()));
+		List<CollectionLiteralPart> ownedParts = literalExp.getOwnedParts();
+		for (Object element : getElements()) {
+			CollectionItem part = PivotFactory.eINSTANCE.createCollectionItem();
+			part.setOwnedItem(ValueUtil.createLiteralExp(element));
+			ownedParts.add(part);
+		}
+		return literalExp;
+	}
+
 	/**
 	 * Implementation of the OCL
 	 * <tt>Collection::excludes(object : T) : Boolean</tt>
@@ -491,35 +510,10 @@ public abstract class CollectionValueImpl extends ValueImpl implements Collectio
 	} */
 
 	public @NonNull CollectionTypeId getBagTypeId() {
-		return TypeId.BAG.getSpecializedId(getElementTypeId());
+		return TypeId.BAG.getSpecializedId(typeId);
 	}
 
-	//	public @NonNull CollectionTypeId getCollectionTypeId() {
-	//		return TypeId.COLLECTION.getCollectedTypeId(getElementType().getTypeId());
-	//	}
-
-	//	public @NonNull CollectionTypeId getCollectionTypeId() {
-	//		CollectionTypeId typeId2 = typeId;
-	//		if (typeId2 == null) {
-	//			typeId2 = getCollectionTypeId().getCollectedTypeId(getElementTypeId());
-	//		}
-	//		return typeId2;
-	//	}
-
-	//	public @NonNull CollectionTypeId getCollectionTypeId() {
-	//		return TypeId.COLLECTION;
-	//	}
-
 	public @NonNull TypeId getElementTypeId() {
-		//    	DomainType elementType = standardLibrary.getOclVoidType();
-		//    	for (Object value : values) {
-		//    		assert value != null;
-		//    		elementType = elementType.getCommonType(standardLibrary, standardLibrary.typeOf(value));
-		//    	}
-		//		for (Value element : iterable()) {
-		//
-		//		}
-
 		return getTypeId().getElementTypeId();
 	}
 
@@ -533,15 +527,15 @@ public abstract class CollectionValueImpl extends ValueImpl implements Collectio
 	}
 
 	public @NonNull CollectionTypeId getOrderedSetTypeId() {
-		return TypeId.ORDERED_SET.getSpecializedId(getElementTypeId());
+		return TypeId.ORDERED_SET.getSpecializedId(typeId);
 	}
 
 	public @NonNull CollectionTypeId getSequenceTypeId() {
-		return TypeId.SEQUENCE.getSpecializedId(getElementTypeId());
+		return TypeId.SEQUENCE.getSpecializedId(typeId);
 	}
 
 	public @NonNull CollectionTypeId getSetTypeId() {
-		return TypeId.SET.getSpecializedId(getElementTypeId());
+		return TypeId.SET.getSpecializedId(typeId);
 	}
 
 	@Override
@@ -723,8 +717,8 @@ public abstract class CollectionValueImpl extends ValueImpl implements Collectio
 			if (!isFirst) {
 				s.append(",");
 			}
-			if (s.length() < lengthLimit) {
-				ValueUtil.toString(element, s, lengthLimit-1);
+			if ((lengthLimit < 0) || (s.length() < lengthLimit)) {
+				ValueUtil.toString(element, s, lengthLimit);
 			}
 			else {
 				s.append("...");

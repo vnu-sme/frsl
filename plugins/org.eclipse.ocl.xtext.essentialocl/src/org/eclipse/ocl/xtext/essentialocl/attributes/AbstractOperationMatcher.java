@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Willink Transformations and others.
+ * Copyright (c) 2011, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -89,14 +89,13 @@ public abstract class AbstractOperationMatcher implements OperationArguments
 	protected final @NonNull EnvironmentFactoryInternal environmentFactory;
 	protected final @NonNull PivotMetamodelManager metamodelManager;
 	protected final @Nullable Type sourceType;
-	protected final @Nullable Type sourceTypeValue;
 	private @Nullable List<@NonNull Operation> ambiguities = null;
 
 	protected AbstractOperationMatcher(@NonNull EnvironmentFactoryInternal environmentFactory, @Nullable Type sourceType, @Nullable Type sourceTypeValue) {
 		this.environmentFactory = environmentFactory;
 		this.metamodelManager = environmentFactory.getMetamodelManager();
-		this.sourceType = sourceType != null ? PivotUtil.getBehavioralType(sourceType) : null;		// FIXME redundant
-		this.sourceTypeValue = sourceTypeValue;
+		this.sourceType = sourceType;// != null ? PivotUtil.getBehavioralType(sourceType) : null;		// FIXME redundant
+		// assert sourceTypeValue == null;			// Bug 580791 Enforcing redundant argument
 	}
 
 	protected int compareMatches(@NonNull Object match1, @NonNull TemplateParameterSubstitutions referenceBindings,
@@ -106,8 +105,8 @@ public abstract class AbstractOperationMatcher implements OperationArguments
 		@NonNull Operation candidate = (Operation) match2;
 		org.eclipse.ocl.pivot.Class referenceClass = reference.getOwningClass();
 		org.eclipse.ocl.pivot.Class candidateClass = candidate.getOwningClass();
-		Type referenceType = referenceClass != null ? PivotUtil.getBehavioralType(referenceClass) : null;
-		Type candidateType = candidateClass != null ? PivotUtil.getBehavioralType(candidateClass) : null;
+		Type referenceType = referenceClass;// != null ? PivotUtil.getBehavioralType(referenceClass) : null;
+		Type candidateType = candidateClass;// != null ? PivotUtil.getBehavioralType(candidateClass) : null;
 		Type specializedReferenceType = referenceType != null ? completeModel.getSpecializedType(referenceType, referenceBindings) : null;
 		Type specializedCandidateType = candidateType != null ? completeModel.getSpecializedType(candidateType, candidateBindings) : null;
 		if ((reference instanceof Iteration) && (candidate instanceof Iteration) && (specializedReferenceType != null) && (specializedCandidateType != null)) {
@@ -143,8 +142,8 @@ public abstract class AbstractOperationMatcher implements OperationArguments
 			Type argumentType = pivotArgument.getType();
 			Parameter referenceParameter = referenceParameters.get(i);
 			Parameter candidateParameter = candidateParameters.get(i);
-			referenceType = PivotUtil.getBehavioralType(PivotUtil.getType(referenceParameter));
-			candidateType = PivotUtil.getBehavioralType(PivotUtil.getType(candidateParameter));
+			referenceType = PivotUtilInternal.getType(referenceParameter);//.behavioralType();
+			candidateType = PivotUtilInternal.getType(candidateParameter);//.behavioralType();
 			specializedReferenceType = completeModel.getSpecializedType(referenceType, referenceBindings);
 			specializedCandidateType = completeModel.getSpecializedType(candidateType, candidateBindings);
 			if (argumentType != specializedReferenceType) {
@@ -258,18 +257,12 @@ public abstract class AbstractOperationMatcher implements OperationArguments
 		if (iSize != candidateParameters.size()) {
 			return null;
 		}
-		TemplateParameterSubstitutions bindings = TemplateParameterSubstitutionVisitor.createBindings(environmentFactory, sourceType, sourceTypeValue, candidateOperation);
+		TemplateParameterSubstitutions bindings = TemplateParameterSubstitutionVisitor.createBindings(environmentFactory, sourceType, null, candidateOperation);
 		for (int i = 0; i < iSize; i++) {
 			Parameter candidateParameter = candidateParameters.get(i);
 			OCLExpression expression = getArgument(i);
-			Type candidateType = PivotUtil.getBehavioralType(candidateParameter);
-			if (candidateType == null) {
-				return null;
-			}
-			Type expressionType = PivotUtil.getBehavioralType(expression);
-			if (expressionType == null) {
-				return null;
-			}
+			Type candidateType = PivotUtilInternal.getType(candidateParameter);
+			Type expressionType = PivotUtilInternal.getType(expression);
 			if (!metamodelManager.conformsTo(expressionType, TemplateParameterSubstitutions.EMPTY, candidateType, bindings)) {
 				boolean coerceable = false;
 				if (useCoercions) {
@@ -278,7 +271,8 @@ public abstract class AbstractOperationMatcher implements OperationArguments
 						if (partialClass instanceof PrimitiveType) {
 							for (Operation coercion : ((PrimitiveType)partialClass).getCoercions()) {
 								Type corcedSourceType = coercion.getType();
-								if ((corcedSourceType != null) && metamodelManager.conformsTo(corcedSourceType, TemplateParameterSubstitutions.EMPTY, candidateType, TemplateParameterSubstitutions.EMPTY)) {
+							//	if ((corcedSourceType != null) && metamodelManager.conformsTo(corcedSourceType, TemplateParameterSubstitutions.EMPTY, candidateType, TemplateParameterSubstitutions.EMPTY)) {
+								if ((corcedSourceType != null) && corcedSourceType.conformsTo(metamodelManager.getStandardLibrary(), candidateType)) {
 									coerceable = true;
 									break;
 								}

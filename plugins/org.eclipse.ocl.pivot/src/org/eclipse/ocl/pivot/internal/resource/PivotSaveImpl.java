@@ -17,16 +17,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLHelper;
 import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.XMIHelperImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMISaveImpl;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.ocl.pivot.Model;
+import org.eclipse.ocl.pivot.PivotPackage;
 import org.eclipse.ocl.pivot.resource.ASResource;
 import org.eclipse.ocl.pivot.utilities.ClassUtil;
 import org.eclipse.ocl.pivot.utilities.NameUtil;
@@ -37,6 +41,32 @@ import org.eclipse.ocl.pivot.utilities.NameUtil;
  */
 public final class PivotSaveImpl extends XMISaveImpl
 {
+	/**
+	 * @since 1.18
+	 */
+	public static class PivotXMIHelperImpl extends XMIHelperImpl
+	{
+		private @NonNull ASSaverNew asSaver;
+
+		public PivotXMIHelperImpl(@NonNull ASResource asResource) {
+			super(asResource);
+			this.asSaver = new ASSaverNew(asResource);
+		}
+
+		@Override
+		public String getHREF(EObject unresolvedObject) {
+			if (unresolvedObject == null) {
+				return null;
+			}
+			EObject resolvedObject = asSaver.resolveOrphan(unresolvedObject);
+			return super.getHREF(resolvedObject);
+		}
+
+		public @NonNull ASSaverNew getSaver() {
+			return asSaver;
+		}
+	}
+
 	/**
 	 * The Lookup override enforces alphabetical order on saved features.
 	 */
@@ -54,8 +84,26 @@ public final class PivotSaveImpl extends XMISaveImpl
 		}
 	}
 
-	public PivotSaveImpl(XMLHelper helper) {
+	private @NonNull ASSaverNew asSaver;
+
+	public PivotSaveImpl(@NonNull XMLHelper helper) {
 		super(helper);
+		this.asSaver = ((PivotXMIHelperImpl)helper).getSaver();
+	}
+
+	//
+	//	Special case. ElementLiteralExp::referredElement is an EObject-typed EAttribute to avoid all the
+	//	unpleasant corrolaries of injecting an opposite into the Ecore metamodel. Serialize it using the
+	//	regular EReference approach that includes entity handling and deresolving.
+	//
+	@Override
+	protected String getDatatypeValue(Object value, EStructuralFeature f, boolean isAttribute) {
+		if (f == PivotPackage.Literals.ELEMENT_LITERAL_EXP__REFERRED_ELEMENT) {
+			URI uri = EcoreUtil.getURI((EObject)value);
+			uri = helper.deresolve(uri);
+			return convertURI(uri.toString());					// Do not escape, URI ok, entity has legitimate &
+		}
+		return super.getDatatypeValue(value, f, isAttribute);
 	}
 
 	/**
@@ -75,8 +123,7 @@ public final class PivotSaveImpl extends XMISaveImpl
 				}
 			}
 		}
-		ASSaver asSaver = new ASSaver(asResource);
-		asSaver.localizeSpecializations();
+		asSaver.localizeOrphans();
 		Map<@NonNull Object, @Nullable Object> saveOptions = new HashMap<>();
 		if (options != null) {
 			for (Object key : options.keySet()) {

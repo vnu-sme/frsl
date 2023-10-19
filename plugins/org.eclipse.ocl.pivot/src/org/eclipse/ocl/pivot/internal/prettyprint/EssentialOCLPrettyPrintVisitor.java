@@ -26,9 +26,11 @@ import org.eclipse.ocl.pivot.ExpressionInOCL;
 import org.eclipse.ocl.pivot.IfExp;
 import org.eclipse.ocl.pivot.IntegerLiteralExp;
 import org.eclipse.ocl.pivot.InvalidLiteralExp;
+import org.eclipse.ocl.pivot.IterableType;
 import org.eclipse.ocl.pivot.IterateExp;
 import org.eclipse.ocl.pivot.Iteration;
 import org.eclipse.ocl.pivot.IteratorExp;
+import org.eclipse.ocl.pivot.IteratorVariable;
 import org.eclipse.ocl.pivot.LetExp;
 import org.eclipse.ocl.pivot.MapLiteralExp;
 import org.eclipse.ocl.pivot.MapLiteralPart;
@@ -87,7 +89,7 @@ public class EssentialOCLPrettyPrintVisitor extends PrettyPrintVisitor
 				else {
 					safeVisit(source);
 				}
-				if (source.getType() instanceof CollectionType) {
+				if (source.getType() instanceof IterableType) {
 					context.append(PivotUtil.getNavigationOperator(object.isIsSafe(), !object.isIsImplicit()));				// "." for implicit collect
 				}
 				else {
@@ -250,7 +252,7 @@ public class EssentialOCLPrettyPrintVisitor extends PrettyPrintVisitor
 		Variable result = object.getOwnedResult();
 		if (context.showNames()) {
 			List<Variable> iterators = object.getOwnedIterators();
-			List<Variable> coIterators = object.getOwnedCoIterators();
+			List<IteratorVariable> coIterators = object.getOwnedCoIterators();
 			int iteratorsSize = iterators.size();
 			int coIteratorsSize = coIterators.size();
 			appendSourceNavigation(object);
@@ -269,7 +271,7 @@ public class EssentialOCLPrettyPrintVisitor extends PrettyPrintVisitor
 						//						safeVisit(iterator);
 						context.appendName(iterator);
 						if (coIterator != null) {
-							context.append(" <- ");
+							context.append(" with ");
 							context.appendName(coIterator);
 						}
 						prefix = ",";
@@ -302,7 +304,7 @@ public class EssentialOCLPrettyPrintVisitor extends PrettyPrintVisitor
 			context.push("(", "");
 			String prefix = null;
 			List<@NonNull Variable> iterators = PivotUtilInternal.getOwnedIteratorsList(object);
-			List<Variable> coIterators = object.getOwnedCoIterators();
+			List<IteratorVariable> coIterators = object.getOwnedCoIterators();
 			int iteratorsSize = iterators.size();
 			int coIteratorsSize = coIterators.size();
 			for (int i = 0; i < iteratorsSize; i++) {
@@ -315,7 +317,7 @@ public class EssentialOCLPrettyPrintVisitor extends PrettyPrintVisitor
 				context.append(" : ");
 				context.appendTypedMultiplicity(iterator);
 				if (coIterator != null) {
-					context.append(" <- ");
+					context.append(" with ");
 					context.appendName(coIterator);
 				}
 				prefix = ",";
@@ -344,7 +346,7 @@ public class EssentialOCLPrettyPrintVisitor extends PrettyPrintVisitor
 		OCLExpression body = object.getOwnedBody();
 		if (context.showNames()) {
 			List<Variable> iterators = object.getOwnedIterators();
-			List<Variable> coIterators = object.getOwnedCoIterators();
+			List<IteratorVariable> coIterators = object.getOwnedCoIterators();
 			int iteratorsSize = iterators.size();
 			int coIteratorsSize = coIterators.size();
 			appendSourceNavigation(object);
@@ -369,7 +371,7 @@ public class EssentialOCLPrettyPrintVisitor extends PrettyPrintVisitor
 							//							safeVisit(iterator);
 							context.appendName(iterator);
 							if (coIterator != null) {
-								context.append(" <- ");
+								context.append(" with ");
 								context.appendName(coIterator);
 							}
 							prefix = ",";
@@ -455,7 +457,7 @@ public class EssentialOCLPrettyPrintVisitor extends PrettyPrintVisitor
 	@Override
 	public Object visitMapLiteralPart(@NonNull MapLiteralPart object) {
 		safeVisit(object.getOwnedKey());
-		context.next("", " <- ", "");
+		context.next("", " with ", "");
 		safeVisit(object.getOwnedValue());
 		return null;
 	}

@@ -11,18 +11,19 @@
 package org.eclipse.ocl.pivot.internal.ids;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.ocl.pivot.ids.BindingsId;
 import org.eclipse.ocl.pivot.ids.CollectionTypeId;
 import org.eclipse.ocl.pivot.ids.IdVisitor;
 import org.eclipse.ocl.pivot.ids.TypeId;
+import org.eclipse.ocl.pivot.values.IntegerValue;
+import org.eclipse.ocl.pivot.values.UnlimitedNaturalValue;
 
 public class SpecializedCollectionTypeIdImpl extends AbstractSpecializedIdImpl<CollectionTypeId> implements CollectionTypeId
 {
-	private @Nullable TypeId elementTypeId;
-
 	public SpecializedCollectionTypeIdImpl(@NonNull CollectionTypeId generalizedId, @NonNull BindingsId templateBindings) {
 		super(generalizedId, templateBindings);
+		assert templateBindings.elementIdSize() == 1;
+		assert templateBindings.valuesSize() == 3;
 	}
 
 	@Override
@@ -37,11 +38,22 @@ public class SpecializedCollectionTypeIdImpl extends AbstractSpecializedIdImpl<C
 
 	@Override
 	public @NonNull TypeId getElementTypeId() {
-		TypeId elementTypeId2 = elementTypeId;
-		if (elementTypeId2 == null) {
-			elementTypeId = elementTypeId2 = (TypeId) generalizedId.getElementTypeId().specialize(templateBindings);
-		}
-		return elementTypeId2;
+		return (TypeId)templateBindings.getElementId(0);
+	}
+
+	@Override
+	public @NonNull IntegerValue getLowerValue() {
+		return (IntegerValue)templateBindings.getValue(2);
+	}
+
+	@Override
+	public @NonNull UnlimitedNaturalValue getUpperValue() {
+		return (UnlimitedNaturalValue)templateBindings.getValue(3);
+	}
+
+	@Override
+	public boolean isNullFree() {
+		return (boolean)templateBindings.getValue(1);
 	}
 
 	/**

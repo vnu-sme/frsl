@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 Willink Transformations and others.
+ * Copyright (c) 2012, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.ocl.pivot.AnyType;
 import org.eclipse.ocl.pivot.BagType;
+import org.eclipse.ocl.pivot.BooleanType;
 import org.eclipse.ocl.pivot.CollectionType;
 import org.eclipse.ocl.pivot.Comment;
 import org.eclipse.ocl.pivot.Element;
@@ -34,7 +35,6 @@ import org.eclipse.ocl.pivot.Operation;
 import org.eclipse.ocl.pivot.OrderedSetType;
 import org.eclipse.ocl.pivot.ParameterVariable;
 import org.eclipse.ocl.pivot.PivotFactory;
-import org.eclipse.ocl.pivot.PrimitiveType;
 import org.eclipse.ocl.pivot.Property;
 import org.eclipse.ocl.pivot.SelfType;
 import org.eclipse.ocl.pivot.SequenceType;
@@ -382,6 +382,13 @@ public abstract class AbstractContents extends PivotUtil
 		return (BagType) ClassUtil.nonNullState(asPackage.getOwnedClass(name));
 	}
 
+	/**
+	 * @since 1.18
+	 */
+	protected @NonNull BooleanType getBooleanType(org.eclipse.ocl.pivot.@NonNull Package asPackage, @NonNull String name) {
+		return (BooleanType) ClassUtil.nonNullState(asPackage.getOwnedClass(name));
+	}
+
 	protected org.eclipse.ocl.pivot.@NonNull Class getClass(org.eclipse.ocl.pivot.@NonNull Package asPackage, @NonNull String name) {
 		return ClassUtil.nonNullState(asPackage.getOwnedClass(name));
 	}
@@ -412,8 +419,11 @@ public abstract class AbstractContents extends PivotUtil
 		return ClassUtil.nonNullState(NameUtil.getNameable(asModel.getOwnedPackages(), name));
 	}
 
-	protected @NonNull PrimitiveType getPrimitiveType(org.eclipse.ocl.pivot.@NonNull Package asPackage, @NonNull String name) {
-		return (PrimitiveType) ClassUtil.nonNullState(asPackage.getOwnedClass(name));
+	/**
+	 * @since 1.18
+	 */
+	protected org.eclipse.ocl.pivot.@NonNull Class getPrimitiveType(org.eclipse.ocl.pivot.@NonNull Package asPackage, @NonNull String name) {
+		return ClassUtil.nonNullState(asPackage.getOwnedClass(name));
 	}
 
 	protected @NonNull Property getProperty(org.eclipse.ocl.pivot.@NonNull Class asClass, @NonNull String name) {

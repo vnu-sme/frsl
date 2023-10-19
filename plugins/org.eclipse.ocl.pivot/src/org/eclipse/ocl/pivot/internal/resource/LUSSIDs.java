@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Willink Transformations and others.
+ * Copyright (c) 2017, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -30,17 +30,19 @@ import org.eclipse.ocl.pivot.internal.messages.PivotMessagesInternal;
 import org.eclipse.ocl.pivot.resource.ASResource;
 import org.eclipse.ocl.pivot.utilities.StringUtil;
 import org.eclipse.ocl.pivot.utilities.TreeIterable;
+import org.eclipse.ocl.pivot.utilities.UniqueList;
 
 /**
  * The LUSSIDs class maintains the element to LUSSID and LUSSID to element mapping for the elements
- * of an ASResource. It also privides the ability to return predictable xmi:id values.
+ * of an ASResource. It also provides the ability to return predictable xmi:id values.
  *
  * An xmi:id is provided for every explicitly referenced, and every potentially externally referenced element,
- * so that the EMF fall-back to @x/@y.1 style id referemces is never required.
+ * so that the EMF fall-back to @x/@y.1 style id references is never required in a persisted resource. However
+ * for casual use such as by Diagnostician.getObjectLabel the conventional URI is used.
  *
  * The xmi:id typically comprises a 5 Base64-like letter encoding of the bottom 30 bits of the LUSSID of the element.
  * Additional Base64 letters are occasionally needed to disambiguate duplicates. Disambiguation favours the externally
- * referenceable xmi:ids before falling back on hierachical position. Disambiguation is therefore very likley to give
+ * referenceable xmi:ids before falling back on hierachical position. Disambiguation is therefore very likely to give
  * stable results after many forms of model evolution.
  *
  * The LUSSID (Locally Unique Semantically Sentsitive ID) is the hashcode of the hierarchical path of the element.
@@ -63,6 +65,8 @@ public abstract class LUSSIDs
 	protected static final int LAMBDA_TYPE_CONTEXT_MULTIPLIER = 71;
 	protected static final int LAMBDA_TYPE_PARAMETER_TYPE_MULTIPLIER = 73;
 	protected static final int LAMBDA_TYPE_RETURN_TYPE_MULTIPLIER = 79;
+	protected static final int MAP_KEYS_ARE_NULL_FREE_MULTIPLIER = 101;
+	protected static final int MAP_VALUES_ARE_NULL_FREE_MULTIPLIER = 103;
 	protected static final int OPERATION_PARAMETER_TYPE_MULTIPLIER = 83;
 	protected static final int OPPOSITE_PROPERTY_NAME_MULTIPLIER = 7;
 	protected static final int SIBLING_INDEX_MULTIPLIER = 1;
@@ -171,7 +175,7 @@ public abstract class LUSSIDs
 
 		@Override
 		public String getMessage() {
-			return message.replace("\n",  "\\n");
+			return message;//.replace("\n",  "\\n");
 		}
 
 		@Override
@@ -248,13 +252,13 @@ public abstract class LUSSIDs
 			s = new StringBuilder();
 			for (@NonNull String xmiid : xmiid2collisions2.keySet()) {
 				if (s != null) {
-					s.append("\nAmbiguous xmi:id " + xmiid);
+					s.append("\n\tambiguous xmi:id " + xmiid);
 				}
 				List<@NonNull Element> collisions = xmiid2collisions2.get(xmiid);
 				assert collisions != null;
 				for (@NonNull Element element : collisions) {
 					if (s != null) {
-						s.append("\n\t " + element);
+						s.append("\n\t\t" + element);
 					}
 				}
 			}
@@ -266,11 +270,11 @@ public abstract class LUSSIDs
 			Map<@NonNull Integer, @NonNull List<@NonNull Element>> debugLUSSID2collisions2 = debugLUSSID2collisions;
 			if (debugLUSSID2collisions2 != null) {
 				for (@NonNull Integer lussid : debugLUSSID2collisions2.keySet()) {
-					s.append("\ncollision at " + lussid);
+					s.append("\n\tcollision at " + lussid);
 					List<@NonNull Element> collisions = debugLUSSID2collisions2.get(lussid);
 					assert collisions != null;
 					for (@NonNull Element element : collisions) {
-						s.append("\n\t" + element);
+						s.append("\n\t\t" + element);
 					}
 				}
 			}
@@ -369,7 +373,6 @@ public abstract class LUSSIDs
 					}
 				}
 			}
-			//			System.out.println(Integer.toHexString(id) + (normalizeTemplateParameters ? " <- " : " <= ") + element);
 			return id;
 		}
 		finally {
@@ -379,6 +382,7 @@ public abstract class LUSSIDs
 
 	protected void assignLUSSIDs(@NonNull AS2ID as2id) {
 		assignmentStarted = true;
+		UniqueList<@NonNull ASResource> referencedASResources = null;
 		for (@NonNull EObject eObject : new TreeIterable(asResource)) {
 			EClass eClass = eObject.eClass();
 			assert eClass != null;
@@ -407,13 +411,21 @@ public abstract class LUSSIDs
 					}
 					else if (eResource instanceof ASResource) {
 						if (!((ASResource)eResource).isOrphanage()) {
-							as2id.assignLUSSIDs((ASResource)eResource);
+							if (referencedASResources == null) {
+								referencedASResources = new UniqueList<>();
+							}
+							referencedASResources.add((ASResource)eResource);
 						}
 						else {
 							//	as2id.assignLUSSIDs((ASResource)eResource);
 						}
 					}
 				}
+			}
+		}
+		if (referencedASResources != null) {
+			for (@NonNull ASResource referencedASResource : referencedASResources) {
+				as2id.assignLUSSIDs(referencedASResource);
 			}
 		}
 	}
@@ -519,6 +531,8 @@ public abstract class LUSSIDs
 
 	/**
 	 * Return true if eObject may be referenced from another XMI file and so must have an xmi:id.
+	 *
+	 * FIXME misnomer. Internal references need xmi:ids too.
 	 */
 	protected abstract boolean isExternallyReferenceable(@NonNull EObject eObject);
 

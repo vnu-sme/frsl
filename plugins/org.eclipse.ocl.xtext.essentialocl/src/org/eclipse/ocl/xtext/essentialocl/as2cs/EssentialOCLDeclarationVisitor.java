@@ -33,6 +33,7 @@ import org.eclipse.ocl.pivot.IntegerLiteralExp;
 import org.eclipse.ocl.pivot.InvalidLiteralExp;
 import org.eclipse.ocl.pivot.IterateExp;
 import org.eclipse.ocl.pivot.IteratorExp;
+import org.eclipse.ocl.pivot.IteratorVariable;
 import org.eclipse.ocl.pivot.LanguageExpression;
 import org.eclipse.ocl.pivot.LetExp;
 import org.eclipse.ocl.pivot.MapLiteralExp;
@@ -302,7 +303,47 @@ public class EssentialOCLDeclarationVisitor extends BaseDeclarationVisitor
 		}
 		ExpSpecificationCS csStatus = null;
 		LanguageExpression specification = object.getOwnedSpecification();
-		if (specification instanceof ExpressionInOCL) {
+		String body = specification.getBody();
+		if (body != null) {
+			if (body.startsWith("Tuple")) {
+				String[] lines = body.split("\n");
+				int lastLineNumber = lines.length-1;
+				if ((lastLineNumber >= 3)
+						&& lines[0].replaceAll("\\s", "").equals("Tuple{")
+						&& lines[1].replaceAll("\\s", "").startsWith("message:String=")
+						&& lines[lastLineNumber].replaceAll("\\s", "").equals("}.status")) {
+					StringBuilder message = new StringBuilder();
+					message.append(lines[1].substring(lines[1].indexOf("=")+1, lines[1].length()).trim());
+					for (int i = 2; i < lastLineNumber; i++) {
+						if (!lines[i].replaceAll("\\s", "").startsWith("status:Boolean=")) {
+							message.append("\n" + lines[i]);
+						}
+						else {
+							ExpSpecificationCS csMessage = context.refreshElement(ExpSpecificationCS.class, EssentialOCLCSPackage.Literals.EXP_SPECIFICATION_CS, specification);
+							String messageString = message.toString();
+							int lastIndex = messageString.lastIndexOf(',');
+							if (lastIndex > 0) {
+								messageString = messageString.substring(0, lastIndex);
+							}
+							csMessage.setExprString(messageString);
+							csElement.setOwnedMessageSpecification(csMessage);
+							StringBuilder status = new StringBuilder();
+							status.append(lines[i].substring(lines[i].indexOf("=")+1, lines[i].length()).trim());
+							for (i++; i < lastLineNumber; i++) {
+								status.append("\n" + lines[i]);
+							}
+							csStatus = context.refreshElement(ExpSpecificationCS.class, EssentialOCLCSPackage.Literals.EXP_SPECIFICATION_CS, specification);
+							csStatus.setExprString(status.toString());
+						}
+					}
+				}
+			}
+			if (csStatus == null) {
+				csStatus = context.refreshElement(ExpSpecificationCS.class, EssentialOCLCSPackage.Literals.EXP_SPECIFICATION_CS, specification);
+				csStatus.setExprString(body);
+			}
+		}
+		if ((csStatus == null) && (specification instanceof ExpressionInOCL)) {
 			OCLExpression bodyExpression = ((ExpressionInOCL)specification).getOwnedBody();
 			if ((bodyExpression instanceof TupleLiteralExp) && (bodyExpression.getTypeId() == TUPLE_MESSAGE_STATUS)) {
 				TupleLiteralPart messagePart = NameUtil.getNameable(((TupleLiteralExp)bodyExpression).getOwnedParts(), TUPLE_MESSAGE_STATUS_0.getName());
@@ -320,7 +361,7 @@ public class EssentialOCLDeclarationVisitor extends BaseDeclarationVisitor
 				csStatus.setExprString(PrettyPrinter.print(bodyExpression));
 			}
 		}
-		if ((csStatus == null) && (specification != null)) {
+	/*	if ((csStatus == null) && (specification != null)) {
 			String body = specification.getBody();
 			if (body != null) {
 				if (body.startsWith("Tuple")) {
@@ -361,7 +402,7 @@ public class EssentialOCLDeclarationVisitor extends BaseDeclarationVisitor
 					csStatus.setExprString(body);
 				}
 			}
-		}
+		} */
 		//		csElement.setSpecification(context.visitDeclaration(SpecificationCS.class, specification));
 		csElement.setOwnedSpecification(csStatus);
 		return csElement;
@@ -499,16 +540,16 @@ public class EssentialOCLDeclarationVisitor extends BaseDeclarationVisitor
 
 	@Override
 	public ElementCS visitExpressionInOCL(@NonNull ExpressionInOCL object) {
-		OCLExpression bodyExpression = object.getOwnedBody();
-		if (bodyExpression != null) {
-			ExpSpecificationCS csElement = context.refreshElement(ExpSpecificationCS.class, EssentialOCLCSPackage.Literals.EXP_SPECIFICATION_CS, object);
-			String body = PrettyPrinter.print(bodyExpression);
-			csElement.setExprString(body);
-			return csElement;
-		}
 		String body = object.getBody();
 		if (body != null) {
 			ExpSpecificationCS csElement = context.refreshElement(ExpSpecificationCS.class, EssentialOCLCSPackage.Literals.EXP_SPECIFICATION_CS, object);
+			csElement.setExprString(body);
+			return csElement;
+		}
+		OCLExpression bodyExpression = object.getOwnedBody();
+		if (bodyExpression != null) {
+			ExpSpecificationCS csElement = context.refreshElement(ExpSpecificationCS.class, EssentialOCLCSPackage.Literals.EXP_SPECIFICATION_CS, object);
+			body = PrettyPrinter.print(bodyExpression);
 			csElement.setExprString(body);
 			return csElement;
 		}
@@ -565,7 +606,7 @@ public class EssentialOCLDeclarationVisitor extends BaseDeclarationVisitor
 		csNameExp.setOwnedRoundBracketedClause(csRoundBracketedClause);;
 		String prefix = null;
 		List<Variable> asIterators = asIterateExp.getOwnedIterators();
-		List<Variable> asCoIterators = asIterateExp.getOwnedCoIterators();
+		List<IteratorVariable> asCoIterators = asIterateExp.getOwnedCoIterators();
 		for (int i = 0; i < asIterators.size(); i++) {
 			Variable asIterator = asIterators.get(i);
 			if (!asIterator.isIsImplicit()) {
@@ -617,7 +658,7 @@ public class EssentialOCLDeclarationVisitor extends BaseDeclarationVisitor
 		csNameExp.setOwnedRoundBracketedClause(csRoundBracketedClause);;
 		String prefix = null;
 		List<Variable> asIterators = asIteratorExp.getOwnedIterators();
-		List<Variable> asCoIterators = asIteratorExp.getOwnedCoIterators();
+		List<IteratorVariable> asCoIterators = asIteratorExp.getOwnedCoIterators();
 		for (int i = 0; i < asIterators.size(); i++) {
 			Variable asIterator = asIterators.get(i);
 			if (!asIterator.isIsImplicit()) {
@@ -862,7 +903,7 @@ public class EssentialOCLDeclarationVisitor extends BaseDeclarationVisitor
 	@Override
 	public @Nullable ElementCS visitTypeExp(@NonNull TypeExp asTypeExp) {
 		Type asType = getNonNullType(asTypeExp.getReferredType());
-		if (asType instanceof TemplateParameter) {
+		if (asType instanceof TemplateParameter) {			// FIXME Never happens
 			NameExpCS csNameExp = EssentialOCLCSFactory.eINSTANCE.createNameExpCS();
 			PathNameCS csPathName = BaseCSFactory.eINSTANCE.createPathNameCS();
 			csNameExp.setOwnedPathName(csPathName);

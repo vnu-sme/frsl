@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ocl.xtext.base.ui.outline;
 
-import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -46,15 +41,7 @@ public class BaseOutlineTreeProvider extends DefaultOutlineTreeProvider
 		BaseUiPluginHelper.PLUGIN_ID, "outline/create"); //$NON-NLS-1$
 
 	@Override
-	protected EObjectNode createEObjectNode(IOutlineNode parentNode, EObject modelElement, Image image, Object text, boolean isLeaf) {	
-		
-//		ILog log = Platform.getLog(BaseOutlineTreeProvider.class);
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: BaseOutlineTreeProvider$createEObjectNode" 
-//				+ "\n****modelElement = " + modelElement
-//				+ "\n****modelElement.getClass = " + modelElement.getClass()
-//				);
-//		log.log(status);
-		
+	protected EObjectNode createEObjectNode(IOutlineNode parentNode, EObject modelElement, Image image, Object text, boolean isLeaf) {
 		EObject asElement = modelElement;
 		if (modelElement instanceof Pivotable) {
 			Pivotable pivotable = (Pivotable) modelElement;
@@ -99,15 +86,6 @@ public class BaseOutlineTreeProvider extends DefaultOutlineTreeProvider
 	 */
 	@Override
 	public void createChildren(IOutlineNode parent, EObject modelElement) {
-		
-//		ILog log = Platform.getLog(BaseOutlineTreeProvider.class);
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: BaseOutlineTreeProvider$createChildren" 
-//				+ "\n****modelElement = " + modelElement
-//				+ "\n****modelElement.getClass = " + modelElement.getClass()
-//				);
-//		log.log(status);
-		
-		
 		if (modelElement != null) {
 			super.createChildren(parent, modelElement);
 		}
@@ -117,24 +95,7 @@ public class BaseOutlineTreeProvider extends DefaultOutlineTreeProvider
 	 * The default creation of outline node is refined to ignore null model elements.
 	 */
 	@Override
-	protected void createNode(IOutlineNode parent, EObject modelElement) {		
-		
-//		ILog log = Platform.getLog(BaseOutlineTreeProvider.class);
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: BaseOutlineTreeProvider$createNode" 
-//				+ "\n****modelElement = " + modelElement
-//				+ "\n****modelElement.getClass = " + modelElement.getClass()
-//				);
-//		log.log(status);
-		
-//		if ( modelElement instanceof org.eclipse.ocl.pivot.Package ) {
-//			
-//			status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: BaseOutlineTreeProvider$createNode" 
-//					+ "\n****package SIZE = " + ( (org.eclipse.ocl.pivot.Package) modelElement).getOwnedClasses().size()
-//					);
-//			log.log(status);
-//			
-//		}
-		
+	protected void createNode(IOutlineNode parent, EObject modelElement) {
 		if (modelElement != null) {
 			super.createNode(parent, modelElement);
 		}

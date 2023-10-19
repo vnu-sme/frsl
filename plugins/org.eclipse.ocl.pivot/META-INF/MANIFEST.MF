@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.ocl.pivot;singleton:=true
-Bundle-Version: 1.17.0.qualifier
+Bundle-Version: 1.19.0.qualifier
 Bundle-ClassPath: .
 Require-Bundle: org.eclipse.core.resources;bundle-version="[3.5.0,4.0.0)";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="[3.5.0,4.0.0)";resolution:=optional,
@@ -66,7 +66,11 @@ Export-Package: org.eclipse.ocl.pivot,
  org.eclipse.ocl.pivot.model,
  org.eclipse.ocl.pivot.oclstdlib,
  org.eclipse.ocl.pivot.oclstdlib.util,
+ org.eclipse.ocl.pivot.oclstdlib.validation;x-internal:=true,
  org.eclipse.ocl.pivot.options,
+ org.eclipse.ocl.pivot.queries,
+ org.eclipse.ocl.pivot.queries.impl,
+ org.eclipse.ocl.pivot.queries.util,
  org.eclipse.ocl.pivot.resource,
  org.eclipse.ocl.pivot.types,
  org.eclipse.ocl.pivot.util,

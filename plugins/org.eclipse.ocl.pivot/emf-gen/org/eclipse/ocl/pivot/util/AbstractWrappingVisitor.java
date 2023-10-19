@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -158,6 +158,18 @@ public abstract class AbstractWrappingVisitor<R, C, @NonNull D extends Visitor<R
 		@Nullable P prologue = preVisit(object);
 		try {
 			R result = delegate.visitBooleanLiteralExp(object);
+			return postVisit(object, prologue, result);
+		}
+		catch (Throwable e) {
+			return badVisit(object, prologue, e);
+		}
+	}
+
+	@Override
+	public R visitBooleanType(org.eclipse.ocl.pivot.@NonNull BooleanType object) {
+		@Nullable P prologue = preVisit(object);
+		try {
+			R result = delegate.visitBooleanType(object);
 			return postVisit(object, prologue, result);
 		}
 		catch (Throwable e) {
@@ -446,6 +458,18 @@ public abstract class AbstractWrappingVisitor<R, C, @NonNull D extends Visitor<R
 		@Nullable P prologue = preVisit(object);
 		try {
 			R result = delegate.visitElementExtension(object);
+			return postVisit(object, prologue, result);
+		}
+		catch (Throwable e) {
+			return badVisit(object, prologue, e);
+		}
+	}
+
+	@Override
+	public R visitElementLiteralExp(org.eclipse.ocl.pivot.@NonNull ElementLiteralExp object) {
+		@Nullable P prologue = preVisit(object);
+		try {
+			R result = delegate.visitElementLiteralExp(object);
 			return postVisit(object, prologue, result);
 		}
 		catch (Throwable e) {

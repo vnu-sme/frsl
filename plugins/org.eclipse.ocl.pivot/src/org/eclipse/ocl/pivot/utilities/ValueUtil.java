@@ -28,12 +28,22 @@ import org.eclipse.emf.ecore.EEnumLiteral;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.ocl.pivot.BooleanLiteralExp;
 import org.eclipse.ocl.pivot.CollectionType;
 import org.eclipse.ocl.pivot.Element;
+import org.eclipse.ocl.pivot.ElementExtension;
+import org.eclipse.ocl.pivot.ElementLiteralExp;
+import org.eclipse.ocl.pivot.EnumLiteralExp;
 import org.eclipse.ocl.pivot.EnumerationLiteral;
+import org.eclipse.ocl.pivot.InvalidLiteralExp;
 import org.eclipse.ocl.pivot.MapType;
+import org.eclipse.ocl.pivot.OCLExpression;
+import org.eclipse.ocl.pivot.PivotFactory;
+import org.eclipse.ocl.pivot.Stereotype;
+import org.eclipse.ocl.pivot.StringLiteralExp;
 import org.eclipse.ocl.pivot.TemplateParameters;
 import org.eclipse.ocl.pivot.Type;
+import org.eclipse.ocl.pivot.TypeExp;
 import org.eclipse.ocl.pivot.evaluation.EvaluationVisitor;
 import org.eclipse.ocl.pivot.evaluation.Evaluator;
 import org.eclipse.ocl.pivot.evaluation.Executor;
@@ -46,6 +56,7 @@ import org.eclipse.ocl.pivot.ids.TuplePartId;
 import org.eclipse.ocl.pivot.ids.TupleTypeId;
 import org.eclipse.ocl.pivot.ids.TypeId;
 import org.eclipse.ocl.pivot.internal.resource.StandaloneProjectMap;
+import org.eclipse.ocl.pivot.internal.utilities.EnvironmentFactoryInternal.EnvironmentFactoryInternalExtension;
 import org.eclipse.ocl.pivot.internal.values.BagImpl;
 import org.eclipse.ocl.pivot.internal.values.BagValueImpl;
 import org.eclipse.ocl.pivot.internal.values.BigIntegerValueImpl;
@@ -128,10 +139,15 @@ public abstract class ValueUtil
 	public static final @NonNull InvalidValueException INVALID_VALUE = new InvalidValueException("invalid");
 	public static final @NonNull NullValue NULL_VALUE = new NullValueImpl();
 	public static final @NonNull IntegerValue ONE_VALUE = integerValueOf(1);
-	public static final @NonNull UnlimitedNaturalValue UNLIMITED_ONE_VALUE = (UnlimitedNaturalValue)ONE_VALUE;
 	public static final @NonNull Boolean TRUE_VALUE = Boolean.TRUE;
-	public static final @NonNull UnlimitedValue UNLIMITED_VALUE = new UnlimitedValueImpl();
 	public static final @NonNull IntegerValue ZERO_VALUE = integerValueOf(0);
+
+	public static final @NonNull UnlimitedNaturalValue UNLIMITED_ONE_VALUE = (UnlimitedNaturalValue)ONE_VALUE;
+	public static final @NonNull UnlimitedValue UNLIMITED_VALUE = new UnlimitedValueImpl();
+	/**
+	 * @since 1.18
+	 */
+	public static final @NonNull UnlimitedNaturalValue UNLIMITED_ZERO_VALUE = (UnlimitedNaturalValue)ZERO_VALUE;
 
 	private static boolean allStaticsInitialized = false;
 
@@ -180,6 +196,18 @@ public abstract class ValueUtil
 		}
 		else {
 			throw new InvalidValueException(PivotMessages.TypedValueRequired, TypeId.COLLECTION_NAME, getTypeName(value));
+		}
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public static @NonNull ElementExtension asElementExtension(@Nullable Object value) {
+		if (value instanceof ElementExtension) {
+			return (ElementExtension)value;
+		}
+		else {
+			throw new InvalidValueException(PivotMessages.TypedValueRequired, "ElementExtension", getTypeName(value));
 		}
 	}
 
@@ -332,6 +360,18 @@ public abstract class ValueUtil
 		}
 		else {
 			throw new InvalidValueException(PivotMessages.TypedValueRequired, TypeId.SET_NAME, getTypeName(value));
+		}
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public static @NonNull Stereotype asStereotype(@Nullable Object value) {
+		if (value instanceof Stereotype) {
+			return (Stereotype)value;
+		}
+		else {
+			throw new InvalidValueException(PivotMessages.TypedValueRequired, TypeId.STEREOTYPE_NAME, getTypeName(value));
 		}
 	}
 
@@ -559,22 +599,81 @@ public abstract class ValueUtil
 	}
 
 	/**
+	 * Return a LiteralExp whose evaluation is a value.
+	 *
+	 * @since 1.18
+	 */
+	public static @NonNull OCLExpression createLiteralExp(Object value) {	// FIXME TypeExp / ShadowExp are not LiteralExp
+		if (value == null) {
+			return PivotFactory.eINSTANCE.createNullLiteralExp();
+		}
+		else if (value instanceof Value) {
+			return ((Value)value).createLiteralExp();
+		}
+		else if (value instanceof Boolean) {
+			BooleanLiteralExp literalExp = PivotFactory.eINSTANCE.createBooleanLiteralExp();
+			literalExp.setBooleanSymbol(((Boolean)value).booleanValue());
+			return literalExp;
+		}
+		else if (value instanceof String) {
+			StringLiteralExp literalExp = PivotFactory.eINSTANCE.createStringLiteralExp();
+			literalExp.setStringSymbol((String)value);
+			return literalExp;
+		}
+		else if (value instanceof EnumerationLiteral) {
+			EnumLiteralExp literalExp = PivotFactory.eINSTANCE.createEnumLiteralExp();
+			literalExp.setReferredLiteral((EnumerationLiteral)value);
+			return literalExp;
+		}
+		else if (value instanceof Type) {
+			TypeExp literalExp = PivotFactory.eINSTANCE.createTypeExp();		// TypeExp is not a LiteralExp
+			literalExp.setReferredType((Type)value);
+			return literalExp;
+		}
+		else if (value instanceof EObject) {
+			EObject eObject = (EObject) value;
+			if (eObject.eResource() != null) {
+				ElementLiteralExp literalExp = PivotFactory.eINSTANCE.createElementLiteralExp();
+				literalExp.setReferredElement(eObject);
+				return literalExp;
+			}
+			else {
+				throw new UnsupportedOperationException("Missing createShadowExp support in ValueUtil.createLiteralExp");	// TODO FIXME
+			}
+		}
+		else {
+			InvalidLiteralExp literalExp = PivotFactory.eINSTANCE.createInvalidLiteralExp();
+			literalExp.setName("Unsupported createLiteralExp for " + value.getClass().getSimpleName());
+			return literalExp;
+		}
+	}
+
+	/**
 	 * @since 1.6
 	 */
 	public static MapValue.@NonNull Accumulator createMapAccumulatorValue(@NonNull MapTypeId typeId) {
 		return new MapValueImpl.Accumulator(typeId);
 	}
 
-	public static @NonNull MapValue createMapOfEach(@NonNull MapTypeId typeId, @NonNull MapEntry @NonNull ... mapEntries) {
-		return MapValueImpl.createMapValueOfEach(typeId, mapEntries);
+	public static @NonNull MapValue createMapOfEach(@NonNull MapTypeId mapTypeId, @NonNull MapEntry @NonNull ... mapEntries) {
+		return MapValueImpl.createMapValueOfEach(mapTypeId, mapEntries);
 	}
 
 	public static @NonNull MapEntry createMapEntry(@Nullable Object key, @Nullable Object value) {
 		return new MapEntryImpl(key, value);
 	}
 
+	@Deprecated /* @deprecated not used */
 	public static @NonNull MapValue createMapValue(@NonNull TypeId keyTypeId, @NonNull TypeId valueTypeId, @NonNull Map<Object, Object> boxedValues) {
-		return new MapValueImpl(TypeId.MAP.getSpecializedId(keyTypeId, valueTypeId), boxedValues);
+	//	BindingsId bindingsId = IdManager.getBindingsId(keyTypeId, valueTypeId, false, false);
+		return createMapValue(TypeId.MAP.getSpecializedId(keyTypeId, valueTypeId, false, false), boxedValues);
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public static @NonNull MapValue createMapValue(@NonNull MapTypeId mapTypeId, @NonNull Map<Object, Object> boxedValues) {
+		return new MapValueImpl(mapTypeId, boxedValues);
 	}
 
 	public static @NonNull ObjectValue createObjectValue(@NonNull TypeId typeId, @NonNull Object object) {
@@ -704,6 +803,30 @@ public abstract class ValueUtil
 		}
 		else {
 			throw new InvalidValueException(PivotMessages.InvalidReal, anObject);
+		}
+	}
+
+	/**
+	 * If value is a jClass AS value return it as is, else return the jClass counterpart of the ES value.
+	 *
+	 * @since 1.18
+	 */
+	public static <T extends Element> @NonNull T getASorASofES(@NonNull Executor executor, @NonNull Class<T> jClass, @NonNull Object value) {
+		/* if (value == null) {
+			return null;
+		}
+		else */ if (jClass.isAssignableFrom(value.getClass())) {
+			@SuppressWarnings("unchecked")
+			T castValue = (T)value;
+			return castValue;
+		}
+		else {
+			try {
+				EnvironmentFactoryInternalExtension environmentFactory = (EnvironmentFactoryInternalExtension)executor.getEnvironmentFactory();
+				return ClassUtil.nonNullState(environmentFactory.getASOf(jClass, (EObject)value));
+			} catch (Throwable e) {
+				throw new InvalidValueException(e, "Failed to access AS of " + value);
+			}
 		}
 	}
 
@@ -1001,6 +1124,8 @@ public abstract class ValueUtil
 	}
 
 	public static boolean isUnlimited(@Nullable Object value) {
+		// FIXME Unify the two Unlimited classes
+		// return (value instanceof UnlimitedValue) && !(value instanceof NullValue);
 		return (value instanceof UnlimitedValue) && !(value instanceof NullValue);
 	}
 
@@ -1173,16 +1298,21 @@ public abstract class ValueUtil
 	}
 
 	private static void toStringWithLimit(@NonNull StringBuilder s, String string, int sizeLimit) {
-		int length = string.length();
-		int available = sizeLimit - (length + 1);
-		if (length <= available) {
+		if (sizeLimit < 0) {
 			s.append(string);
 		}
 		else {
-			if (available > 0) {
-				s.append(string.substring(0, available));
+			int length = string.length();
+			int available = sizeLimit - (length + 1);
+			if (length <= available) {
+				s.append(string);
 			}
-			s.append("...");
+			else {
+				if (available > 0) {
+					s.append(string.substring(0, available));
+				}
+				s.append("...");
+			}
 		}
 	}
 

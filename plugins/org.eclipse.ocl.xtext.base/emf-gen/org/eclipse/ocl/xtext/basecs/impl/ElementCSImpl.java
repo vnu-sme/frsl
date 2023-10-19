@@ -204,15 +204,16 @@ public abstract class ElementCSImpl extends EObjectImpl implements ElementCS {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Provide a debug representation of this elemnt's node. Use ElementUtil.getRawText/getTrimmedText for clear real usage.
+	 *
 	 * @generated NOT
 	 */
 	@Override
 	public String toString() {
 		ICompositeNode parserNode = NodeModelUtils.getNode(this);
 		if (parserNode != null) {
-			return parserNode.getText().trim();
+			String text = parserNode.getText();
+			return text.trim();
 		}
 		return NameUtil.debugFullName(this);
 	}

@@ -2261,13 +2261,16 @@ public class StandaloneProjectMap implements ProjectManager
 		public void initializeGenModelLocationMap(@NonNull Map<@NonNull URI, @NonNull IPackageDescriptor> nsURI2package) {
 			Collection<@NonNull IResourceDescriptor> resourceDescriptors = getResourceDescriptors();
 			if (resourceDescriptors != null) {
-				Map<String, URI> ePackageNsURIToGenModelLocationMap = EMF_2_9.EcorePlugin.getEPackageNsURIToGenModelLocationMap(false);
+				Map<String, URI> runningEPackageNsURIToGenModelLocationMap = EMF_2_9.EcorePlugin.getEPackageNsURIToGenModelLocationMap(false);
+				Map<String, URI> targetEPackageNsURIToGenModelLocationMap = EMF_2_9.EcorePlugin.getEPackageNsURIToGenModelLocationMap(true);
 				for (@NonNull IResourceDescriptor resourceDescriptor : resourceDescriptors) {
 					URI resolvedGenModelURI = getResolvedGenModelURI(resourceDescriptor);
 					for (IPackageDescriptor packageDescriptor : resourceDescriptor.getPackageDescriptors()) {
 						URI nsURI = packageDescriptor.getNsURI();
-						String nsURIstring = nsURI.toString();
-						ePackageNsURIToGenModelLocationMap.put(nsURIstring, resolvedGenModelURI);
+						if (runningEPackageNsURIToGenModelLocationMap == targetEPackageNsURIToGenModelLocationMap) {
+							String nsURIstring = nsURI.toString();
+							runningEPackageNsURIToGenModelLocationMap.put(nsURIstring, resolvedGenModelURI);
+						}
 						nsURI2package.put(nsURI, packageDescriptor);
 						if (PROJECT_MAP_ADD_GEN_MODEL.isActive()) {
 							PROJECT_MAP_ADD_GEN_MODEL.println(nsURI + " => " + resolvedGenModelURI);
@@ -2541,7 +2544,7 @@ public class StandaloneProjectMap implements ProjectManager
 		if (liveStandaloneProjectMaps != null) {
 			liveStandaloneProjectMaps.put(this, null);
 			PivotUtilInternal.debugPrintln("Create " + getClass().getSimpleName()
-				+ "@" + Integer.toHexString(System.identityHashCode(this)));
+				+ "@" + Integer.toHexString(System.identityHashCode(this)) + (isGlobal ? " global" : " local"));
 		}
 	}
 

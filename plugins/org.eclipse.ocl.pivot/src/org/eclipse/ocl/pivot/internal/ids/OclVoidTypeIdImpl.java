@@ -18,8 +18,12 @@ import org.eclipse.ocl.pivot.ids.CollectionTypeId;
 import org.eclipse.ocl.pivot.ids.ElementId;
 import org.eclipse.ocl.pivot.ids.IdVisitor;
 import org.eclipse.ocl.pivot.ids.OclVoidTypeId;
+import org.eclipse.ocl.pivot.ids.TemplateParameterId;
 import org.eclipse.ocl.pivot.ids.TuplePartId;
 import org.eclipse.ocl.pivot.ids.TypeId;
+import org.eclipse.ocl.pivot.utilities.ValueUtil;
+import org.eclipse.ocl.pivot.values.IntegerValue;
+import org.eclipse.ocl.pivot.values.UnlimitedNaturalValue;
 
 public class OclVoidTypeIdImpl extends UnscopedId implements OclVoidTypeId
 {
@@ -67,7 +71,7 @@ public class OclVoidTypeIdImpl extends UnscopedId implements OclVoidTypeId
 
 	@Override
 	public @NonNull String getMetaTypeName() {
-		return "VoidType";
+		return TypeId.VOID_TYPE_NAME;
 	}
 
 	public @Nullable Element getOrigin() {
@@ -96,5 +100,37 @@ public class OclVoidTypeIdImpl extends UnscopedId implements OclVoidTypeId
 	@Override
 	public @NonNull CollectionTypeId getSpecializedId(@NonNull ElementId... templateBindings) {
 		return this;
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public @NonNull TemplateParameterId getTemplateParameterId(int index, @NonNull String name) {
+		return this;
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public @NonNull IntegerValue getLowerValue() {
+		return ValueUtil.ZERO_VALUE;
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public @NonNull UnlimitedNaturalValue getUpperValue() {
+		return ValueUtil.UNLIMITED_VALUE;
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public boolean isNullFree() {
+		return false;
 	}
 }

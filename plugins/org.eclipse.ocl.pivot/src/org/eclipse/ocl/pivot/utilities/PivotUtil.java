@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.ocl.pivot.utilities;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -54,6 +55,7 @@ import org.eclipse.ocl.pivot.CompletePackage;
 import org.eclipse.ocl.pivot.Constraint;
 import org.eclipse.ocl.pivot.DataType;
 import org.eclipse.ocl.pivot.Element;
+import org.eclipse.ocl.pivot.ElementExtension;
 import org.eclipse.ocl.pivot.EnumLiteralExp;
 import org.eclipse.ocl.pivot.Enumeration;
 import org.eclipse.ocl.pivot.EnumerationLiteral;
@@ -64,6 +66,7 @@ import org.eclipse.ocl.pivot.Import;
 import org.eclipse.ocl.pivot.InvalidType;
 import org.eclipse.ocl.pivot.IterateExp;
 import org.eclipse.ocl.pivot.Iteration;
+import org.eclipse.ocl.pivot.IteratorVariable;
 import org.eclipse.ocl.pivot.LambdaType;
 import org.eclipse.ocl.pivot.LetExp;
 import org.eclipse.ocl.pivot.LoopExp;
@@ -112,12 +115,12 @@ import org.eclipse.ocl.pivot.ids.OperationId;
 import org.eclipse.ocl.pivot.ids.PackageId;
 import org.eclipse.ocl.pivot.internal.PackageImpl;
 import org.eclipse.ocl.pivot.internal.library.ecore.EcoreExecutorManager;
-import org.eclipse.ocl.pivot.internal.library.ecore.EcoreReflectiveType;
 import org.eclipse.ocl.pivot.internal.manager.PivotExecutorManager;
-import org.eclipse.ocl.pivot.internal.manager.PivotMetamodelManager;
 import org.eclipse.ocl.pivot.internal.resource.EnvironmentFactoryAdapter;
 import org.eclipse.ocl.pivot.internal.scoping.EnvironmentView;
+import org.eclipse.ocl.pivot.internal.scoping.EnvironmentView.DiagnosticWrappedException;
 import org.eclipse.ocl.pivot.internal.utilities.AS2Moniker;
+import org.eclipse.ocl.pivot.internal.utilities.EnvironmentFactoryInternal;
 import org.eclipse.ocl.pivot.internal.utilities.EnvironmentFactoryInternal.EnvironmentFactoryInternalExtension;
 import org.eclipse.ocl.pivot.internal.utilities.OCLInternal;
 import org.eclipse.ocl.pivot.internal.utilities.PivotObjectImpl;
@@ -227,20 +230,15 @@ public class PivotUtil
 	 * @since 1.7
 	 */
 	public static @Nullable Executor basicGetExecutor(@NonNull EObject eObject, @Nullable  Map<Object, Object> validationContext) {
-		if (validationContext != null) {
-			Executor executor = (Executor) validationContext.get(Executor.class);
-			if (executor != null) {
-				return executor;
-			}
+		Executor executor = ThreadLocalExecutor.basicGetExecutor();
+		if (executor != null) {
+			return executor;
 		}
 		Resource asResource = eObject.eResource();
 		if (asResource != null) {
-			EnvironmentFactory environmentFactory = PivotUtilInternal.findEnvironmentFactory(asResource);
+			EnvironmentFactory environmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
 			if ((environmentFactory != null) && !environmentFactory.isDisposed()) {
-				Executor executor = PivotExecutorManager.createAdapter(environmentFactory, eObject);
-				if (validationContext != null) {
-					validationContext.put(Executor.class, executor);
-				}
+				executor = PivotExecutorManager.createAdapter(environmentFactory, eObject);
 				if (executor != null) {
 					ThreadLocalExecutor.setExecutor(executor);
 				}
@@ -672,7 +670,8 @@ public class PivotUtil
 	 * @since 1.16
 	 */
 	public static @NonNull PrimitiveType createPrimitiveType(/*@NonNull*/ EDataType eDataType) {
-		PrimitiveType pivotType = PivotFactory.eINSTANCE.createPrimitiveType();
+		boolean isBoolean = eDataType.getInstanceClass() == Boolean.class;
+		PrimitiveType pivotType = isBoolean ? PivotFactory.eINSTANCE.createBooleanType() : PivotFactory.eINSTANCE.createPrimitiveType();
 		pivotType.setName(eDataType.getName());
 		((PivotObjectImpl)pivotType).setESObject(eDataType);
 		return pivotType;
@@ -910,7 +909,7 @@ public class PivotUtil
 				s.append(": ");
 			}
 			s.append(diagnostic.getMessage());
-			for (Object obj : diagnostic.getData()) {
+		/*	for (Object obj : diagnostic.getData()) {
 				s.append(newLine);
 				s.append("\t");
 				//				if (obj instanceof Throwable) {
@@ -919,10 +918,22 @@ public class PivotUtil
 				//				else {
 				s.append(obj);
 				//				}
+			} */
+			List<?> datas = diagnostic.getData();
+			if (datas != null) {
+				for (Object data : datas) {
+					if (data instanceof Throwable)  {
+						Throwable cause = ((Throwable)data).getCause();
+					//	if ((cause != null) && (cause != data)) {
+							s.append(newLine + "\t" + (cause != null ? cause : data).toString());
+					//	}
+					}
+				}
 			}
 			for (Diagnostic childDiagnostic : diagnostic.getChildren()) {
 				if (childDiagnostic != null) {
-					formatDiagnostic(s, childDiagnostic, newLine + "\t");
+					String childNewLine = newLine + "\t";
+					formatDiagnostic(s, childDiagnostic, childNewLine);
 				}
 			}
 		}
@@ -955,6 +966,12 @@ public class PivotUtil
 				} catch (Exception e) {}	// UnsupportedOperationException was normal for Bug 380232 fixed in Xtext 2.9
 				s.append(": ");
 				s.append(diagnostic.getMessage());
+				if (diagnostic instanceof DiagnosticWrappedException)  {
+					Throwable cause = ((DiagnosticWrappedException)diagnostic).getCause();
+					if ((cause != null) && (cause != diagnostic)) {
+						s.append(" - " + cause.toString());
+					}
+				}
 			}
 		}
 		return s.toString();
@@ -1034,6 +1051,7 @@ public class PivotUtil
 	/**
 	 * @since 1.7
 	 */
+	@Deprecated /* @deprecated no longer used = behavioralType() now handled within Type::conformsTo */
 	public static @NonNull Type getBehavioralReturnType(@NonNull Type type) {
 		return getBehavioralType(getReturnType(type));
 	}
@@ -1041,41 +1059,30 @@ public class PivotUtil
 	/**
 	 * @since 1.7
 	 */
+	@Deprecated /* @deprecated no longer used = behavioralType() now handled within Type::conformsTo */
 	public static @NonNull Type getBehavioralType(@NonNull Type type) {
 		if (type instanceof CollectionType) {
-			CollectionType asCollectionType = (CollectionType)type;
-			Type asElementType = asCollectionType.getElementType();
+			CollectionType collectionType = (CollectionType)type;
+			Type asElementType = collectionType.getElementType();
 			if (asElementType != null) {
-				Type asBehavioralType = getBehavioralType(asElementType);
-				if (asBehavioralType != asElementType) {
-					ResourceSet resourceSet = asCollectionType.eResource().getResourceSet();
-					if (resourceSet != null) {
-						PivotMetamodelManager metamodelManager = PivotMetamodelManager.findAdapter(resourceSet);
-						if (metamodelManager != null) {
-							CollectionType unspecializedElement = (CollectionType)asCollectionType.getUnspecializedElement();
-							assert unspecializedElement != null;
-							boolean isNullFree = asCollectionType.isIsNullFree();
-							IntegerValue lowerValue = asCollectionType.getLowerValue();
-							UnlimitedNaturalValue upperValue = asCollectionType.getUpperValue();
-							return metamodelManager.getCompleteEnvironment().getCollectionType(unspecializedElement, asBehavioralType, isNullFree, lowerValue, upperValue);
-						}
+				Type behavioralElementType = getBehavioralType(asElementType);
+				assert behavioralElementType != null;
+				if (behavioralElementType != asElementType) {
+					EnvironmentFactoryInternal environmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
+					if (environmentFactory != null) {
+						CollectionType unspecializedElement = (CollectionType)collectionType.getUnspecializedElement();
+						assert unspecializedElement != null;
+						boolean isNullFree = collectionType.isIsNullFree();
+						IntegerValue lowerValue = collectionType.getLowerValue();
+						UnlimitedNaturalValue upperValue = collectionType.getUpperValue();
+						return environmentFactory.getCompleteEnvironment().getCollectionType(unspecializedElement, behavioralElementType, isNullFree, lowerValue, upperValue);
 					}
 				}
 			}
 		}
 		else if (type instanceof DataType) {
-			DataType asDataType = (DataType)type;
-			Type resolvedClass = asDataType.getBehavioralClass();
-			if (resolvedClass != null) {
-				return resolvedClass;
-			}
-		}
-		else if (type instanceof EcoreReflectiveType) {
-			EcoreReflectiveType reflectiveType = (EcoreReflectiveType)type;
-			Type resolvedClass = reflectiveType.getBehavioralClass();
-			if (resolvedClass != null) {
-				return resolvedClass;
-			}
+			org.eclipse.ocl.pivot.Class behavioralClass = ((DataType)type).getBehavioralClass();
+			return behavioralClass != null ? behavioralClass : type;
 		}
 		return type;
 	}
@@ -1083,8 +1090,9 @@ public class PivotUtil
 	/**
 	 * @since 1.7
 	 */
+	@Deprecated /* @deprecated no longer used = behavioralType() now handled within Type::conformsTo */
 	public static @Nullable Type getBehavioralType(@Nullable TypedElement element) {
-		Type type = PivotUtilInternal.getType(element);
+		Type type = element != null ? PivotUtilInternal.getType(element) : null;
 		return type != null ? getBehavioralType(type) : null;
 	}
 
@@ -1262,12 +1270,9 @@ public class PivotUtil
 			return executor;
 		}
 		if (eObject != null) {
-			Resource eResource = eObject.eResource();
-			if (eResource != null) {
-				EnvironmentFactory environmentFactory = PivotUtilInternal.findEnvironmentFactory(eResource);
-				if (environmentFactory != null) {
-					executor = new PivotExecutorManager(environmentFactory, eObject);
-				}
+			EnvironmentFactory environmentFactory = ThreadLocalExecutor.basicGetEnvironmentFactory();
+			if (environmentFactory != null) {
+				executor = new PivotExecutorManager(environmentFactory, eObject);
 			}
 		}
 		if (executor == null) {
@@ -1285,40 +1290,9 @@ public class PivotUtil
 	 *
 	 * @since 1.7
 	 */
+	@Deprecated /* @deprecated validationContext no longer used */
 	public static @NonNull Executor getExecutor(@NonNull EObject eObject, @Nullable Map<Object, Object> validationContext) {
-		Executor executor = ThreadLocalExecutor.basicGetExecutor();
-		//	if (executor != null) {
-		//		validationContext.put(Executor.class, executor);
-		//		return executor;
-		//	}
-		if (validationContext != null) {
-			Executor validationContextExecutor = (Executor) validationContext.get(Executor.class);
-			if (validationContextExecutor != null) {
-				assert (executor == null) || (validationContextExecutor == executor);
-				return validationContextExecutor;
-			}
-		}
-		if (executor != null) {
-			if (validationContext != null) {
-				validationContext.put(Executor.class, executor);
-			}
-			return executor;
-		}
-		Resource asResource = eObject.eResource();
-		if (asResource != null) {
-			EnvironmentFactory environmentFactory = PivotUtilInternal.findEnvironmentFactory(asResource);
-			if (environmentFactory != null) {
-				executor = new PivotExecutorManager(environmentFactory, eObject);
-			}
-		}
-		if (executor == null) {
-			executor = new EcoreExecutorManager(eObject, PivotTables.LIBRARY);
-		}
-		if (validationContext != null) {
-			validationContext.put(Executor.class, executor);
-		}
-		ThreadLocalExecutor.setExecutor(executor);
-		return executor;
+		return getExecutor(eObject);
 	}
 
 	/**
@@ -1495,7 +1469,7 @@ public class PivotUtil
 	/**
 	 * @since 1.6
 	 */
-	public static @NonNull Iterable<@NonNull Variable> getOwnedCoIterators(@NonNull LoopExp loopExp) {
+	public static @NonNull Iterable<@NonNull IteratorVariable> getOwnedCoIterators(@NonNull LoopExp loopExp) {
 		return ClassUtil.nullFree(loopExp.getOwnedCoIterators());
 	}
 
@@ -1539,6 +1513,13 @@ public class PivotUtil
 	 */
 	public static @NonNull OCLExpression getOwnedElse(@NonNull IfExp ifExp) {
 		return ClassUtil.nonNullState(ifExp.getOwnedElse());
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public static @NonNull Iterable<@NonNull ElementExtension> getOwnedExtensions(Element asElement) {
+		return ClassUtil.nullFree(asElement.getOwnedExtensions());
 	}
 
 	/**
@@ -1933,6 +1914,7 @@ public class PivotUtil
 	/**
 	 * @since 1.7
 	 */
+	@Deprecated /* @deprecated no longer used = behavioralType() now handled within Type::conformsTo */
 	public static @NonNull Type getReturnType(@NonNull Type type) {
 		return PivotUtilInternal.getNonLambdaType(type);
 	}
@@ -1965,6 +1947,30 @@ public class PivotUtil
 	 */
 	public static @NonNull Type getResultType(@NonNull LambdaType lambdaType) {
 		return ClassUtil.nonNullState(lambdaType.getResultType());
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public static @Nullable List<@NonNull TemplateParameter> getTemplateParameters(@NonNull Element element) {
+		List<@NonNull TemplateParameter> templateParameters = null;
+		EObject eContainer = element.eContainer();
+		if (eContainer instanceof Element) {
+			templateParameters = getTemplateParameters((Element) eContainer);
+		}
+		if (element instanceof TemplateableElement) {
+			TemplateSignature templateSignature = ((TemplateableElement)element).getOwnedSignature();
+			if (templateSignature != null) {
+				List<@NonNull TemplateParameter> ownedParameters = PivotUtilInternal.getOwnedParametersList(templateSignature);
+				if (ownedParameters.size() > 0) {
+					if (templateParameters == null) {
+						templateParameters = new ArrayList<>();
+					}
+					templateParameters.addAll(ownedParameters);
+				}
+			}
+		}
+		return templateParameters;
 	}
 
 	/**
@@ -2146,7 +2152,7 @@ public class PivotUtil
 		expressionInOCL.setBody(stringExpression);
 		expressionInOCL.setOwnedBody(oclExpression);
 		expressionInOCL.setType(oclExpression != null ? oclExpression.getType() : null);
-		expressionInOCL.setIsRequired(oclExpression != null&& oclExpression.isIsRequired());;
+		expressionInOCL.setIsRequired((oclExpression != null) && oclExpression.isIsRequired());;
 	}
 
 	/**

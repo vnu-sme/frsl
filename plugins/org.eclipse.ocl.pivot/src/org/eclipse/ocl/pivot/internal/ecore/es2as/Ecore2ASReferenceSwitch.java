@@ -46,7 +46,9 @@ import org.eclipse.ocl.pivot.NamedElement;
 import org.eclipse.ocl.pivot.Operation;
 import org.eclipse.ocl.pivot.Parameter;
 import org.eclipse.ocl.pivot.PivotFactory;
+import org.eclipse.ocl.pivot.PrimitiveType;
 import org.eclipse.ocl.pivot.Property;
+import org.eclipse.ocl.pivot.Stereotype;
 import org.eclipse.ocl.pivot.TemplateParameter;
 import org.eclipse.ocl.pivot.Type;
 import org.eclipse.ocl.pivot.TypedElement;
@@ -117,8 +119,8 @@ public class Ecore2ASReferenceSwitch extends EcoreSwitch<Object>
 		}
 		doSwitchAll(org.eclipse.ocl.pivot.Class.class, ClassUtil.<org.eclipse.ocl.pivot.Class>nullFree(pivotElement.getSuperClasses()), eClass.getEGenericSuperTypes());
 		if (pivotElement.getSuperClasses().isEmpty() && !(pivotElement instanceof AnyType)) {
-			org.eclipse.ocl.pivot.Class oclElementType = standardLibrary.getOclElementType();
-			pivotElement.getSuperClasses().add(oclElementType);
+			org.eclipse.ocl.pivot.Class superType = pivotElement instanceof Stereotype ? standardLibrary.getOclStereotypeType() : standardLibrary.getOclElementType();
+			pivotElement.getSuperClasses().add(superType);
 		}
 		return pivotElement;
 	}
@@ -130,7 +132,9 @@ public class Ecore2ASReferenceSwitch extends EcoreSwitch<Object>
 		if (pivotElement == null) {
 			return this;
 		}
-		doCompareToOperation(pivotElement, eDataType);
+		if (!(pivotElement instanceof PrimitiveType)) {
+			doCompareToOperation(pivotElement, eDataType);
+		}
 		return pivotElement;
 	}
 

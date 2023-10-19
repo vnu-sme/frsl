@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010, 2019 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -412,7 +408,7 @@ public class CompleteEnvironmentImpl extends ElementImpl implements CompleteEnvi
 			assert (pivotElement instanceof LambdaType)
 			|| (pivotElement instanceof TupleType);
 		}
-		pivotElement.setOwningPackage(ownedCompleteModel.getOrphanage());		
+		pivotElement.setOwningPackage(ownedCompleteModel.getOrphanage());
 	}
 
 	@Override
@@ -451,8 +447,12 @@ public class CompleteEnvironmentImpl extends ElementImpl implements CompleteEnvi
 		if (firstCompleteClass == secondCompleteClass) {
 			return true;
 		}
-		firstType = firstCompleteClass.getBehavioralClass();
-		secondType = secondCompleteClass.getBehavioralClass();
+	//	firstType = firstCompleteClass.getPrimaryClass();
+		Type behavioralClass = secondCompleteClass.getBehavioralClass();
+		if (behavioralClass != secondType) {
+			secondCompleteClass = getCompleteClass(behavioralClass);		// See Bug 574431 for disussion of this dodgy downcast
+			secondType = behavioralClass;
+		}
 		//
 		//	Use specialized conformance for constructed types, inheritance tree intersection for simple types
 		//
@@ -473,6 +473,8 @@ public class CompleteEnvironmentImpl extends ElementImpl implements CompleteEnvi
 				return conformsToTupleType((TupleType)firstType, firstSubstitutions, (TupleType)secondType, secondSubstitutions);
 			}
 		}
+		firstCompleteClass = getCompleteClass(firstType);
+		secondCompleteClass = getCompleteClass(secondType);
 		CompleteInheritance firstInheritance = firstCompleteClass.getCompleteInheritance();
 		CompleteInheritance secondInheritance = secondCompleteClass.getCompleteInheritance();
 		return firstInheritance.isSubInheritanceOf(secondInheritance);

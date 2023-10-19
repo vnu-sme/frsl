@@ -32,6 +32,7 @@ import org.eclipse.ocl.pivot.Constraint;
 import org.eclipse.ocl.pivot.ExpressionInOCL;
 import org.eclipse.ocl.pivot.IfExp;
 import org.eclipse.ocl.pivot.IntegerLiteralExp;
+import org.eclipse.ocl.pivot.IteratorVariable;
 import org.eclipse.ocl.pivot.LanguageExpression;
 import org.eclipse.ocl.pivot.LetVariable;
 import org.eclipse.ocl.pivot.MapLiteralExp;
@@ -273,7 +274,7 @@ public class EssentialOCLCSContainmentVisitor extends AbstractEssentialOCLCSCont
 	@Override
 	public Continuation<?> visitContextCS(@NonNull ContextCS csElement) {
 		@NonNull ExpressionInOCL pivotElement = context.refreshModelElement(ExpressionInOCL.class, PivotPackage.Literals.EXPRESSION_IN_OCL, csElement);
-		PivotUtil.setBody(pivotElement, null, null);
+		PivotUtil.setBody(pivotElement, null, ElementUtil.getRawText(csElement));
 		ParserContext parserContext = ElementUtil.basicGetParserContext(csElement);
 		if (parserContext != null) {
 			parserContext.initialize(context, pivotElement);
@@ -575,7 +576,7 @@ public class EssentialOCLCSContainmentVisitor extends AbstractEssentialOCLCSCont
 
 	@Override
 	public Continuation<?> visitVariableCS(@NonNull VariableCS csElement) {
-		refreshNamedElement(Variable.class, PivotPackage.Literals.VARIABLE, csElement);
+		refreshNamedElement(IteratorVariable.class, PivotPackage.Literals.ITERATOR_VARIABLE, csElement);
 		return null;
 	}
 }

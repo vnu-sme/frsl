@@ -85,6 +85,7 @@ import org.eclipse.ocl.pivot.ids.TuplePartId;
 import org.eclipse.ocl.pivot.ids.TupleTypeId;
 import org.eclipse.ocl.pivot.ids.TypeId;
 import org.eclipse.ocl.pivot.ids.UnspecifiedId;
+import org.eclipse.ocl.pivot.ids.WildcardId;
 import org.eclipse.ocl.pivot.internal.executor.ExecutorTuplePart;
 import org.eclipse.ocl.pivot.internal.utilities.PivotUtilInternal;
 import org.eclipse.ocl.pivot.internal.values.BagImpl;
@@ -239,6 +240,11 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 		public @Nullable Object visitUnspecifiedId(@NonNull UnspecifiedId id) {
 			throw new UnsupportedOperationException();
 		}
+
+		@Override
+		public @Nullable Object visitWildcardId(@NonNull WildcardId id) {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	@SuppressWarnings("serial")
@@ -261,7 +267,7 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 	 * required part definitions to construct a tuple type in the lightweight execution environment. This cache may remain
 	 * unused when using the full pivot environment.
 	 */
-	private Map<@NonNull String, @NonNull Map<@NonNull Type, @NonNull WeakReference<@NonNull TypedElement>>> tupleParts = null;		// Lazily created
+	private Map<@NonNull String, @NonNull Map<@NonNull Type, @NonNull WeakReference<@Nullable TypedElement>>> tupleParts = null;		// Lazily created
 
 	/**
 	 * Mapping from package URI to corresponding Pivot Package. (used to resolve NsURIPackageId).
@@ -291,19 +297,20 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 		String nsURI = userPackage.getURI();
 		if (nsURI != null) {
 			nsURI2package.put(nsURI, userPackage);
+			String internedMetmodelName = PivotConstants.METAMODEL_NAME.intern();
 			EPackage ePackage = userPackage.getEPackage();
 			if (ePackage != null) {
 				if (ClassUtil.basicGetMetamodelAnnotation(ePackage) != null) {
-					if (roots2package.get(PivotConstants.METAMODEL_NAME) == null) {
-						roots2package.put(PivotConstants.METAMODEL_NAME, userPackage);
+					if (roots2package.get(internedMetmodelName) == null) {
+						roots2package.put(internedMetmodelName, userPackage);
 					}
 				}
 			}
 			else {
 				for (org.eclipse.ocl.pivot.Class asType : userPackage.getOwnedClasses()) {
 					if ("Boolean".equals(asType.getName())) {			// FIXME Check PrimitiveType //$NON-NLS-1$
-						if (roots2package.get(PivotConstants.METAMODEL_NAME) == null) {
-							roots2package.put(PivotConstants.METAMODEL_NAME, userPackage);
+						if (roots2package.get(internedMetmodelName) == null) {
+							roots2package.put(internedMetmodelName, userPackage);
 						}
 						break;
 					}
@@ -313,7 +320,7 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 		else {
 			String name = userPackage.getName();
 			if (name != null) {
-				roots2package.put(name, userPackage);
+				roots2package.put(name.intern(), userPackage);
 			}
 		}
 		addPackages(userPackage.getOwnedPackages());
@@ -483,7 +490,7 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 			else {
 				unboxedMap = (Map<?,?>)unboxedValue;
 			}
-			return createMapOfAll(mapTypeId.getKeyTypeId(), mapTypeId.getValueTypeId(), unboxedMap);
+			return createMapOfAll(mapTypeId, unboxedMap);
 		}
 		else {
 			return boxedValueOf(unboxedValue, eClassifier);
@@ -601,13 +608,21 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 		return typeId.accept(visitor);
 	}
 
-	@Override
+	@Override @Deprecated
 	public @NonNull MapValue createMapOfAll(@NonNull TypeId keyTypeId, @NonNull TypeId valueTypeId, @NonNull Map<?, ?> unboxedValues) {
+		return createMapOfAll(TypeId.MAP.getSpecializedId(keyTypeId, valueTypeId, false, false), unboxedValues);
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public @NonNull MapValue createMapOfAll(@NonNull MapTypeId mapTypeId, @NonNull Map<?, ?> unboxedValues) {
 		Map<Object, Object> boxedValues = new HashMap<>();
 		for (Map.Entry<?, ?> unboxedValue : unboxedValues.entrySet()) {
 			boxedValues.put(boxedValueOf(unboxedValue.getKey()), boxedValueOf(unboxedValue.getValue()));
 		}
-		return ValueUtil.createMapValue(keyTypeId, valueTypeId, boxedValues);
+		return ValueUtil.createMapValue(mapTypeId, boxedValues);
 	}
 
 	@Override
@@ -807,7 +822,7 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 		}
 		else {
 			TypeId elementTypeId = typeId.getElementTypeId();
-			Type elementType = getType(elementTypeId, null);
+			Type elementType = getType(elementTypeId);
 			if (generalizedId == TypeId.BAG) {
 				return environment.getBagType(elementType, isNullFree, lower, upper);
 			}
@@ -836,7 +851,7 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 			CollectionTypeId collectionTypeId = collectionValue.getTypeId();
 			Type elementType = getDynamicTypeOf(collectionValue.iterable());
 			if (elementType == null) {
-				elementType = getType(collectionTypeId.getElementTypeId(), null);
+				elementType = getType(collectionTypeId.getElementTypeId());
 			}
 			CollectionTypeId collectedId = collectionTypeId;
 			CollectionTypeId collectionId = collectedId.getGeneralizedId();
@@ -949,8 +964,8 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 		else {
 			TypeId keyTypeId = typeId.getKeyTypeId();
 			TypeId valueTypeId = typeId.getValueTypeId();
-			Type keyType = getType(keyTypeId, null);
-			Type valueType = getType(valueTypeId, null);
+			Type keyType = getType(keyTypeId);
+			Type valueType = getType(valueTypeId);
 			if (generalizedId == TypeId.MAP) {
 				return environment.getMapType(standardLibrary.getMapType(), keyType, keysAreNullFree, valueType, valuesAreNullFree);
 			}
@@ -1082,8 +1097,12 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 	}
 
 	@Override
-	public org.eclipse.ocl.pivot.@NonNull Class getStaticTypeOfValue(@Nullable Type staticType, @Nullable Object value) {
-		if (value instanceof EObject) {
+	public org.eclipse.ocl.pivot.@NonNull Class getStaticTypeOfValue(@Nullable Type contextType, @Nullable Object value) {
+	//	assert !(value instanceof TypeId) : "Use getType...) directly";		// Only EnumerationLiteralId occurs
+		if (value instanceof Enumeration) {
+			return standardLibrary.getEnumerationType();
+		}
+		else if (value instanceof EObject) {
 			EClass eClass = ((EObject)value).eClass();
 			assert eClass != null;
 			Type type = key2type.get(eClass);
@@ -1100,7 +1119,7 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 			if (type == null) {
 				boolean isTemplated = typeId.isTemplated();
 				if (isTemplated) {
-					staticTypeStack.push(staticType);
+					staticTypeStack.push(contextType);
 					try {
 						type = (Type)typeId.accept(this);
 					}
@@ -1149,21 +1168,22 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 
 	@Override
 	public @NonNull TypedElement getTuplePart(@NonNull String name, @NonNull TypeId typeId) {
-		return getTuplePart(name, getType(typeId, null));
+		return getTuplePart(name, getType(typeId));
 	}
 
 	public synchronized @NonNull TypedElement getTuplePart(@NonNull String name, @NonNull Type type) {
+		String internedName = name.intern();
 		if (tupleParts == null) {
 			tupleParts = new WeakHashMap<>();
 		}
-		Map<@NonNull Type, @NonNull WeakReference<@NonNull TypedElement>> typeMap = tupleParts.get(name);
+		Map<@NonNull Type, @NonNull WeakReference<@Nullable TypedElement>> typeMap = tupleParts.get(internedName);
 		if (typeMap == null) {
 			typeMap = new WeakHashMap<>();
-			tupleParts.put(name, typeMap);
+			tupleParts.put(internedName, typeMap);
 		}
 		TypedElement tupleProperty = weakGet(typeMap, type);
 		if (tupleProperty == null) {
-			tupleProperty = new ExecutorTuplePart(type, name);
+			tupleProperty = new ExecutorTuplePart(type, internedName);
 			typeMap.put(type, new WeakReference<>(tupleProperty));
 		}
 		return tupleProperty;
@@ -1173,10 +1193,15 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 	public abstract @NonNull TupleType getTupleType(@NonNull TupleTypeId typeId);
 
 	@Override
-	public @NonNull Type getType(@NonNull TypeId typeId, @Nullable Object context) {
+	public final @NonNull Type getType(@NonNull TypeId typeId) {
 		Element type = typeId.accept(this);
 		assert type != null;
 		return (Type)type;
+	}
+
+	@Override
+	public /*final*/ @NonNull Type getType(@NonNull TypeId typeId, @Nullable Object context) {
+		return getType(typeId);
 	}
 
 	private @NonNull Object getTypeKeyOf(@Nullable Object value) {
@@ -1743,26 +1768,26 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 
 	@Override
 	public synchronized org.eclipse.ocl.pivot.@NonNull Package visitNsURIPackageId(@NonNull NsURIPackageId id) {
-		String nsURI = id.getNsURI();
-		org.eclipse.ocl.pivot.Package knownPackage = nsURI2package.get(nsURI);
+		String internedNsURI = id.getNsURI().intern();
+		org.eclipse.ocl.pivot.Package knownPackage = nsURI2package.get(internedNsURI);
 		if (knownPackage != null) {
 			return knownPackage;
 		}
-		org.eclipse.ocl.pivot.Package libraryPackage = standardLibrary.getNsURIPackage(nsURI);
+		org.eclipse.ocl.pivot.Package libraryPackage = standardLibrary.getNsURIPackage(internedNsURI);
 		if (libraryPackage != null) {
-			nsURI2package.put(nsURI, libraryPackage);
+			nsURI2package.put(internedNsURI, libraryPackage);
 			return libraryPackage;
 		}
 		if (!directRootsProcessed) {
 			processDirectRoots();
-			knownPackage = nsURI2package.get(nsURI);
+			knownPackage = nsURI2package.get(internedNsURI);
 			if (knownPackage != null) {
 				return knownPackage;
 			}
 		}
 		if (!crossReferencedRootsProcessed) {
 			processCrossReferencedRoots();
-			knownPackage = nsURI2package.get(nsURI);
+			knownPackage = nsURI2package.get(internedNsURI);
 			if (knownPackage != null) {
 				return knownPackage;
 			}
@@ -1840,8 +1865,8 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 		if (id == IdManager.METAMODEL) {
 			return ClassUtil.nonNullState(getStandardLibrary().getPackage());
 		}
-		String name = id.getName();
-		org.eclipse.ocl.pivot.Package knownPackage = roots2package.get(name);
+		String internedName = id.getName().intern();
+		org.eclipse.ocl.pivot.Package knownPackage = roots2package.get(internedName);
 		if (knownPackage != null) {
 			return knownPackage;
 		}
@@ -1852,14 +1877,14 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 		//		}
 		if (!directRootsProcessed) {
 			processDirectRoots();
-			knownPackage = roots2package.get(name);
+			knownPackage = roots2package.get(internedName);
 			if (knownPackage != null) {
 				return knownPackage;
 			}
 		}
 		if (!crossReferencedRootsProcessed) {
 			processCrossReferencedRoots();
-			knownPackage = roots2package.get(name);
+			knownPackage = roots2package.get(internedName);
 			if (knownPackage != null) {
 				return knownPackage;
 			}
@@ -1905,7 +1930,7 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 
 	@Override
 	public @NonNull Type visitTemplateableTypeId(@NonNull TemplateableTypeId id) {
-		return getType(id, null);
+		return getType(id);
 	}
 
 	@Override
@@ -1921,6 +1946,14 @@ public abstract class AbstractIdResolver implements IdResolver.IdResolverExtensi
 	@Override
 	public @NonNull Type visitUnspecifiedId(@NonNull UnspecifiedId id) {
 		return (Type) id.getSpecifier();
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public @NonNull Type visitWildcardId(@NonNull WildcardId id) {
+		throw new UnsupportedOperationException();
 	}
 
 	/**

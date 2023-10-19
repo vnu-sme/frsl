@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010, 2019 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ import org.eclipse.ocl.pivot.internal.complete.CompleteModelInternal;
 import org.eclipse.ocl.pivot.internal.complete.CompletePackageInternal;
 import org.eclipse.ocl.pivot.internal.complete.CompleteURIs;
 import org.eclipse.ocl.pivot.internal.complete.PartialModels;
+import org.eclipse.ocl.pivot.internal.complete.PartialPackages;
 import org.eclipse.ocl.pivot.internal.complete.RootCompletePackages;
 import org.eclipse.ocl.pivot.internal.complete.StandardLibraryInternal;
 import org.eclipse.ocl.pivot.internal.manager.Orphanage;
@@ -596,7 +597,11 @@ public class CompleteModelImpl extends NamedElementImpl implements CompleteModel
 		Orphanage orphanage2 = orphanage;
 		if (orphanage2 == null) {
 			orphanage2 = orphanage = environmentFactory.getMetamodelManager().createOrphanage();
-			orphanage2.addPackageListener(getOrphanCompletePackage().getPartialPackages());
+			PartialPackages partialPackages = getOrphanCompletePackage().getPartialPackages();
+			orphanage2.addPackageListener(partialPackages);
+			for (org.eclipse.ocl.pivot.@NonNull Package asPackage : PivotUtil.getOwnedPackages(orphanage2)) {
+				didAddNestedPackage(asPackage);
+			}
 		}
 		return orphanage2;
 	}

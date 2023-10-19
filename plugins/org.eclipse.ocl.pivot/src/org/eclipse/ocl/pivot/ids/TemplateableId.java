@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v20.html
  *
  * Contributors:
- *     E.D.Willink - initial API and implementation
+ *	 E.D.Willink - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ocl.pivot.ids;
 
@@ -21,7 +21,7 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public interface TemplateableId extends ElementId
 {
-	public static final @NonNull TemplateableId @NonNull [] NULL_TEMPLATEABLE_ID_ARRAY = new @NonNull TemplateableId[0];	
+	public static final @NonNull TemplateableId @NonNull [] NULL_TEMPLATEABLE_ID_ARRAY = new @NonNull TemplateableId[0];
 
 	@NonNull TemplateableId getGeneralizedId();
 	@Nullable String getLiteralName();
@@ -29,11 +29,16 @@ public interface TemplateableId extends ElementId
 	@NonNull String getName();
 
 	/**
-	 * Return the typeId for this typeId specialized by typeParameters.
+	 * Return the typeId for this typeId specialized by bindingsId.
 	 * <p>
 	 * Throws UnsupportedException for typeIds such as Primitive Types that may not be specialized.
 	 */
-	@NonNull TemplateableId getSpecializedId(@NonNull BindingsId bindings);
+	@NonNull TemplateableId getSpecializedId(@NonNull BindingsId bindingsId);
+
+	/**
+	 * @since 1.18
+	 */
+	@NonNull TemplateParameterId getTemplateParameterId(int index, @NonNull String name);
 
 	int getTemplateParameters();
 }

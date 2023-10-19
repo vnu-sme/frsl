@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,7 @@ public interface Visitor<R>
 	R visitBagType(org.eclipse.ocl.pivot.@NonNull BagType object);
 	R visitBehavior(org.eclipse.ocl.pivot.@NonNull Behavior object);
 	R visitBooleanLiteralExp(org.eclipse.ocl.pivot.@NonNull BooleanLiteralExp object);
+	R visitBooleanType(org.eclipse.ocl.pivot.@NonNull BooleanType object);
 	R visitCallExp(org.eclipse.ocl.pivot.@NonNull CallExp object);
 	R visitCallOperationAction(org.eclipse.ocl.pivot.@NonNull CallOperationAction object);
 	R visitClass(org.eclipse.ocl.pivot.@NonNull Class object);
@@ -72,6 +73,7 @@ public interface Visitor<R>
 	R visitDynamicValueSpecification(org.eclipse.ocl.pivot.@NonNull DynamicValueSpecification object);
 	R visitElement(org.eclipse.ocl.pivot.@NonNull Element object);
 	R visitElementExtension(org.eclipse.ocl.pivot.@NonNull ElementExtension object);
+	R visitElementLiteralExp(org.eclipse.ocl.pivot.@NonNull ElementLiteralExp object);
 	R visitEnumLiteralExp(org.eclipse.ocl.pivot.@NonNull EnumLiteralExp object);
 	R visitEnumeration(org.eclipse.ocl.pivot.@NonNull Enumeration object);
 	R visitEnumerationLiteral(org.eclipse.ocl.pivot.@NonNull EnumerationLiteral object);

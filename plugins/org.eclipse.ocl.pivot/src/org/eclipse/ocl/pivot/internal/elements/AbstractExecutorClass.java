@@ -29,11 +29,20 @@ import org.eclipse.ocl.pivot.TemplateParameter;
 import org.eclipse.ocl.pivot.TemplateParameters;
 import org.eclipse.ocl.pivot.TemplateSignature;
 import org.eclipse.ocl.pivot.TemplateableElement;
+import org.eclipse.ocl.pivot.evaluation.Executor;
+import org.eclipse.ocl.pivot.ids.CollectionTypeId;
+import org.eclipse.ocl.pivot.library.classifier.ClassifierAllInstancesOperation;
+import org.eclipse.ocl.pivot.values.SetValue;
 
 public class AbstractExecutorClass extends AbstractExecutorType implements org.eclipse.ocl.pivot.Class
 {
 	public AbstractExecutorClass(@NonNull String name, int flags) {
 		super(name, flags);
+	}
+
+	@Override
+	public @NonNull SetValue allInstances(@NonNull Executor executor, @NonNull CollectionTypeId returnTypeId) {
+		return ClassifierAllInstancesOperation.allInstances(executor, returnTypeId, this);
 	}
 
 	@Override
@@ -48,9 +57,8 @@ public class AbstractExecutorClass extends AbstractExecutorType implements org.e
 		throw new UnsupportedOperationException();
 	}
 
-	//	@Override
 	public org.eclipse.ocl.pivot.Class getBehavioralClass() {
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
 	@Override
@@ -219,6 +227,27 @@ public class AbstractExecutorClass extends AbstractExecutorType implements org.e
 
 	@Override
 	public void setUnspecializedElement(TemplateableElement value) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public boolean validateBehavioralClassHasDistinctName(DiagnosticChain diagnostics, Map<Object, Object> context) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public boolean validateBehavioralClassIsPrimitiveType(DiagnosticChain diagnostics, Map<Object, Object> context) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public boolean validateBehavioralClassIsSuperClass(DiagnosticChain diagnostics, Map<Object, Object> context) {
 		throw new UnsupportedOperationException();
 	}
 

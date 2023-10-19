@@ -15,12 +15,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jdt.annotation.Nullable;
@@ -44,17 +40,10 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 public class SaveASHandler extends AbstractHandler
 {
-	private IStatus logMsg = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: base.ui#SaveASHandler ****");
-	public static ILog log = Platform.getLog(SaveASHandler.class);
-	
 	public SaveASHandler() {}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
-		//logMsg = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: base.ui#SaveASHandler ****");
-		//log = Platform.getLog(getClass());
-		
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
 		if (window == null) {
 			return null;
@@ -118,12 +107,6 @@ public class SaveASHandler extends AbstractHandler
 				public Object exec(@Nullable XtextResource resource) throws Exception {
 					if (resource instanceof BaseCSResource) {
 						ASResource asResource = ((BaseCSResource)resource).getASResource();
-						
-						//logMsg = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: base.ui#SaveASHandler ****");
-						//log.log(logMsg);
-						
-						
-						
 						URI oldURI = asResource.getURI();
 						boolean wasSaveable = asResource.isSaveable();
 						try {

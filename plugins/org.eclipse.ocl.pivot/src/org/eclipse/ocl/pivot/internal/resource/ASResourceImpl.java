@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved.   This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -11,31 +11,36 @@
 package org.eclipse.ocl.pivot.internal.resource;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.xmi.XMLSave;
-import org.eclipse.emf.ecore.xmi.impl.XMIHelperImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.ocl.pivot.Constraint;
 import org.eclipse.ocl.pivot.Element;
 import org.eclipse.ocl.pivot.ExpressionInOCL;
 import org.eclipse.ocl.pivot.Feature;
+import org.eclipse.ocl.pivot.InvalidType;
 import org.eclipse.ocl.pivot.Model;
 import org.eclipse.ocl.pivot.PivotPackage;
 import org.eclipse.ocl.pivot.Property;
+import org.eclipse.ocl.pivot.internal.resource.PivotSaveImpl.PivotXMIHelperImpl;
 import org.eclipse.ocl.pivot.internal.utilities.PivotObjectImpl;
-import org.eclipse.ocl.pivot.internal.utilities.PivotUtilInternal;
 import org.eclipse.ocl.pivot.resource.ASResource;
 import org.eclipse.ocl.pivot.util.PivotPlugin;
 import org.eclipse.ocl.pivot.utilities.PivotConstants;
@@ -61,9 +66,21 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 	public static final TracingOption CHECK_IMMUTABILITY = new TracingOption(PivotPlugin.PLUGIN_ID, "resource/checkImmutability"); //$NON-NLS-1$
 
 	/**
-	 * An adapter implementation for tracking resource modification.
+	 * QVTd JUnit tests may set this false to load the saved XMI as text for validation that it is free of
+	 * references to undeclared xmi:ids. The OCL JUnit tests do not have sufficient referential complexity to have problems.
+	 * See Bug 578030.
+	 *
+	 * @since 1.18
 	 */
-	private class ImmutabilityCheckingAdapter extends AdapterImpl
+	public static boolean SKIP_CHECK_BAD_REFERENCES = false;
+
+	/**
+	 * An adapter implementation for tracking resource modification. This is only in use if the
+	 * "resource/checkImmutability" .option is set as is the case for JUnit tests.
+	 *
+	 * @since 1.18
+	 */
+	protected class ImmutabilityCheckingAdapter extends AdapterImpl
 	{
 		private @NonNull String formatMutationMessage(@NonNull Notification notification) {
 			StringBuilder s = new StringBuilder();
@@ -76,34 +93,122 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 		}
 
 		@Override
-		public void notifyChanged(Notification notification) {
-			if (!notification.isTouch() && !ASResourceImpl.this.isUnloading) {
+		public void notifyChanged(Notification notification) {			// FIXME All irregularities should be transient
+			if (!notification.isTouch() && !ASResourceImpl.this.isUpdating && !ASResourceImpl.this.isUnloading) {
 				Object notifier = notification.getNotifier();
+				Object feature = notification.getFeature();
 				int eventType = notification.getEventType();
-				if (eventType == Notification.SET) {
-					if (notifier instanceof Feature) {
-						int featureId = notification.getFeatureID(Feature.class);
-						if (featureId == PivotPackage.Literals.FEATURE__IMPLEMENTATION.getFeatureID()) {	// A known safe transient See Bug 535888#c6
+				if (eventType == Notification.ADD) {
+					if (notifier instanceof Resource) {
+						int featureID = notification.getFeatureID(Resource.class);		// Occurs after unloading has finished
+						if (featureID == RESOURCE__ERRORS) {
+							return;
+						}
+						if (featureID == RESOURCE__WARNINGS) {
+							return;
+						}
+					}
+					else if (notifier instanceof Element) {
+						if (feature == PivotPackage.Literals.ELEMENT__OWNED_EXTENSIONS) {
+							return;
+						}
+						else if (notifier instanceof ExpressionInOCL) {						// A known safe laziness See Bug 535888#c6 and Bug 551822#c2
+							if (feature == PivotPackage.Literals.EXPRESSION_IN_OCL__OWNED_PARAMETERS) {
+								return;
+							}
+						}
+						else if (notifier instanceof org.eclipse.ocl.pivot.Class) {
+							if (feature == PivotPackage.Literals.CLASS__OWNED_PROPERTIES) {
+								Object newValue = notification.getNewValue();
+								if ((newValue instanceof Property) && ((Property)newValue).isIsImplicit()) {	// Late QVTr trace properties
+									return;
+								}
+								return;
+							}
+							else if (notifier instanceof InvalidType) {						// A known safe laziness See Bug 579037#c2
+								//		return;
+							}
+						}
+					}
+				}
+				else if (eventType == Notification.REMOVE) {
+					if (notifier instanceof org.eclipse.ocl.pivot.Class) {
+						if (feature == PivotPackage.Literals.CLASS__OWNED_PROPERTIES) {
+							Object oldValue = notification.getOldValue();
+							if ((oldValue instanceof Property) && ((Property)oldValue).isIsImplicit()) {	// Late QVTr trace properties
+								return;
+							}
+							return;
+						}
+					}
+				}
+				else if (eventType == Notification.SET) {
+					if (notifier instanceof Resource) {
+						int featureID = notification.getFeatureID(Resource.class);		// Occurs after unloading has finished
+						if (featureID == RESOURCE__IS_LOADED) {
+							return;
+						}
+					//	if (featureID == RESOURCE__URI) {
+					//		return;
+					//	}
+						if (featureID == RESOURCE__TIME_STAMP) {
+							return;
+						}
+					//	Resource resource = (Resource)notifier;
+					//	if (!resource.isLoaded()) {
+					//		return;
+					//	}
+					}
+					else if (notifier instanceof Feature) {
+						if (feature == PivotPackage.Literals.FEATURE__IMPLEMENTATION) {	// A known safe transient See Bug 535888#c6 and Bug 551822#c2
 							Object oldValue = notification.getOldValue();
 							if (oldValue == null) {
 								return;
 							}
 						}
+						if ((notifier instanceof Property) && ((Property)notifier).isIsImplicit()) {	// Occurs when unloading QVTr trace properties
+				//			return;
+						}
+					}
+					else if (notifier instanceof Constraint) {
+						if (feature == PivotPackage.Literals.CONSTRAINT__OWNED_SPECIFICATION) {
+							return;
+						}
 					}
 					else if (notifier instanceof ExpressionInOCL) {					// A known safe laziness See Bug 535888#c6
-						//	System.out.println(formatMutationMessage(notification));
-						return;
+						if (feature == PivotPackage.Literals.EXPRESSION_IN_OCL__OWNED_BODY) {
+							return;
+						}
+						if (feature == PivotPackage.Literals.EXPRESSION_IN_OCL__OWNED_CONTEXT) {
+							return;
+						}
+						if (feature == PivotPackage.Literals.EXPRESSION_IN_OCL__OWNED_RESULT) {
+							return;
+						}
+						if (feature == PivotPackage.Literals.LANGUAGE_EXPRESSION__BODY) {
+							return;
+						}
+						if (feature == PivotPackage.Literals.LANGUAGE_EXPRESSION__OWNING_CONSTRAINT) {
+							return;
+						}
+						if (feature == PivotPackage.Literals.TYPED_ELEMENT__IS_REQUIRED) {
+							return;
+						}
+						if (feature == PivotPackage.Literals.TYPED_ELEMENT__TYPE) {
+							return;
+						}
 					}
 				}
-				else if (eventType == Notification.ADD) {
-					if (notifier instanceof ExpressionInOCL) {						// A known safe laziness See Bug 535888#c6
-						//	System.out.println(formatMutationMessage(notification));
-						return;
-					}
-				}
+				// Drop through for nearly everything including REMOVE - see Bug 541380#c6
 				throw new IllegalStateException(formatMutationMessage(notification));
 			}
 		}
+
+		@Override
+		public void setTarget(Notifier newTarget) {}
+
+		@Override
+		public void unsetTarget(Notifier oldTarget) {}
 	}
 
 	/**
@@ -130,14 +235,19 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 	private @Nullable Map<@NonNull String, @NonNull EObject> legacyXMIId2eObject = null;
 
 	/**
-	 * An attempt to save an unsaveable ASResource is ignored, probably because it is immuatble..
+	 * An attempt to save an unsaveable ASResource is ignored, probably because it is immutable..
 	 */
 	private boolean isSaveable = true;
 
 	/**
 	 * Set true during doUnload()
 	 */
-	private boolean isUnloading = true;
+	private boolean isUnloading = false;
+
+	/**
+	 * Set true/false by setUpdating(). (See Bug 579109, we can aspire to eliminating many usages of this.)
+	 */
+	private boolean isUpdating = false;
 
 	/**
 	 * Creates an instance of the resource.
@@ -145,8 +255,8 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 	public ASResourceImpl(@NonNull URI uri, @NonNull ASResourceFactory asResourceFactory) {
 		super(uri);
 		this.asResourceFactory = asResourceFactory;
-		assert PivotUtilInternal.isASURI(uri);
-		//		PivotUtilInternal.debugPrintln("Create " + NameUtil.debugSimpleName(this));
+		//	assert PivotUtilInternal.isASURI(uri);
+		//	PivotUtilInternal.debugPrintln("Create " + NameUtil.debugSimpleName(this) + " : " + uri);
 	}
 
 	/**
@@ -185,21 +295,34 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 		return notificationChain;
 	}
 
+	/**
+	 * @since 1.18
+	 */
+	protected @NonNull ImmutabilityCheckingAdapter createImmutabilityCheckingAdapter() {
+		return new ImmutabilityCheckingAdapter();
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	protected @NonNull AbstractASSaver createASSaver() {
+		return new ASSaverNew(this);
+	}
+
+	/**
+	 * @since 1.18
+	 */
 	@Override
-	protected XMLSave createXMLSave() {
-		return new PivotSaveImpl(new XMIHelperImpl(this)
-		{
-			@Override
-			public String getHREF(EObject obj) {
-				if (obj instanceof Property) {			// Avoid generating a referemce to an EObject that might not exist
-					Property asProperty = (Property)obj;
-					if (asProperty.isIsImplicit() && (asProperty.getOpposite() != null)) {
-						return null;
-					}
-				}
-				return super.getHREF(obj);
-			}
-		});
+	protected @NonNull PivotXMIHelperImpl createXMLHelper() {
+		return new PivotXMIHelperImpl(this);
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	protected @NonNull PivotSaveImpl createXMLSave() {
+		return new PivotSaveImpl(createXMLHelper());
 	}
 
 	@Override
@@ -294,13 +417,13 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 		return (Model)eObject;
 	}
 
-	@Override
-	public String getURIFragment(EObject eObject) {
-		if ((unloadingContents == null) && (idToEObjectMap == null)) {
-			AS2ID.assignIds(this, null);
-		}
-		return super.getURIFragment(eObject);
-	}
+//	Deleted by Bug 579025; LUSSIDs are not to be created prior to save
+//	public String getURIFragment(EObject eObject) {
+//		if ((unloadingContents == null) && (idToEObjectMap == null)) {
+//			AS2ID.assignIds(this, null);
+//		}
+//		return super.getURIFragment(eObject);
+//	}
 
 	/**
 	 * @since 1.4
@@ -316,6 +439,32 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 			}
 		}
 		return 0;
+	}
+
+	/**
+	 * Read the serialized representation to confirm that all external references
+	 * use an xmi:id to enhance persistence in the case of model evolution.
+	 */
+	private boolean isFreeOfBadReferences() throws IOException {
+		InputStream inputStream = getResourceSet().getURIConverter().createInputStream(uri);
+		Reader reader = new InputStreamReader(inputStream);
+		StringBuilder s = new StringBuilder();
+		char[] buf = new char[4096];
+		for (int len; (len = reader.read(buf)) > 0; ) {
+			s.append(buf, 0, len);
+		}
+		reader.close();
+		String string = s.toString();
+		int index = string.indexOf("#//@");
+		if (index < 0) {
+			return true;
+		}
+		int preIndex = string.lastIndexOf("\n", index);
+		int postIndex = string.indexOf("\n", index);
+		String refText = string.substring(preIndex, postIndex).trim();
+		System.err.println("Missing xmi:id for reference in \'" + uri + "'\n\t" + refText);
+		// PivotLUSSIDs.isExternallyReferenceable determines what gets xmi:ids
+		return false;
 	}
 
 	@Override
@@ -353,6 +502,7 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 			}
 			XMIUtil.IdResourceEntityHandler.reset(options);
 			super.save(options);
+			assert SKIP_CHECK_BAD_REFERENCES || isFreeOfBadReferences();
 		}
 	}
 
@@ -360,25 +510,37 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 	 * @since 1.5
 	 */
 	@Override
-	public void setSaveable(boolean isSaveable) {
+	public boolean setSaveable(boolean isSaveable) {
+		boolean wasSaveable = this.isSaveable;
 		this.isSaveable = isSaveable;
-		if (!isSaveable) {
-			if (CHECK_IMMUTABILITY.isActive()) {
-				if (immutabilityCheckingAdapter == null) {
-					immutabilityCheckingAdapter = new ImmutabilityCheckingAdapter();
-				}
+		if (isSaveable) {
+			if (immutabilityCheckingAdapter != null) {
+				this.eAdapters().remove(immutabilityCheckingAdapter);
 				for (TreeIterator<EObject> i = getAllProperContents(getContents()); i.hasNext(); ) {
 					EObject eObject = i.next();
-					eObject.eAdapters().add(immutabilityCheckingAdapter);
+					eObject.eAdapters().remove(immutabilityCheckingAdapter);
 				}
+				immutabilityCheckingAdapter = null;
 			}
 		}
-		else if (immutabilityCheckingAdapter != null) {
+		else if (wasSaveable && CHECK_IMMUTABILITY.isActive()) {
+			if (immutabilityCheckingAdapter == null) {
+				immutabilityCheckingAdapter = createImmutabilityCheckingAdapter();
+			}
 			for (TreeIterator<EObject> i = getAllProperContents(getContents()); i.hasNext(); ) {
 				EObject eObject = i.next();
-				eObject.eAdapters().remove(immutabilityCheckingAdapter);
+				eObject.eAdapters().add(immutabilityCheckingAdapter);
 			}
+			this.eAdapters().add(immutabilityCheckingAdapter);
 		}
+		return wasSaveable;
+	}
+
+	@Override
+	public boolean setUpdating(boolean isUpdating) {
+		boolean wasUpdating = this.isUpdating;
+		this.isUpdating = isUpdating;
+		return wasUpdating;
 	}
 
 	/**
@@ -391,6 +553,13 @@ public class ASResourceImpl extends XMIResourceImpl implements ASResource
 				((Model)eRoot).setXmiidVersion(xmiidVersion);
 			}
 		}
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	protected String superGetURIFragment(EObject eObject) {
+		return super.getURIFragment(eObject);		// Bypass assignIds for use by OrphanResource
 	}
 
 	@Override

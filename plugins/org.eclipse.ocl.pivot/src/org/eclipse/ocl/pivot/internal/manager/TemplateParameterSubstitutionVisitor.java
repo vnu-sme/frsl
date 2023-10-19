@@ -55,7 +55,7 @@ import org.eclipse.ocl.pivot.ids.TypeId;
 import org.eclipse.ocl.pivot.internal.utilities.EnvironmentFactoryInternal;
 import org.eclipse.ocl.pivot.internal.utilities.EnvironmentFactoryInternal.EnvironmentFactoryInternalExtension;
 import org.eclipse.ocl.pivot.internal.utilities.PivotUtilInternal;
-import org.eclipse.ocl.pivot.library.LibraryFeature;
+import org.eclipse.ocl.pivot.library.LibraryIterationOrOperation;
 import org.eclipse.ocl.pivot.resource.ASResource;
 import org.eclipse.ocl.pivot.util.AbstractExtendingVisitor;
 import org.eclipse.ocl.pivot.util.Visitable;
@@ -81,7 +81,8 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 	}
 
 	public static @NonNull TemplateParameterSubstitutions createBindings(@NonNull EnvironmentFactoryInternal environmentFactory, @Nullable Type sourceType, @Nullable Type sourceTypeValue, @NonNull Operation candidateOperation) {
-		TemplateParameterSubstitutionVisitor visitor = createVisitor(candidateOperation, environmentFactory, sourceType, sourceTypeValue);
+		// assert sourceTypeValue == null;			// Bug 580791  Enforcing redundant argument
+		TemplateParameterSubstitutionVisitor visitor = createVisitor(candidateOperation, environmentFactory, sourceType, null);
 		visitor.analyzeType(candidateOperation.getOwningClass(), sourceType);
 		for (EObject eObject = candidateOperation; eObject != null; eObject = eObject.eContainer()) {
 			if (eObject instanceof TemplateableElement) {
@@ -99,15 +100,16 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 	}
 
 	protected static @NonNull TemplateParameterSubstitutionVisitor createVisitor(@NonNull EObject eObject, @NonNull EnvironmentFactoryInternal environmentFactory, @Nullable Type selfType, @Nullable Type selfTypeValue) {
+		// assert selfTypeValue == null;			// Bug 580791 Enforcing redundant argument
 		Resource resource = eObject.eResource();
 		if (environmentFactory instanceof EnvironmentFactoryInternalExtension) {
-			return ((EnvironmentFactoryInternalExtension)environmentFactory).createTemplateParameterSubstitutionVisitor(selfType, selfTypeValue);
+			return ((EnvironmentFactoryInternalExtension)environmentFactory).createTemplateParameterSubstitutionVisitor(selfType, null);
 		}
 		else if (resource instanceof ASResource) {				// This used to be thefirst choice; now it should never happen
-			return ((ASResource)resource).getASResourceFactory().createTemplateParameterSubstitutionVisitor(environmentFactory, selfType, selfTypeValue);
+			return ((ASResource)resource).getASResourceFactory().createTemplateParameterSubstitutionVisitor(environmentFactory, selfType, null);
 		}
 		else {													// This too should never happen
-			return new TemplateParameterSubstitutionVisitor(environmentFactory, selfType, selfTypeValue);
+			return new TemplateParameterSubstitutionVisitor(environmentFactory, selfType, null);
 		}
 	}
 
@@ -116,7 +118,8 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 	 * supervision of a metamodelManager and using selfType as the value of OclSelf.
 	 */
 	public static @NonNull Type specializeType(@NonNull Type type, @NonNull CallExp callExp, @NonNull EnvironmentFactoryInternal environmentFactory, @Nullable Type selfType, @Nullable Type selfTypeValue) {
-		TemplateParameterSubstitutionVisitor visitor = createVisitor(callExp, environmentFactory, selfType, selfTypeValue);
+		// assert selfTypeValue == null;			// Bug 580791 Enforcing redundant argument
+		TemplateParameterSubstitutionVisitor visitor = createVisitor(callExp, environmentFactory, selfType, null);
 		visitor.exclude(callExp);
 		visitor.visit(callExp);
 		return visitor.specializeType(type);
@@ -124,7 +127,6 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 
 	private final @NonNull EnvironmentFactoryInternal environmentFactory;
 	private final @Nullable Type selfType;
-	private final @Nullable Type selfTypeValue;
 	private @Nullable TypedElement excludedTarget = null;
 
 	/**
@@ -136,7 +138,7 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 		super(new HashMap<Integer, Type>());
 		this.environmentFactory = environmentFactory;
 		this.selfType = selfType;
-		this.selfTypeValue = selfTypeValue;
+		// assert selfTypeValue == null;			// Bug 580791 Enforcing redundant argument
 	}
 
 	protected void analyzeFeature(@Nullable Feature formalFeature, @Nullable TypedElement actualElement) {
@@ -205,13 +207,9 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 		return context.get(templateParameter.getTemplateParameterId().getIndex());
 	}
 
+	@Deprecated /* @deprecated all functionality moved to LibraryOperation */
 	protected @Nullable TemplateParameterSubstitutionHelper getHelper(@NonNull Operation operation) {
-		LibraryFeature implementationClass = operation.getImplementation();
-		if (implementationClass == null) {
-			return  null;
-		}
-		Class<? extends LibraryFeature> className = implementationClass.getClass();
-		return TemplateParameterSubstitutionHelper.getHelper(className);
+		return  null;
 	}
 
 	protected @NonNull TupleType getSpecializedTupleType(@NonNull TupleType type) {
@@ -222,14 +220,12 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 		for (Property part : parts) {
 			if (part != null) {
 				Type propertyType = PivotUtilInternal.getType(part);
-				if (propertyType != null) {
-					Type resolvedPropertyType = specializeType(propertyType);
-					if (resolvedPropertyType != propertyType) {
-						if (resolutions == null) {
-							resolutions = new HashMap<String, Type>();
-						}
-						resolutions.put(NameUtil.getSafeName(part), resolvedPropertyType);
+				Type resolvedPropertyType = specializeType(propertyType);
+				if (resolvedPropertyType != propertyType) {
+					if (resolutions == null) {
+						resolutions = new HashMap<String, Type>();
 					}
+					resolutions.put(NameUtil.getSafeName(part), resolvedPropertyType);
 				}
 			}
 		}
@@ -299,7 +295,7 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 			return actualType != null ? actualType : type;
 		}
 		if (type instanceof SelfType) {
-			return ClassUtil.nonNullState(selfTypeValue != null ? selfTypeValue : selfType != null ? selfType : type);
+			return ClassUtil.nonNullState(selfType != null ? selfType : type);
 		}
 		else if (type instanceof CollectionType) {
 			CollectionType collectionType = (CollectionType)type;
@@ -307,6 +303,15 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 			Type specializedElementType = specializeType(elementType);
 			CollectionType unspecializedCollectionType = PivotUtil.getUnspecializedTemplateableElement(collectionType);
 			return metamodelManager.getCompleteEnvironment().getCollectionType(unspecializedCollectionType, specializedElementType, collectionType.isIsNullFree(), collectionType.getLowerValue(), collectionType.getUpperValue());
+		}
+		else if (type instanceof MapType) {
+			MapType mapType = (MapType)type;
+			Type keyType = ClassUtil.nonNullModel(mapType.getKeyType());
+			Type valueType = ClassUtil.nonNullModel(mapType.getValueType());
+			Type specializedKeyType = specializeType(keyType);
+			Type specializedValueType = specializeType(valueType);
+			MapType unspecializedMapType = PivotUtil.getUnspecializedTemplateableElement(mapType);
+			return metamodelManager.getCompleteEnvironment().getMapType(unspecializedMapType, specializedKeyType, mapType.isKeysAreNullFree(), specializedValueType, mapType.isValuesAreNullFree());
 		}
 		else if (type instanceof TupleType) {
 			return getSpecializedTupleType((TupleType) type);
@@ -439,9 +444,9 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 		if (formalElements.size() > 0) {
 			OCLExpression actualElement = object.getOwnedBody();
 			Type actualType = actualElement.getType();
-			TemplateParameterSubstitutionHelper helper = getHelper(referredIteration);
-			if (helper != null) {
-				actualType = helper.resolveBodyType(environmentFactory.getMetamodelManager(), object, actualType);
+			LibraryIterationOrOperation implementation = (LibraryIterationOrOperation) referredIteration.getImplementation();
+			if (implementation != null) {		// Library classes have implementations, Complete OCL classes may be recursive
+				actualType = implementation.resolveBodyType(environmentFactory, object, actualType);
 			}
 			analyzeType(formalElements.get(0).getType(), actualType);
 		}
@@ -489,9 +494,9 @@ public class TemplateParameterSubstitutionVisitor extends AbstractExtendingVisit
 		//
 		//	FIXME More general processing for T2 < T1
 		//
-		TemplateParameterSubstitutionHelper helper = getHelper(referredOperation);
-		if (helper != null) {
-			helper.resolveUnmodeledTemplateParameterSubstitutions(this, object);
+		LibraryIterationOrOperation implementation = (LibraryIterationOrOperation)referredOperation.getImplementation();
+		if (implementation != null) {		// Library classes have implementations, Complete OCL classes may be recursive
+			implementation.resolveUnmodeledTemplateParameterSubstitutions(this, object);
 		}
 		return null;
 	}

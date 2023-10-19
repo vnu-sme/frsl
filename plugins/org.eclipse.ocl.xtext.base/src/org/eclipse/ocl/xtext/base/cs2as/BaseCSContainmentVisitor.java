@@ -13,12 +13,9 @@ package org.eclipse.ocl.xtext.base.cs2as;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -326,19 +323,27 @@ public class BaseCSContainmentVisitor extends AbstractExtendingBaseCSVisitor<Con
 		}
 		pivotElement.setIsSerializable(csElement.isIsSerializable());
 		refreshClassifier(pivotElement, csElement);
+		Class<?> instanceClass = null;
 		String instanceClassName = pivotElement.getInstanceClassName();
 		if (instanceClassName != null) {
 			try {
-				Class<?> instanceClass = Class.forName(instanceClassName);
-				if (instanceClass != null) {
-					PrimitiveType behavioralClass = standardLibrary.getBehavioralClass(instanceClass);
-					if (behavioralClass != null) {
-						pivotElement.setBehavioralClass(behavioralClass);
-					}
-				}
+				instanceClass = Class.forName(instanceClassName);
 			}
 			catch (Throwable e) {}
 		}
+		PrimitiveType behavioralClass = null;
+		if (instanceClass != null) {
+			behavioralClass = standardLibrary.getBehavioralClass(instanceClass);
+			if (behavioralClass != null) {
+				String behavioralName = PivotUtil.getName(behavioralClass);
+				if (behavioralName.equals(pivotElement.getName())) {
+					behavioralClass = null;
+				}
+			}
+		}
+		pivotElement.setBehavioralClass(behavioralClass);
+		org.eclipse.ocl.pivot.Class asSuperClass = behavioralClass != null ? behavioralClass : context.getStandardLibrary().getOclElementType();
+		helper.refreshList(pivotElement.getSuperClasses(), Collections.singletonList(asSuperClass));
 		return null;
 	}
 
@@ -525,11 +530,6 @@ public class BaseCSContainmentVisitor extends AbstractExtendingBaseCSVisitor<Con
 	@Override
 	public Continuation<?> visitStructuralFeatureCS(@NonNull StructuralFeatureCS csElement) {
 		@SuppressWarnings("null") @NonNull EClass eClass = PivotPackage.Literals.PROPERTY;
-		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: BaseCSContainmentVisitor$visitStructuralFeatureCS ****" + csElement);
-//		ILog log = Platform.getLog(BaseCSContainmentVisitor.class);
-//		log.log(status);
-		
 		Property pivotElement = refreshNamedElement(Property.class, eClass, csElement);
 		List<String> qualifiers = csElement.getQualifiers();
 		pivotElement.setIsComposite(qualifiers.contains("composes"));
@@ -603,13 +603,8 @@ public class BaseCSContainmentVisitor extends AbstractExtendingBaseCSVisitor<Con
 	}
 
 	@Override
-	public Continuation<?> visitTypedTypeRefCS(@NonNull TypedTypeRefCS csElement) {		
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: BaseCSContainmentVisitor$visitTypedTypeRefCS ****" + csElement);
-//		ILog log = Platform.getLog(BaseCSContainmentVisitor.class);
-//		log.log(status);
-		
+	public Continuation<?> visitTypedTypeRefCS(@NonNull TypedTypeRefCS csElement) {
 		PathNameCS pathName = csElement.getOwnedPathName();
-		
 		if (pathName != null) {
 			CS2AS.setElementType(pathName, PivotPackage.Literals.TYPE, csElement, null);
 		}

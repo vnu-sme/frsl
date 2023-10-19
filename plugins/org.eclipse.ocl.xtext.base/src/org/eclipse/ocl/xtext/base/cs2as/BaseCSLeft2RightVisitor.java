@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ocl.xtext.base.cs2as;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.ocl.pivot.Element;
 import org.eclipse.ocl.pivot.utilities.PivotHelper;

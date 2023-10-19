@@ -34,9 +34,9 @@ import org.eclipse.ocl.pivot.utilities.NameUtil;
 
 public class ExecutorStandardLibrary extends ExecutableStandardLibrary
 {
-	private @NonNull Map<@NonNull String, WeakReference<EcoreExecutorPackage>> ePackageMap = new WeakHashMap<>();
-	private Map<org.eclipse.ocl.pivot.@NonNull Package, WeakReference<DomainReflectivePackage>> asPackageMap = null;
-	private /*@LazyNonNull*/ Map<EcoreExecutorPackage, List<EcoreExecutorPackage>> extensions = null;
+	private @NonNull Map<@NonNull String, WeakReference<@NonNull EcoreExecutorPackage>> ePackageMap = new WeakHashMap<>();		// Keys are interned
+	private Map<org.eclipse.ocl.pivot.@NonNull Package, @NonNull WeakReference<@NonNull DomainReflectivePackage>> asPackageMap = null;
+	private /*@LazyNonNull*/ Map<@NonNull EcoreExecutorPackage, @NonNull List<@NonNull EcoreExecutorPackage>> extensions = null;
 	private /*@LazyNonNull*/ org.eclipse.ocl.pivot.Class classType = null;
 	private /*@LazyNonNull*/ org.eclipse.ocl.pivot.Class enumerationType = null;
 
@@ -49,11 +49,11 @@ public class ExecutorStandardLibrary extends ExecutableStandardLibrary
 	}
 
 	public void addExtension(@NonNull EcoreExecutorPackage basePackage, @NonNull EcoreExecutorPackage extensionPackage) {
-		Map<EcoreExecutorPackage, List<EcoreExecutorPackage>> extensions2 = extensions;
+		Map<@NonNull EcoreExecutorPackage, @NonNull List<@NonNull EcoreExecutorPackage>> extensions2 = extensions;
 		if (extensions2 == null) {
 			extensions = extensions2 = new HashMap<>();
 		}
-		List<EcoreExecutorPackage> list = extensions2.get(basePackage);
+		List<@NonNull EcoreExecutorPackage> list = extensions2.get(basePackage);
 		if (list == null) {
 			list = new ArrayList<>();
 			extensions2.put(basePackage, list);
@@ -64,8 +64,9 @@ public class ExecutorStandardLibrary extends ExecutableStandardLibrary
 	public synchronized void addPackage(@NonNull EcoreExecutorPackage execPackage, @Nullable EcoreExecutorPackage extendedPackage) {
 		String uri = execPackage.getURI();
 		assert uri != null;
+		String internedURI = uri.intern();
 		@SuppressWarnings("unused")
-		WeakReference<EcoreExecutorPackage> oldExecPackage = ePackageMap.put(uri, new WeakReference<>(execPackage));
+		WeakReference<@NonNull EcoreExecutorPackage> oldExecPackage = ePackageMap.put(internedURI, new WeakReference<>(execPackage));
 		//		if ((oldExecPackage != null) && (oldExecPackage != execPackage)) {
 		//			Iterable<ExecutorType> newTypes = execPackage.getOwnedType();
 		//			for (DomainType oldType : oldExecPackage.getOwnedType()) {
@@ -76,7 +77,7 @@ public class ExecutorStandardLibrary extends ExecutableStandardLibrary
 
 	@Override
 	public org.eclipse.ocl.pivot.@NonNull Class getClassType() {
-		Map<EcoreExecutorPackage, List<EcoreExecutorPackage>> extensions2 = extensions;
+		Map<@NonNull EcoreExecutorPackage, @NonNull List<@NonNull EcoreExecutorPackage>> extensions2 = extensions;
 		if (extensions2 == null) {
 			throw new IllegalStateException("No extension package registered to define Class type"); //$NON-NLS-1$
 		}
@@ -92,7 +93,7 @@ public class ExecutorStandardLibrary extends ExecutableStandardLibrary
 
 	@Override
 	public org.eclipse.ocl.pivot.@NonNull Class getEnumerationType() {
-		Map<EcoreExecutorPackage, List<EcoreExecutorPackage>> extensions2 = extensions;
+		Map<@NonNull EcoreExecutorPackage, @NonNull List<@NonNull EcoreExecutorPackage>> extensions2 = extensions;
 		if (extensions2 == null) {
 			throw new IllegalStateException("No extension package registered to define Enumeration type"); //$NON-NLS-1$
 		}
@@ -130,21 +131,21 @@ public class ExecutorStandardLibrary extends ExecutableStandardLibrary
 			}
 		}
 		org.eclipse.ocl.pivot.Package asPackage = asClass.getOwningPackage();
-		Map<org.eclipse.ocl.pivot.Package, WeakReference<DomainReflectivePackage>> asPackageMap2;
+		Map<org.eclipse.ocl.pivot.@NonNull Package, @NonNull WeakReference<@NonNull DomainReflectivePackage>> asPackageMap2;
 		synchronized (this) {
 			String nsURI = asPackage.getURI();
-			EcoreExecutorPackage ecoreExecutorPackage = nsURI != null ? weakGet(ePackageMap, nsURI) : null;
+			EcoreExecutorPackage ecoreExecutorPackage = nsURI != null ? weakGet(ePackageMap, nsURI.intern()) : null;
 			if (ecoreExecutorPackage != null) {
 				String name = asClass.getName();
 				CompleteInheritance executorType = ecoreExecutorPackage.getOwnedClass(name);
 				if (executorType != null) {
 					return executorType;
 				}
-				Map<EcoreExecutorPackage, List<EcoreExecutorPackage>> extensions2 = extensions;
+				Map<@NonNull EcoreExecutorPackage, @NonNull List<@NonNull EcoreExecutorPackage>> extensions2 = extensions;
 				if (extensions2 != null) {
-					List<EcoreExecutorPackage> packages = extensions2.get(ecoreExecutorPackage);
+					List<@NonNull EcoreExecutorPackage> packages = extensions2.get(ecoreExecutorPackage);
 					if (packages != null) {
-						for (@SuppressWarnings("null")@NonNull EcoreExecutorPackage extensionPackage : packages) {
+						for (@NonNull EcoreExecutorPackage extensionPackage : packages) {
 							executorType = extensionPackage.getOwnedClass(name);
 							if (executorType != null) {
 								break;
@@ -183,7 +184,7 @@ public class ExecutorStandardLibrary extends ExecutableStandardLibrary
 
 	@Override
 	public org.eclipse.ocl.pivot.Package getNsURIPackage(@NonNull String nsURI) {
-		WeakReference<EcoreExecutorPackage> weakReference = ePackageMap.get(nsURI);
+		WeakReference<EcoreExecutorPackage> weakReference = ePackageMap.get(nsURI.intern());
 		if (weakReference == null) {
 			return null;
 		}
@@ -213,7 +214,7 @@ public class ExecutorStandardLibrary extends ExecutableStandardLibrary
 
 	public synchronized @Nullable EcoreExecutorPackage getPackage(@NonNull EPackage ePackage) {
 		String nsURI = ePackage.getNsURI();
-		return nsURI != null ? weakGet(ePackageMap, nsURI) : null;
+		return nsURI != null ? weakGet(ePackageMap, nsURI.intern()) : null;
 	}
 
 	@Override

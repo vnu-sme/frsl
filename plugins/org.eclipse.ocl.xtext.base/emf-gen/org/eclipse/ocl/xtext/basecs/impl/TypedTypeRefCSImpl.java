@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ocl.xtext.basecs.impl;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -143,7 +139,7 @@ public class TypedTypeRefCSImpl extends TypedRefCSImpl implements TypedTypeRefCS
 	 */
 	@Override
 	public void setOwnedPathName(PathNameCS newOwnedPathName)
-	{	
+	{
 		if (newOwnedPathName != ownedPathName)
 		{
 			NotificationChain msgs = null;

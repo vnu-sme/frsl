@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,6 @@
  *******************************************************************************/
 package	org.eclipse.ocl.xtext.oclinecorecs.util;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.ocl.xtext.base.cs2as.CS2ASConversion;
@@ -57,6 +53,6 @@ public abstract class AbstractOCLinEcoreCSContainmentVisitor
 
 	@Override
 	public @Nullable Continuation<?> visitTopLevelCS(org.eclipse.ocl.xtext.oclinecorecs.@NonNull TopLevelCS csElement) {
-			return visitRootPackageCS(csElement);
+		return visitRootPackageCS(csElement);
 	}
 }

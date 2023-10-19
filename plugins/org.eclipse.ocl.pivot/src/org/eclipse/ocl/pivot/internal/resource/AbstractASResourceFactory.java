@@ -220,6 +220,11 @@ public abstract class AbstractASResourceFactory extends ResourceFactoryImpl impl
 	}
 
 	@Override
+	public @NonNull ASSaverNormalizeVisitor createASSaverNormalizeVisitor(@NonNull AbstractASSaver asSaver) {
+		return new ASSaverNormalizeVisitor(asSaver);
+	}
+
+	@Override
 	public @NonNull ASSaverNormalizeVisitor createASSaverNormalizeVisitor(@NonNull ASSaver saver) {
 		return new ASSaverNormalizeVisitor(saver);
 	}
@@ -256,7 +261,8 @@ public abstract class AbstractASResourceFactory extends ResourceFactoryImpl impl
 
 	@Override
 	public @NonNull TemplateParameterSubstitutionVisitor createTemplateParameterSubstitutionVisitor(@NonNull EnvironmentFactory environmentFactory, @Nullable Type selfType, @Nullable Type selfTypeValue) {
-		return new TemplateParameterSubstitutionVisitor((EnvironmentFactoryInternal) environmentFactory, selfType, selfTypeValue);
+		// assert selfTypeValue == null;			// Bug 580791 Enforcing redundant argument
+		return new TemplateParameterSubstitutionVisitor((EnvironmentFactoryInternal) environmentFactory, selfType, null);
 	}
 
 	@Override

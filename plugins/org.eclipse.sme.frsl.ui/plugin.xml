@@ -507,9 +507,6 @@
 	    class="org.eclipse.sme.frsl.ui.commands.SetExportDelegateURIHandler"/>
 	  <handler commandId="org.eclipse.sme.frsl.ui.commands.SetExportDelegateURICommand_Virtual"
 	    class="org.eclipse.sme.frsl.ui.commands.SetExportDelegateURIHandler"/>
-   <handler
-         commandId="org.eclipse.sme.frsl.ui.outline.Frsl2UmlCommand">
-   </handler>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 	  <!--menuContribution locationURI="popup:org.eclipse.xtext.ui.common.outline?after=additions">
@@ -556,18 +553,6 @@
                 </reference>
             </visibleWhen>
 	    </command-->
-     <command
-           commandId="org.eclipse.sme.frsl.ui.outline.SaveAsUMLCommand"
-           icon="icons/img1.gif"
-           label="UML"
-           tooltip="Save as a uml class diagram and state machine">
-        <visibleWhen
-              checkEnabled="false">
-           <reference
-                 definitionId="org.eclipse.sme.frsl.FRSL.Editor.opened">
-           </reference>
-        </visibleWhen>
-     </command>
 	    
 	    <!--
 			    command commandId="org.eclipse.sme.frsl.ui.outline.SaveAsPivotCommand"
@@ -599,42 +584,7 @@
             </visibleWhen>
 	    </command>
 	  </menuContribution>
-	  <menuContribution locationURI="popup:org.eclipse.ocl.examples.ui.Menu?after=set">
-         <menu id="org.eclipse.sme.frsl.ui.SetExportDelegateURI" label="%MF_SetExportDelegateURI"/>
-      </menuContribution>
       
-      <menuContribution locationURI="popup:org.eclipse.sme.frsl.ui.SetExportDelegateURI?after=additions">
-	    <command
-           commandId="org.eclipse.sme.frsl.ui.commands.SetExportDelegateURICommand_Virtual"
-           label="%MF_SetExportDelegateURI_Virtual"
-           style="radio">
-            <visibleWhen checkEnabled="false">
-                <reference
-                    definitionId="org.eclipse.sme.frsl.FRSL.Editor.opened">
-                </reference>
-            </visibleWhen>
-	    </command>
-	    <command
-           commandId="org.eclipse.sme.frsl.ui.commands.SetExportDelegateURICommand_LPG"
-           label="%MF_SetExportDelegateURI_LPG"
-           style="radio">
-            <visibleWhen checkEnabled="false">
-                <reference
-                    definitionId="org.eclipse.sme.frsl.FRSL.Editor.opened">
-                </reference>
-            </visibleWhen>
-	    </command>
-	    <command
-           commandId="org.eclipse.sme.frsl.ui.commands.SetExportDelegateURICommand_Pivot"
-           label="%MF_SetExportDelegateURI_Pivot"
-           style="radio">
-            <visibleWhen checkEnabled="false">
-                <reference
-                    definitionId="org.eclipse.sme.frsl.FRSL.Editor.opened">
-                </reference>
-            </visibleWhen>
-	    </command>
-	  </menuContribution>
 	</extension>
 	
    <extension point="org.eclipse.ui.preferencePages">

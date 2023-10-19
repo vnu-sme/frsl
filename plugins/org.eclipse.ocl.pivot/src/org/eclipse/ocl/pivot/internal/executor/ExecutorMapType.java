@@ -23,18 +23,40 @@ import org.eclipse.ocl.pivot.ids.IdResolver;
 import org.eclipse.ocl.pivot.ids.MapTypeId;
 import org.eclipse.ocl.pivot.utilities.TypeUtil;
 
+/**
+ * @since 1.18
+ */
 public class ExecutorMapType extends AbstractSpecializedType implements MapType
 {
 	protected final @NonNull Type keyType;
+	/**
+	 * @since 1.18
+	 */
+	protected final boolean keyValuesAreNullFree;
 	protected final @NonNull Type valueType;
+	/**
+	 * @since 1.18
+	 */
+	protected final boolean valuesAreNullFree;
 	protected final @NonNull MapTypeId typeId;
 
+	@Deprecated
 	public ExecutorMapType(@NonNull String name,
 			org.eclipse.ocl.pivot.@NonNull Class containerType, @NonNull Type keyType, @NonNull Type valueType) {
+		this(name, containerType, keyType, false, valueType, false);
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	public ExecutorMapType(@NonNull String name, org.eclipse.ocl.pivot.@NonNull Class containerType,
+			@NonNull Type keyType, boolean keyValuesAreNullFree, @NonNull Type valueType, boolean valuesAreNullFree) {
 		super(name, containerType);
 		this.keyType = keyType;
+		this.keyValuesAreNullFree = keyValuesAreNullFree;
 		this.valueType = valueType;
-		this.typeId = IdManager.getMapTypeId(name).getSpecializedId(keyType.getTypeId(), valueType.getTypeId());
+		this.valuesAreNullFree = valuesAreNullFree;
+		this.typeId = IdManager.getMapTypeId(name).getSpecializedId(keyType.getTypeId(), valueType.getTypeId(), keyValuesAreNullFree, valuesAreNullFree);
 	}
 
 	@Override

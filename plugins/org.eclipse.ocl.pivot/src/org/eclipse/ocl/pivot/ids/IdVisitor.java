@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v20.html
  *
  * Contributors:
- *     E.D.Willink - initial API and implementation
+ *	 E.D.Willink - initial API and implementation
  *******************************************************************************/
 package	org.eclipse.ocl.pivot.ids;
 
@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * An IdVisitor supports visting an ElementId to react according to the derived Element type.
  */
 public interface IdVisitor<R>
-{	
+{
 	R visitClassId(@NonNull ClassId id);
 	R visitCollectionTypeId(@NonNull CollectionTypeId id);
 	R visitDataTypeId(@NonNull DataTypeId id);
@@ -38,4 +38,5 @@ public interface IdVisitor<R>
 	R visitTuplePartId(@NonNull TuplePartId id);
 	R visitTupleTypeId(@NonNull TupleTypeId id);
 	R visitUnspecifiedId(@NonNull UnspecifiedId id);
+	R visitWildcardId(@NonNull  WildcardId id);
 }

@@ -12,18 +12,20 @@ package org.eclipse.ocl.pivot.internal.ids;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.ocl.pivot.Type;
+import org.eclipse.ocl.pivot.ids.BindingsId;
 import org.eclipse.ocl.pivot.ids.ClassId;
 import org.eclipse.ocl.pivot.ids.DataTypeId;
 import org.eclipse.ocl.pivot.ids.IdManager;
 import org.eclipse.ocl.pivot.ids.IdVisitor;
 import org.eclipse.ocl.pivot.ids.PackageId;
+import org.eclipse.ocl.pivot.ids.TemplateableId;
 import org.eclipse.ocl.pivot.ids.UnspecifiedId;
 import org.eclipse.ocl.pivot.utilities.NameUtil;
 
 public class UnspecifiedIdImpl extends AbstractTypeId implements UnspecifiedId, ClassId, DataTypeId
 {
 	protected final @NonNull Type type;
-	
+
 	public UnspecifiedIdImpl(@NonNull IdManager idManager, @NonNull Type type) {
 		this.type = type;
 	}
@@ -43,9 +45,16 @@ public class UnspecifiedIdImpl extends AbstractTypeId implements UnspecifiedId, 
 		throw new UnsupportedOperationException();
 	}
 
-	
 	@Override
 	public @NonNull PackageId getParent() {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @since 1.18
+	 */
+	@Override
+	public @NonNull TemplateableId getSpecializedId(@NonNull BindingsId bindingsId) {
 		throw new UnsupportedOperationException();
 	}
 

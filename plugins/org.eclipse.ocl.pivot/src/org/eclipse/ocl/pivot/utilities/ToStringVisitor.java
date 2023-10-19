@@ -52,6 +52,7 @@ import org.eclipse.ocl.pivot.InvalidType;
 import org.eclipse.ocl.pivot.IterateExp;
 import org.eclipse.ocl.pivot.Iteration;
 import org.eclipse.ocl.pivot.IteratorExp;
+import org.eclipse.ocl.pivot.IteratorVariable;
 import org.eclipse.ocl.pivot.LambdaType;
 import org.eclipse.ocl.pivot.LetExp;
 import org.eclipse.ocl.pivot.MapLiteralExp;
@@ -146,7 +147,7 @@ public class ToStringVisitor extends AbstractExtendingVisitor<@Nullable String, 
 		EPackage ePackage = eObject.eClass().getEPackage();
 		Factory factory = factoryMap.get(ePackage);
 		if (factory == null) {
-			logger.error("hanhdd:***eObject=" + eObject.getClass() + "***" +  "No ToStringVisitor Factory registered for " + ePackage.getName());
+			logger.error("No ToStringVisitor Factory registered for " + ePackage.getName());
 		}
 		return factory;
 	}
@@ -799,17 +800,17 @@ public class ToStringVisitor extends AbstractExtendingVisitor<@Nullable String, 
 		boolean isFirst = true;
 		List<Variable> iterators = callExp.getOwnedIterators();
 		int iteratorsSize = iterators.size();
-		List<Variable> coIterators = callExp.getOwnedCoIterators();
+		List<IteratorVariable> coIterators = callExp.getOwnedCoIterators();
 		int coIteratorsSize = coIterators.size();
 		for (int i = 0; i < iteratorsSize; i++) {
 			Variable iterator = iterators.get(i);
-			Variable coIterator = i < coIteratorsSize ? coIterators.get(i) : null;
+			IteratorVariable coIterator = i < coIteratorsSize ? coIterators.get(i) : null;
 			if (!isFirst) {
 				append(", ");
 			}
 			safeVisit(iterator);
 			if (coIterator != null) {
-				append(" <- ");
+				append(" with ");
 				safeVisit(coIterator);
 			}
 			isFirst = false;
@@ -879,7 +880,7 @@ public class ToStringVisitor extends AbstractExtendingVisitor<@Nullable String, 
 		boolean isFirst = true;
 		List<Variable> iterators = callExp.getOwnedIterators();
 		int iteratorsSize = iterators.size();
-		List<Variable> coIterators = callExp.getOwnedCoIterators();
+		List<IteratorVariable> coIterators = callExp.getOwnedCoIterators();
 		int coIteratorsSize = coIterators.size();
 		for (int i = 0; i < iteratorsSize; i++) {
 			Variable iterator = iterators.get(i);
@@ -889,7 +890,7 @@ public class ToStringVisitor extends AbstractExtendingVisitor<@Nullable String, 
 			}
 			safeVisit(iterator);
 			if (coIterator != null) {
-				append(" <- ");
+				append(" with ");
 				safeVisit(coIterator);
 			}
 			isFirst = false;
@@ -963,7 +964,7 @@ public class ToStringVisitor extends AbstractExtendingVisitor<@Nullable String, 
 	@Override
 	public String visitMapLiteralPart(@NonNull MapLiteralPart mapLiteralPart) {
 		safeVisit(mapLiteralPart.getOwnedKey());
-		append(" <- ");
+		append(" with ");
 		safeVisit(mapLiteralPart.getOwnedValue());
 		return null;
 	}
@@ -984,7 +985,7 @@ public class ToStringVisitor extends AbstractExtendingVisitor<@Nullable String, 
 					if (((index == 0) && !object.isKeysAreNullFree()) || ((index == 1) && !object.isValuesAreNullFree())) {
 						append("[?]");
 					}
-					else /*if (SHOW_ALL_MULTIPLICITIES)*/ {
+					else if (SHOW_ALL_MULTIPLICITIES) {
 						append("[1]");
 					}
 					prefix = ",";

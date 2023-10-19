@@ -13,7 +13,6 @@ package org.eclipse.ocl.xtext.essentialocl;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.emf.common.EMFPlugin;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;

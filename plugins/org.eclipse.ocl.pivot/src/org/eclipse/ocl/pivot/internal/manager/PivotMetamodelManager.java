@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 Willink Transformations and others.
+ * Copyright (c) 2010, 2022 Willink Transformations and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.common.notify.Adapter;
@@ -44,6 +40,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.ocl.pivot.AnyType;
 import org.eclipse.ocl.pivot.BooleanLiteralExp;
 import org.eclipse.ocl.pivot.CallExp;
 import org.eclipse.ocl.pivot.CollectionType;
@@ -319,11 +316,6 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 	 * such as an asResourceSet to contain pivot copies of meta-models.
 	 */
 	public PivotMetamodelManager(@NonNull EnvironmentFactoryInternal environmentFactory, @NonNull ResourceSet asResourceSet) {
-		
-//		ILog log = Platform.getLog(PivotMetamodelManager.class);		
-//		IStatus logMsg = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: PivotMetamodelManager$PivotMetamodelManager() **** asResourceSet:: " + asResourceSet.toString());
-//		log.log(logMsg);
-		
 		this.environmentFactory = environmentFactory;
 		this.asResourceSet = asResourceSet;
 		List<Adapter> asResourceSetAdapters = asResourceSet.eAdapters();
@@ -455,8 +447,8 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 				candidateConformsToReference = false;
 			}
 			else {
-				Type referenceType = ClassUtil.nonNullState(PivotUtil.getBehavioralType(referenceParameter));
-				Type candidateType = ClassUtil.nonNullState(PivotUtil.getBehavioralType(candidateParameter));
+				Type referenceType = ClassUtil.nonNullState(PivotUtil.getType(referenceParameter));
+				Type candidateType = ClassUtil.nonNullState(PivotUtil.getType(candidateParameter));
 				Type specializedReferenceType = completeModel.getSpecializedType(referenceType, referenceBindings);
 				Type specializedCandidateType = completeModel.getSpecializedType(candidateType, candidateBindings);
 				if (referenceType != candidateType) {
@@ -648,10 +640,10 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 	}
 
 	public @NonNull WildcardType createWildcardType(org.eclipse.ocl.pivot.@Nullable Class lowerBound, org.eclipse.ocl.pivot.@Nullable Class upperBound) {		// FIXME move to PivotHelper
-		WildcardType wildcardType = PivotFactory.eINSTANCE.createWildcardType();
-		wildcardType.setName("?");			// Name is not significant
-		wildcardType.setLowerBound(lowerBound != null ? lowerBound : standardLibrary.getOclAnyType());
-		wildcardType.setUpperBound(upperBound != null ? upperBound : standardLibrary.getOclVoidType());
+		WildcardType wildcardType = Orphanage.getOrphanWildcardType(environmentFactory.getCompleteModel().getOrphanage());// PivotFactory.eINSTANCE.createWildcardType();
+	//	wildcardType.setName("?");			// Name is not significant
+	//	wildcardType.setLowerBound(lowerBound != null ? lowerBound : standardLibrary.getOclAnyType());
+	//	wildcardType.setUpperBound(upperBound != null ? upperBound : standardLibrary.getOclVoidType());
 		return wildcardType;
 	}
 
@@ -790,10 +782,13 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 	public org.eclipse.ocl.pivot.@Nullable Package getASmetamodel() {
 		if ((asMetamodel == null) && autoLoadASmetamodel) {
 			org.eclipse.ocl.pivot.Package stdlibPackage = null;
-			standardLibrary.getOclAnyType();				// Load a default library if necessary.
-			if (!asLibraries.isEmpty()) {
-				stdlibPackage = asLibraries.get(0);
-			}
+			AnyType oclAnyType = standardLibrary.getOclAnyType();				// Load a default library if necessary.
+		//	if (!asLibraries.isEmpty()) {
+		//		stdlibPackage = asLibraries.get(0);
+		//	}
+		//	if (stdlibPackage == null) {
+				stdlibPackage = oclAnyType.getOwningPackage();
+		//	}
 			if (stdlibPackage != null) {
 				loadASmetamodel(stdlibPackage);
 			}
@@ -1066,7 +1061,6 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 		URI ecoreURI;
 		String externalUri = root.getExternalURI();
 		URI externalURI = URI.createURI(externalUri);
-	
 		if (PivotUtilInternal.isASURI(externalUri)) {
 			ecoreURI = ClassUtil.nonNullEMF(externalURI.trimFileExtension());
 		}
@@ -1195,7 +1189,7 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 			}
 		}
 		ResourceSet externalResourceSet = environmentFactory.getResourceSet();
-		URI uri = EMF_2_9.EcorePlugin.getEPackageNsURIToGenModelLocationMap(false).get(nsURI);
+		URI uri = EMF_2_9.EcorePlugin.getEPackageNsURIToGenModelLocationMap(true).get(nsURI);
 		if (uri != null) {
 			Resource resource = externalResourceSet.getResource(uri, true);
 			for (EObject eObject : resource.getContents()) {
@@ -1448,32 +1442,9 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 		return new CompleteClassPropertiesIterable(getAllTypes(type), selectStatic);
 	}
 
-	public org.eclipse.ocl.pivot.@NonNull Class getMetaclass(@NonNull Type domainInstanceType) {
-		org.eclipse.ocl.pivot.Class metaType = null;
-		if (domainInstanceType instanceof CollectionType) {
-			CollectionType collectionType = (CollectionType)domainInstanceType;
-			if (collectionType.isOrdered()) {
-				if (collectionType.isUnique()) {
-					metaType = getASClass(TypeId.ORDERED_SET_TYPE_NAME);
-				}
-				else {
-					metaType = getASClass(TypeId.SEQUENCE_TYPE_NAME);
-				}
-			}
-			else {
-				if (collectionType.isUnique()) {
-					metaType = getASClass(TypeId.SET_TYPE_NAME);
-				}
-				else {
-					metaType = getASClass(TypeId.BAG_TYPE_NAME);
-				}
-			}
-
-		}
-		if (metaType != null) {
-			return metaType;
-		}
-		return standardLibrary.getClassType();
+	public org.eclipse.ocl.pivot.@NonNull Class getMetaclass(@NonNull Type asInstanceType) {
+		String metaclassName = TypeUtil.getMetaclassName(asInstanceType);
+		return ClassUtil.nonNullState(getASClass(metaclassName));
 	}
 
 	public @Nullable Type getOclType(@NonNull String typeName) {
@@ -1982,10 +1953,19 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 			}
 		}
 		Model asModel;
-		org.eclipse.ocl.pivot.Package asPackage;
+		org.eclipse.ocl.pivot.Package asPackage = null;
 		if ((asLibraryResource instanceof ASResourceImpl.ImmutableResource) && ((ASResourceImpl.ImmutableResource)asLibraryResource).isCompatibleWith(OCLmetamodel.PIVOT_URI)) {
 			asModel = OCLmetamodel.getDefaultModel();
-			asPackage = asModel.getOwnedPackages().get(0);
+			for (org.eclipse.ocl.pivot.Package asPartialPackage : PivotUtil.getOwnedPackages(asModel))	// Workaround the spurious implicit ecore package (fixed on a wip branch)
+			{
+				if (!PivotUtilInternal.isImplicitPackage(asPartialPackage)) {
+					asPackage = asPartialPackage;
+					break;
+				}
+			}
+			if (asPackage == null) {
+				asPackage = asModel.getOwnedPackages().get(0);
+			}
 		}
 		else {
 			String name = ClassUtil.nonNullState(asLibrary.getName());
@@ -2167,10 +2147,12 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 												if (pivot instanceof Model) {
 													Model root = (Model)pivot;
 													completeModel.getPartialModels().remove(root);
-													Resource asResource = root.eResource();
+													ASResource asResource = (ASResource) root.eResource();
 													if (asResource != null) {
+														boolean wasUpdating = asResource.setUpdating(true);
 														asResourceSet.getResources().remove(asResource);
 														asResource.unload();
+														asResource.setUpdating(wasUpdating);
 													}
 												}
 											}
@@ -2285,7 +2267,8 @@ public class PivotMetamodelManager implements MetamodelManagerInternal.Metamodel
 	 * using selfType as the value of OclSelf.
 	 */
 	public @NonNull Type specializeType(@NonNull Type type, @NonNull CallExp callExp, @NonNull Type selfType, @Nullable Type selfTypeValue) {
-		return TemplateParameterSubstitutionVisitor.specializeType(type, callExp, environmentFactory, selfType, selfTypeValue);
+		// assert selfTypeValue == null;			// Bug 580791 Enforcing redundant argument
+		return TemplateParameterSubstitutionVisitor.specializeType(type, callExp, environmentFactory, selfType, null);
 	}
 
 	@Override

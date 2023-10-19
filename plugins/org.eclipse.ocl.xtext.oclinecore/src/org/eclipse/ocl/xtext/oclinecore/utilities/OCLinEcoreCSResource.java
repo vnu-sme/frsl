@@ -14,10 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jdt.annotation.NonNull;
@@ -46,10 +42,6 @@ public class OCLinEcoreCSResource extends EssentialOCLCSResource
 
 	@Override
 	public @NonNull CS2AS createCS2AS(@NonNull EnvironmentFactoryInternal environmentFactory, @NonNull ASResource asResource) {
-//		Status status = new Status(IStatus.INFO, "org.eclipse.sme.frsl", "hanhdd: OCLinEcoreCS2AS asResource SIZE = ****" + asResource.getContents().size());
-//		ILog log = Platform.getLog(OCLinEcoreCS2AS.class);
-//		log.log(status);
-
 		return new OCLinEcoreCS2AS(environmentFactory, this, asResource);
 	}
 
