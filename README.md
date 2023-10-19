@@ -3,7 +3,7 @@
 
 **Prerequisites:**
 - Install [Eclipse DSL Tools (Version: 2023-09)](https://www.eclipse.org/downloads/packages/release/2023-09/r/eclipse-ide-java-and-dsl-developers).
-- Install [UML2 Extender SDK (by Update Sites)](platform:/resource/additional-plugins/mdt-uml2-Update-I202103231848.zip)
+- Install UML2 Extender SDK (by Local Update Site: platform:/resource/additional-plugins/mdt-uml2-Update-I202103231848.zip)
  - Clone this repo.
 - Open repo: 
   - *File -> Open Project From File System -> Specify to folder 'plugins' -> Deselect the 'plugins' checkbox -> finish*.
