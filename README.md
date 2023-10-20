@@ -6,8 +6,7 @@
 - Install UML2 Extender SDK (by Local Update Site: platform:/resource/additional-plugins/mdt-uml2-Update-I202103231848.zip)
  - Clone this repo.
 - Open repo: 
-  - *File -> Open Project From File System -> Specify to folder 'plugins' -> Deselect the 'plugins' checkbox -> finish*.
-  - *File -> Open Project From File System -> Specify to folder 'examples' -> Deselect the 'examples' checkbox -> finish*.
+  - *File -> Open Project From File System -> Specify to folder 'frsl.1.0.0' -> Deselect the 'frsl1.0.0' checkbox -> Select 'Search for nested projects' -> Finish*.
 - In *Problem* section (in Eclipse):
   - If any project is missing *src-gen*, add manually folder *src-gen* to that project.
   - Fix the error 'An API baseline has not been set for the current workspace": (1) Click the menu: Windows\Preferences\Plug-in Development\API Baselines; (2) Update the option "Missing API baseline": Error -> Warning
