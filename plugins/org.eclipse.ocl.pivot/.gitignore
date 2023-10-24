@@ -1,3 +1,4 @@
 /text
 /target/
 /.polyglot.build.properties
+/bin/
