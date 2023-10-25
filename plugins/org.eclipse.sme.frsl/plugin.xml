@@ -20,10 +20,15 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated FRSLCS -->
       <package
-            uri="http://www.xtext.org/sme/FRSLCS"
+            uri="http://www.xtext.org/sme/2020/FRSLCS"
             class="org.eclipse.sme.frslcs.FrslCSPackage"
             genModel="model/FRSLCS.genmodel"/>
+      <package
+            uri="http://www.xtext.org/sme/2020/FRSL"
+            class="org.eclipse.sme.frsl.FrslPackage"
+            genModel="model/FRSL.genmodel"/>
    </extension>
+   
 
 </plugin>
 

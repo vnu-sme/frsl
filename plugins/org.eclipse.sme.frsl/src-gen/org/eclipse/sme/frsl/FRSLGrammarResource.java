@@ -90,7 +90,7 @@ public class FRSLGrammarResource extends AbstractGrammarResource
 
 	private static class _FRSL
 	{
-		private static final @NonNull ReferencedMetamodel MM = createReferencedMetamodel(org.eclipse.sme.frslcs.FrslCSPackage.eINSTANCE, null); // http://www.xtext.org/sme/FRSLCS
+		private static final @NonNull ReferencedMetamodel MM = createReferencedMetamodel(org.eclipse.sme.frslcs.FrslCSPackage.eINSTANCE, null); // http://www.xtext.org/sme/2020/FRSLCS
 		private static final @NonNull ReferencedMetamodel MM_base = createReferencedMetamodel(org.eclipse.ocl.xtext.basecs.BaseCSPackage.eINSTANCE, "base"); // http://www.eclipse.org/ocl/2015/BaseCS
 		private static final @NonNull ReferencedMetamodel MM_ecore = createReferencedMetamodel(org.eclipse.emf.ecore.EcorePackage.eINSTANCE, "ecore"); // http://www.eclipse.org/emf/2002/Ecore
 		private static final @NonNull ReferencedMetamodel MM_essentialocl = createReferencedMetamodel(org.eclipse.ocl.xtext.essentialoclcs.EssentialOCLCSPackage.eINSTANCE, "essentialocl"); // http://www.eclipse.org/ocl/2015/EssentialOCLCS

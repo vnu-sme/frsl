@@ -22,6 +22,8 @@ Require-Bundle: org.eclipse.xtext,
 Import-Package: org.apache.log4j,
  org.osgi.framework;version="1.10.0"
 Export-Package: org.eclipse.sme.frsl,
+ org.eclipse.sme.frsl.impl,
+ org.eclipse.sme.frsl.util,
  org.eclipse.sme.frsl.as2cs,
  org.eclipse.sme.frsl.cs2as,
  org.eclipse.sme.frsl.formatting,

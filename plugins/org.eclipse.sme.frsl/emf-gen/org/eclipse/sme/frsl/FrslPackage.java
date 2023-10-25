@@ -40,7 +40,7 @@ public interface FrslPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.xtext.org/sme/FRSL";
+	String eNS_URI = "http://www.xtext.org/sme/2020/FRSL";
 
 	/**
 	 * The package namespace name.

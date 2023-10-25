@@ -22,7 +22,7 @@ public class AbstractFRSLJavaValidator extends org.eclipse.ocl.xtext.oclinecore.
 	@Override
 	protected List<EPackage> getEPackages() {
 	    List<EPackage> result = new ArrayList<EPackage>();
-	    result.add(EPackage.Registry.INSTANCE.getEPackage("http://www.xtext.org/sme/FRSLCS"));
+	    result.add(EPackage.Registry.INSTANCE.getEPackage("http://www.xtext.org/sme/2020/FRSLCS"));
 	    result.add(EPackage.Registry.INSTANCE.getEPackage("http://www.eclipse.org/ocl/2015/BaseCS"));
 	    result.add(EPackage.Registry.INSTANCE.getEPackage("http://www.eclipse.org/ocl/2015/OCLinEcoreCS"));
 	    result.add(EPackage.Registry.INSTANCE.getEPackage("http://www.eclipse.org/ocl/2015/EssentialOCLCS"));
