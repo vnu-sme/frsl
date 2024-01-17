@@ -14,9 +14,12 @@
   
 **Note:**
 - Newer Java versions (e.g. 20) are not recommended. Java16 or 19 are preferred.
+- If the project is unable to launch, try these methods:
+  - Delete the `.metadata` folder and try again.
+  - Set another folder as the new path of the runtime.
+  - Update the Eclipse IDE version by a new installation or using the update function (Help -> About Eclipse -> Installation Details -> Update...)
 
 **Usage:**
-
 - Run runtime: *Right click to any project -> Run As -> Eclipse Application*.
 - In runtime environment, create general project: *File -> New Project -> General -> Project -> Next ...*
 - In general project, create .frsl file: *Right click -> New -> File -> Set name "test.frsl" -> Finish*
