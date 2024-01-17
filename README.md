@@ -10,9 +10,12 @@
 - In *Problem* section (in Eclipse):
   - If any project is missing *src-gen*, add manually folder *src-gen* to that project.
   - Fix the error 'An API baseline has not been set for the current workspace": (1) Click the menu: Windows\Preferences\Plug-in Development\API Baselines; (2) Update the option "Missing API baseline": Error -> Warning
-  - ... 
+  - ...
   
-**Usage\:**
+**Note:**
+- Newer Java versions (e.g. 20) are not recommended. Java16 or 19 are preferred.
+
+**Usage:**
 
 - Run runtime: *Right click to any project -> Run As -> Eclipse Application*.
 - In runtime environment, create general project: *File -> New Project -> General -> Project -> Next ...*
