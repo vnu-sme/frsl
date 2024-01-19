@@ -39,4 +39,4 @@ Export-Package: org.eclipse.sme.frsl,
  org.eclipse.sme.frslcs.impl,
  org.eclipse.sme.frslcs.util
 Bundle-Activator: org.eclipse.sme.frsl.utilities.FRSLPlugin$Implementation 
-Bundle-RequiredExecutionEnvironment: JavaSE-16
+Bundle-RequiredExecutionEnvironment: JavaSE-17

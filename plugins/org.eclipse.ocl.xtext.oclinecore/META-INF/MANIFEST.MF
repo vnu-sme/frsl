@@ -24,5 +24,5 @@ Export-Package: org.eclipse.ocl.xtext.oclinecore,
  org.eclipse.ocl.xtext.oclinecorecs.impl,
  org.eclipse.ocl.xtext.oclinecorecs.util
 Bundle-Activator: org.eclipse.ocl.xtext.oclinecore.utilities.OCLinEcorePlugin$Implementation
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.ocl.xtext.oclinecore

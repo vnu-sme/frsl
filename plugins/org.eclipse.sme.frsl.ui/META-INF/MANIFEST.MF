@@ -27,7 +27,7 @@ Require-Bundle: org.eclipse.sme.frsl,
  org.eclipse.ui.editors
 Import-Package: org.apache.log4j,
  org.eclipse.ui.console
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.sme.frsl.ui,
  org.eclipse.sme.frsl.ui.commands,
  org.eclipse.sme.frsl.ui.contentassist,
