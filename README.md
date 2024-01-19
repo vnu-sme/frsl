@@ -5,6 +5,7 @@
 ### IDE Settings
 
 - Install [Eclipse DSL Tools (Version: 2023-12)](https://www.eclipse.org/downloads/packages/release/2023-12/r/eclipse-ide-java-and-dsl-developers).
+- JavaSE version: 17 <= V <= 19. The JavaSE comes with the IDE should be enough, although Eclipse Temurin or OpenJDK are recommended, too.
 - Create a workspace to work with the repo.
 - Download plugins:
   - `Help -> Install New Software... -> Work with: [fill in] Eclipse Repository - https://download.eclipse.org/releases/2023-12`
