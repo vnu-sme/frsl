@@ -1,12 +1,12 @@
 # Functional Requirements Specification Language (FRSL)
-# frsl-1.0.0
+# current version: 1.0.0
 
 **Prerequisites:**
-- Install [Eclipse DSL Tools (Version: 2023-09)](https://www.eclipse.org/downloads/packages/release/2023-09/r/eclipse-ide-java-and-dsl-developers).
-- Install UML2 Extender SDK (by Local Update Site: platform:/resource/additional-plugins/mdt-uml2-Update-I202103231848.zip). 
+- Install [Eclipse DSL Tools 2023-12](https://www.eclipse.org/downloads/packages/release/2023-09/r/eclipse-ide-java-and-dsl-developers).
+- Install UML2 Extender SDK 5.5.3 (by Update Site: https://eclipse.dev/modeling/mdt/downloads/?project=uml2). 
 - Clone this repo.
 - Open repo: 
-  - *File -> Open Project From File System -> Specify to folder 'frsl-1.0.0' -> Deselect the 'frsl-1.0.0' checkbox -> Select 'Search for nested projects' -> Finish*.
+  - *File -> Open Project From File System -> Specify to folder 'frsl' -> Deselect the 'frsl' checkbox -> Select 'Search for nested projects' -> Finish*.
 - In *Problem* section (in Eclipse):
   - If any project is missing *src-gen*, add manually folder *src-gen* to that project.
   - Fix the error 'An API baseline has not been set for the current workspace": (1) Click the menu: Windows\Preferences\Plug-in Development\API Baselines; (2) Update the option "Missing API baseline": Error -> Warning
@@ -22,5 +22,6 @@
 
 **Notes:**
 
-- Local Update Sites for the optional plugins for model2model (ATL) and model2text (Acceleo) are also located here: platform:/resource/additional-plugins/
-- Java 16 or 19 are preferred. Newer Java versions (e.g. 20) are not recommended.
+- To integrate current frsl model2model plugins, you need to ATL 4.8 by the update site: https://eclipse.dev/atl/downloads
+- For frsl model2text plugins, you need to install Acceleo 3.7 by the update site: https://eclipse.dev/acceleo/download.html
+- Jdk-20 is recommended for current frsl model2text (Acceleo) plugins.
