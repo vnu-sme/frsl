@@ -2,8 +2,8 @@
 # current version: 1.0.0
 
 **Prerequisites:**
-- Install [Eclipse DSL Tools 2023-12](https://www.eclipse.org/downloads/packages/release/2023-09/r/eclipse-ide-java-and-dsl-developers).
-- Install UML2 Extender SDK 5.5.3 (by Update Site: https://eclipse.dev/modeling/mdt/downloads/?project=uml2). 
+- Install [Eclipse DSL Tools 2024-03](https://www.eclipse.org/downloads/packages/release/2024-03/r/eclipse-ide-java-and-dsl-developers).
+- Install UML2 Extender SDK (by Update Site: https://download.eclipse.org/releases/2024-03). 
 - Clone this repo.
 - Open repo: 
   - *File -> Open Project From File System -> Specify to folder 'frsl' -> Deselect the 'frsl' checkbox -> Select 'Search for nested projects' -> Finish*.
@@ -22,6 +22,6 @@
 
 **Notes:**
 
-- To integrate current frsl model2model plugins, you need to ATL 4.8 by the update site: https://eclipse.dev/atl/downloads
-- For frsl model2text plugins, you need to install Acceleo 3.7 by the update site: https://eclipse.dev/acceleo/download.html
-- Jdk-20 is recommended for current frsl model2text (Acceleo) plugins.
+- To integrate current frsl model2model & model2text plugins, you need to ATL & Acceleo & UML2 & Sirius by the update site: https://download.eclipse.org/releases/2024-03
+- JavaSE-21 is recommended for current frsl plugins
+
