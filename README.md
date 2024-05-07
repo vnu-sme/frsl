@@ -22,6 +22,5 @@
 
 **Notes:**
 
-- To integrate current frsl model2model & model2text plugins, you need to ATL & Acceleo & UML2 & Sirius by the update site: https://download.eclipse.org/releases/2024-03
-- JavaSE-21 is recommended for current frsl plugins
-
+- To integrate current frsl model2model & model2text plugins, you need to install ATL & Acceleo & UML2 & Sirius by the update site: https://download.eclipse.org/releases/2024-03
+- JavaSE-21 is recommended for current frsl plugins.
