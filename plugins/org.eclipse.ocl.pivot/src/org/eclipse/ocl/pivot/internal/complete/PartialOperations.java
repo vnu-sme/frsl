@@ -95,6 +95,12 @@ public class PartialOperations //extends HashMap<ParametersId, List<DomainOperat
 			keys = null;
 			metrics = null;
 		}
+		//hanhdd-begin--------------
+		@Override
+		public OverloadsList reversed() {
+			return (OverloadsList) super.reversed();
+		}
+		//hanhdd-end----------------
 	}
 
 	/**
